@@ -1,23 +1,1097 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
 
-{% block title %} {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}
-  {% if is_home() %} page-home {% endif %}
-{% endblock %}
 
-{% block content %}
-  <section id="posts" class="posts-expand">
-    {% for post in page.posts %}
-      {{ post_template.render(post, true) }}
-    {% endfor %}
-  </section>
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  {% include '_partials/pagination.swig' %}
-{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
 
-{% block sidebar %}
-  {{ sidebar_template.render(false) }}
-{% endblock %}
+  <meta name="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小猪的博客">
+<meta property="og:url" content="http://dreampiggy.com/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="DreamPiggy">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dreampiggy.com/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/" class="post-title-link" itemprop="url">CocoaPods资源管理—Data Asset最低部署版本的坑</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-16 16:16:18 / 修改时间：18:13:17" itemprop="dateCreated datePublished" datetime="2021-07-16T16:16:18+08:00">2021-07-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>自己很早之前曾经写过一些CocoaPods管理Resource资源的文章：<a target="_blank" rel="noopener" href="https://bytedance.feishu.cn/wiki/wikcnJUiDWMmCbkSnfFvYpcMT0f">CocoaPods的资源管理和Asset Catalog优化</a> ，当时列举了对普通图片类型的管理方式和一些用法，也普及了一下UIImage获取Bundle去加载不在mainBundle图像的方式。</p>
+<p>但是苹果早在iOS 9，Xcode 7时代，苹果就已经推出了Data Asset的概念，并在随后的Xcode，尤其是Xcode 10中，为Data Asset提供了App Slicing的能力（即App Store提审包会根据选择的不同设备/内存/分辨率/GPU/CPU，最终下载到唯一匹配的一份文件），这个功能渐渐地开始被一些国内开发者使用。</p>
+<p>在NSHipster这里，有一篇专门的文章介绍：《<a target="_blank" rel="noopener" href="https://nshipster.cn/nsdataasset/">NSDataAsset</a>》</p>
+<p>不过，这篇文章主要的内容是，最近有同事踩到一个关于Data Asset和最低部署版本的坑，这里单独列举一下以防后人重复踩坑。</p>
+<h1 id="Data-Asset初见"><a href="#Data-Asset初见" class="headerlink" title="Data Asset初见"></a>Data Asset初见</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2020/03/30/iOS%E7%AB%AF%E7%9F%A2%E9%87%8F%E5%9B%BE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%B1%87%E6%80%BB%EF%BC%88SVG%E7%AF%87%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/30/iOS%E7%AB%AF%E7%9F%A2%E9%87%8F%E5%9B%BE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%B1%87%E6%80%BB%EF%BC%88SVG%E7%AF%87%EF%BC%89/" class="post-title-link" itemprop="url">iOS端矢量图解决方案汇总（SVG篇）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-30 19:01:33" itemprop="dateCreated datePublished" datetime="2020-03-30T19:01:33+08:00">2020-03-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-04 14:48:56" itemprop="dateModified" datetime="2020-04-04T14:48:56+08:00">2020-04-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="iOS端矢量图解决方案汇总（SVG篇）"><a href="#iOS端矢量图解决方案汇总（SVG篇）" class="headerlink" title="iOS端矢量图解决方案汇总（SVG篇）"></a>iOS端矢量图解决方案汇总（SVG篇）</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Vector_graphics">矢量图</a>，指的是通过一系列数学描述，能够进行无损级别的变化和缩放的一种图像。相比于标量图（如JPEG等标量图压缩格式），能够在绘制时进行任意大小伸缩而不产生模糊，甚至能够实现动态着色，动画等等一系列交互。</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2020/03/30/intro_raster_to_vector.png" alt="intro_raster_to_vecto"></p>
+<p>在当今移动端设备尺寸越来越复杂，各种操作系统级别的夜间主题（或者Dark Mode）越来越提倡的场景下，如果依旧使用标量图，我们需要针对不同的屏幕大小（如2x，3x），和对应主题场景（Light/Dark），提供NxM数量级的标量图，对于App大小开销是很大的。因此，使用矢量图是一个非常有效的解决方案。这个系列文章，就是主要侧重讲解iOS端上的矢量图解决方案。</p>
+<p>第一章是关于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Scalable_Vector_Graphics">SVG</a>及其相应衍生方案的解决方案，后续会有其他矢量图相关的PDF章节，Lottie等。他们各自有不同的细节场景区分和优缺点。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/30/iOS%E7%AB%AF%E7%9F%A2%E9%87%8F%E5%9B%BE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%B1%87%E6%80%BB%EF%BC%88SVG%E7%AF%87%EF%BC%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2019/12/10/WatchKit%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8ASwiftUI%E6%A1%A5%E6%8E%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/10/WatchKit%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8ASwiftUI%E6%A1%A5%E6%8E%A5/" class="post-title-link" itemprop="url">WatchKit渲染原理以及SwiftUI桥接</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-10 17:04:16" itemprop="dateCreated datePublished" datetime="2019-12-10T17:04:16+08:00">2019-12-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-11 21:11:07" itemprop="dateModified" datetime="2019-12-11T21:11:07+08:00">2019-12-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="WatchKit渲染原理以及SwiftUI桥接"><a href="#WatchKit渲染原理以及SwiftUI桥接" class="headerlink" title="WatchKit渲染原理以及SwiftUI桥接"></a>WatchKit渲染原理以及SwiftUI桥接</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Apple Watch作为苹果智能穿戴设备领域的重头，自从第一代发布已经经历了6次换代产品，操作系统的迭代也已经更新到了watchOS 6。</p>
+<p>不同于iPhone的App，watchOS上的大部分App都侧重于健康管理，并且UI交互以直观，快速为基准。在2015年WWDC上，苹果发布的watchOS的同时，面向开发者发布了WatchKit，以用于构建watchOS App。</p>
+<p><img src="https://cdn.macrumors.com/article-new/2019/06/apple-watch-watchos-apps-home-screen.jpg" alt="watchkit-app.jpg"></p>
+<p>这篇主要讲了关于WatchOS上的App的架构介绍，基本概念，并深入分析了WatchKit的UI渲染逻辑，也谈了一些WatchOS和SwiftUI相关的问题。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/12/10/WatchKit%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8ASwiftUI%E6%A1%A5%E6%8E%A5/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2019/06/13/%E5%8F%91%E7%8E%B0iOS-SDK%E7%9A%84Bug-Hopper%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%E5%90%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/13/%E5%8F%91%E7%8E%B0iOS-SDK%E7%9A%84Bug-Hopper%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%E5%90%91/" class="post-title-link" itemprop="url">发现iOS SDK的Bug - Hopper使用教程向</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-13 21:39:38" itemprop="dateCreated datePublished" datetime="2019-06-13T21:39:38+08:00">2019-06-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Hopper简介"><a href="#Hopper简介" class="headerlink" title="Hopper简介"></a>Hopper简介</h1><p>Hopper，全称Hopper Disassembler，是一个macOS和Linux平台上的反汇编IDE。提供了诸如伪代码，子程序，脚本，Debugger，Hex编辑等等一些列工具。相比于其他知名的反汇编工具如<a target="_blank" rel="noopener" href="https://www.hex-rays.com/products/ida/">IDA</a>，最大的好处是对平台特性，也就是Objective-C的反汇编有优化，提供非常贴近原始代码的伪代码（IDA目前则会是保留诸如objc_msgSend的伪代码），并且新版本也对Swift提供了一定的反汇编符号优化，因此作为探究iOS平台上的SDK实现，可以说是一利器。</p>
+<h1 id="Hopper安装"><a href="#Hopper安装" class="headerlink" title="Hopper安装"></a>Hopper安装</h1><p>Hopper本身目前是收费的软件，提供了免费的使用（30分钟）。官方下载地址为：[<a href="https://www.hopperapp.com](https://www.hopperapp.com/)。Mac版本后解压，拖到Application下即可使用。">https://www.hopperapp.com](https://www.hopperapp.com/)。Mac版本后解压，拖到Application下即可使用。</a></p>
+<p>对于个人使用，价格不菲，有两种方案，个人比较推荐第一种</p>
+<ul>
+<li>Per User：收费为¥700，允许同一时间唯一激活，不绑定机器硬件</li>
+<li>Per Computer，收费¥900，和一台电脑的机器硬件绑定</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/06/13/%E5%8F%91%E7%8E%B0iOS-SDK%E7%9A%84Bug-Hopper%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%E5%90%91/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2019/04/16/%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%B8%A6%E4%BD%A0%E5%BC%80%E5%8F%91macOS-QuickLook-Plugin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/04/16/%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%B8%A6%E4%BD%A0%E5%BC%80%E5%8F%91macOS-QuickLook-Plugin/" class="post-title-link" itemprop="url">一步步带你开发macOS QuickLook Plugin</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-16 15:02:11" itemprop="dateCreated datePublished" datetime="2019-04-16T15:02:11+08:00">2019-04-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="QuickLook简介"><a href="#QuickLook简介" class="headerlink" title="QuickLook简介"></a>QuickLook简介</h2><p>QuickLook 是macOS上提供的一项快速展示文档预览的功能，只需要按下空格就可以快速查看各种文件格式的信息，包括文本，代码，图片，音频，视频等等。</p>
+<p>由于QuickLook需要支持不断扩展的文件格式，因此macOS专门提供了一个QuickLook Plugin，能让开发者对自己的文件格式提供一个自定义的完整的UI显示，不必依赖macOS系统更新来支持缤纷复杂的格式。</p>
+<p>之前一段时间，出于兴趣做了一个<a target="_blank" rel="noopener" href="https://aomediacodec.github.io/av1-avif/">AVIF (AV1 Image File Format)</a>的解码器封装，AV1作为现在流行的HEVC(H.265)潜在未来竞争者，有着开源，无专利限制，更高的压缩比等等优势，比起HEVC晚诞生了5年。</p>
+<p>目前AVIF虽然发布了第一版规范，但是缺少相应的周边工具链的支持，在macOS上想要找一个简单的Image Viewer都没找到，调试起来异常困难，因此抽空顺便做了一个简单的Quick Look Plugin，来让自己能直接空格预览AVIF图像。</p>
+<p>在做QuickLook Plugin的过程中，感觉有一些小坑需要记下来，因此这篇文章，目标就是一个简单的入门教程，讲解如何做一个QuickLook Plugin，来对自己喜爱但又不被系统支持的文件格式，提供更好的用户体验支持。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/04/16/%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%B8%A6%E4%BD%A0%E5%BC%80%E5%8F%91macOS-QuickLook-Plugin/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88/" class="post-title-link" itemprop="url">主流图片加载库所使用的预解码究竟干了什么</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-18 14:09:27" itemprop="dateCreated datePublished" datetime="2019-01-18T14:09:27+08:00">2019-01-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="主流图片加载库所使用的预解码究竟干了什么"><a href="#主流图片加载库所使用的预解码究竟干了什么" class="headerlink" title="主流图片加载库所使用的预解码究竟干了什么"></a>主流图片加载库所使用的预解码究竟干了什么</h1><blockquote>
+<p>很多图片库，都会有一个类似叫做Force-Decode，Decode For Display之类的感念，很多人可能对这个过程到底是为了解决什么问题不清楚，这里写一个文章来说明它。</p>
+</blockquote>
+<p>这里列举了各个图片库各自的说法，其实讲的都是完全相同的一个概念。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage/">SDWebImage</a>：使用了<code>forceDecode</code>, <code>decompressImages</code>的概念</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ibireme/YYWebImage">YYWebImage</a>：使用了<code>decodeForDisplay</code>的概念</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/onevcat/Kingfisher">Kingfisher</a>：使用了<code>backgroundDecode</code>的概念</li>
+</ul>
+<h1 id="为什么需要这个过程，解决了什么问题"><a href="#为什么需要这个过程，解决了什么问题" class="headerlink" title="为什么需要这个过程，解决了什么问题"></a>为什么需要这个过程，解决了什么问题</h1><p>为了解释这个过程具体的解决问题，需要至少了解苹果的系统解码器的工作流程。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2018/11/26/CocoaPods%E7%9A%84%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8CAsset%20Catalog%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/11/26/CocoaPods%E7%9A%84%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8CAsset%20Catalog%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">CocoaPods的资源管理和Asset Catalog优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-26 17:54:17" itemprop="dateCreated datePublished" datetime="2018-11-26T17:54:17+08:00">2018-11-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>这篇文章介绍了关于CocoaPods的资源管理行为，对于Pod库作者是必须了解的知识。同时介绍了CocoaPods使用Asset Catalog的注意事项。如果已经了解某方面知识，可以大致略过直接看结论。</p>
+</blockquote>
+<h2 id="Asset-Catalog和App-Thinning"><a href="#Asset-Catalog和App-Thinning" class="headerlink" title="Asset Catalog和App Thinning"></a>Asset Catalog和App Thinning</h2><p>Asset Catalog，是Xcode提供的一项图片资源管理方式。每个Asset表示一个图片资源，但是可以对应一个或者多个实际PNG图，比如可以提供<code>@1x</code>, <code>@2x</code>, <code>@3x</code>多张尺寸的图以适配；在macOS上，还可以通过指定日间和夜间不同Appearances的两套图片。</p>
+<p>这种资源，在编译时会被压缩，然后在App运行时，可以通过API动态根据设备scale factor（Mac上日夜间设置）来选择对应的真实的图片渲染。</p>
+<p><a target="_blank" rel="noopener" href="https://help.apple.com/xcode/mac/current/#/devbbdc5ce4f">App Thinning</a>，是苹果平台（iOS/tvOS/watchOS）上的一个用于优化App包下载资源大小的方案。在App包提交上传到App Store后，苹果后台服务器，会对不同的设备，根据设备的scale factor，重新把App包进行精简，这样不同设备从App Store下载需要的容量不同，3x设备不需要同时下载1x和2x的图。</p>
+<p>但是，这套机制直接基于Asset Catalog，换言之，只有在Asset Catalog中引入的图片，才可以利用这套App Thinning。直接拷贝到App Bundle中的散落图片，所有设备还是都会全部下载。因此如何尽量提升Asset Catalog利用率，是一个很大的包大小优化点。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/11/26/CocoaPods%E7%9A%84%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8CAsset%20Catalog%E4%BC%98%E5%8C%96/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/11/12/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88vImage%E7%AF%87%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/11/12/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88vImage%E7%AF%87%EF%BC%89/" class="post-title-link" itemprop="url">iOS平台图片编解码入门教程（vImage篇）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-12 10:32:45" itemprop="dateCreated datePublished" datetime="2017-11-12T10:32:45+08:00">2017-11-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>这篇教程，是系列教程的第三篇，前篇名为iOS平台图片编解码入门教程（第三方编解码篇）。由于vImage已经属于较为底层框架，这一篇将不会特别着重图片封装格式的编解码，会介绍一些Bitmap级别的操作，包括了图像的色彩转换，Alpha合成、基本几何变换等实际用法。由于教程侧重是图像格式，所以不会介绍vImage强大的Convolution等知识，这方面涉及到数字图像处理的复杂知识，不是教程的目标</p>
+</blockquote>
+<h1 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h1><p><a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/Performance/Conceptual/vImage/Introduction/Introduction.html">vImage</a>是Apple的Accelerate库的一部分，侧重于高性能的图像Bitmap级别的处理。库本身全部是C的接口，而且不同于Core系列的（Core Graphics/Core Foundation）C接口，是比较贴近传统C语言的接口，不会有XXXRef这种贴心的定义，而且很多接口需要自己手动分配内存。</p>
+<p>vImage按照功能，可以分为Alpha Compositing（Alpha合成）、Geometry（几何变换）、Conversion（色彩转换）、Convolution（卷积，用于图像滤镜）Morphology（形态学处理）等。这里主要介绍的，就是色彩转换，Alpha合成，以及几何变换的内容。</p>
+<p>首先需要对vImage的基本接口有所了解，有这么几个概念：</p>
+<ul>
+<li><code>vImage_Buffer</code>: 对应Bitmap的数据，只有最基本的width、height、rowBytes(stride)以及data</li>
+<li><code>vImage_CGImageFormat</code>: 每个vImage的功能，会提供不同色彩格式的类似接口，比如会有ARGB8888，Planar8的同样功能。这里ARGB8888指的是ARGB排列，每通道占8个Bit，也就是一个Piexel占32Bit。而vImage还有一个常见的色彩格式Plane8，指的是只有一个通道（平面），按照顺序排列，比如<code>&#123;R, R, R, R&#125;</code>这样，更方便进行计算</li>
+<li><code>vImage_Flags</code>: 每个vImage接口，都会有一个<code>flags </code>参数来控制一些选项，比如说可以自己定义内存分配，背景色填充策略，重采样策略等，默认的是<code>kvImageNoFlags</code></li>
+<li><code>vImage_Error</code>: 每个vImage的接口，都会返回这个result，来让用户确认是否成功，以及失败的原因，在Debug下比较有帮助</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/12/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88vImage%E7%AF%87%EF%BC%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

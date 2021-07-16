@@ -1,38 +1,613 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Top Down –自顶向下的文法分析读入：读取下一个待匹配字符进去stack，如果为#且栈顶也为＃，成功；如果此时栈顶不为#，失败检查：如果栈顶为终结符，回到读入；否则，随机选择一个规则（假如存在多个规则可以满足的话），使栈顶字符与左部（非终结符）匹配，匹配，用规则的右部（即终结符）替换，整个过程叫做规约(Derivation)    如果找到匹配的规则，回到读入；    否则，BackTrac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Top Down --自顶向下的文法分析">
+<meta property="og:url" content="http://dreampiggy.com/latexce-shi">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="Top Down –自顶向下的文法分析读入：读取下一个待匹配字符进去stack，如果为#且栈顶也为＃，成功；如果此时栈顶不为#，失败检查：如果栈顶为终结符，回到读入；否则，随机选择一个规则（假如存在多个规则可以满足的话），使栈顶字符与左部（非终结符）匹配，匹配，用规则的右部（即终结符）替换，整个过程叫做规约(Derivation)    如果找到匹配的规则，回到读入；    否则，BackTrac">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-03-29T08:43:30.000Z">
+<meta property="article:modified_time" content="2016-03-29T18:43:35.000Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="编译原理">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dreampiggy.com/latexce-shi">
 
 
-{% block content %}
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+  <title>Top Down --自顶向下的文法分析 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/latexce-shi">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Top Down --自顶向下的文法分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-03-29 16:43:30" itemprop="dateCreated datePublished" datetime="2016-03-29T16:43:30+08:00">2016-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2016-03-30 02:43:35" itemprop="dateModified" datetime="2016-03-30T02:43:35+08:00">2016-03-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Code/" itemprop="url" rel="index"><span itemprop="name">Code</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Top-Down-–自顶向下的文法分析"><a href="#Top-Down-–自顶向下的文法分析" class="headerlink" title="Top Down –自顶向下的文法分析"></a>Top Down –自顶向下的文法分析</h1><p>读入：读取下一个待匹配字符进去stack，如果为#且栈顶也为＃，成功；如果此时栈顶不为#，失败<br>检查：如果栈顶为终结符，回到读入；<br>否则，随机选择一个规则（假如存在多个规则可以满足的话），使栈顶字符与左部（非终结符）匹配，匹配，用规则的右部（即终结符）替换，整个过程叫做规约(Derivation)<br>    如果找到匹配的规则，回到读入；<br>    否则，BackTracking，回溯到上一次的检查，换另一个规则</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="type">Stack</span> <span class="operator">==</span> <span class="type">None</span> <span class="type">Terminal</span> &#123;</span><br><span class="line">	choose rule <span class="keyword">do</span> divide &#123;</span><br><span class="line">		from right to left, push into stack</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">match &#123;</span><br><span class="line">	pointer move right to read</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> not match &#123;</span><br><span class="line">	backtrack</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>example:</p>
+<ol>
+<li>$ S \to a \ S \to Sa $, 给定 “aa”</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@1</span><br><span class="line">S# | aa#</span><br><span class="line">a# | aa#</span><br><span class="line"># | a# -&gt; backtrack</span><br><span class="line">S# | aa#</span><br><span class="line">@2</span><br></pre></td></tr></table></figure>
+
+<p>存在问题： </p>
+<ol>
+<li>左递归问题：假如一直选择规则2，将导致无穷循环，无法停止     –&gt;解决：设计文法的时候，消除左递归文法，具体见下专题：<br>$ A \to ** \mid * \ =&gt; \ A \to *B \ B \to \epsilon \ B \to * $</li>
+<li>BackTracking花费时间        –&gt;解决：加入预测，对所有的非终结符加入到预测表中，在进行检查选定一个规则的时候，预读下一个字符，查表检查规则产生的右部是否以预测字符相同，相同继续，不相同直接返回错误，避免过多backtracking，具体见下专题：</li>
+</ol>
+<h2 id="左递归"><a href="#左递归" class="headerlink" title="左递归"></a>左递归</h2><ol>
+<li>定义：<br> 直接左递归：$ P \to P\alpha \mid \beta \ $<br> 间接左递归：$ \ P \to Aa \ A \to Bb \ B \to Pc $，可以存在多个中间非终结符，依次传递</li>
+<li>消除：<br> 直接左递归：$ P \to \beta P^* \ P^* \to \epsilon \ P^* \to \alpha P^* $<br> 间接左递归：<ol>
+<li>首先，对所有参与递归的非终结符，排序，$ B \ A \ P $(其实顺序无关，但是把起始符放在最后，更能简化最终语法，其他顺序产生语法较为复杂）</li>
+<li>依次检查非终结符，如果产生的右部，不含有在该非终结符前面序列的终结符，不处理。比如$ B \to Pc $，$ P $在$ B $之后，故直接处理下一个终结符<br> 否则，含有在序列之前的终结符，比如$ A \to Bb $含有$ B $，且$ B $在$ A $之前，则直接把所有$ B $使用$ B $的产生式替换，然后处理下一个终结符<br>$ A \to Pcb  $</li>
+<li>直到所有的非终结符被处理，其中可能产生直接左递归式：<br>$ B \to Pc \ A \to Pcb \ P \to Pcba $</li>
+<li>对这个直接左递归式，把$ cba $看作$ \alpha $，使用直接左递归消除：<br>$ B \to Pc \ A \to Pcb \ P \to P^* \ P^* \to \epsilon \ P^* \to cbaP^* $</li>
+<li>最后一步进行简化，比如此时的$ P \to P^* $，可替换之后的所有$ P^* $为$ P $，多行的非终结符合并</li>
+<li>最终结果：$ B \to Pc \ A \to Pcb \ P \to cbaP \mid \epsilon $</li>
+</ol>
+</li>
+</ol>
+<h2 id="预测表"><a href="#预测表" class="headerlink" title="预测表"></a>预测表</h2><ol>
+<li>定义：<br> 行为所有的终结符以及#，列为所有的非终结符。某一个产生式对应匹配（$ 列 \to 行首字符 $)，比如$ E \to iE^* $匹配[E,i]。匹配的元素标记为1，不匹配的为0</li>
+<li>使用：<br> 在Top Down的时候，如果检查选择规则时候，查表发现该规则非终结符在表中的标记为1，则继续，否则直接返回错误，无需继续BackTracking</li>
+</ol>
+<h1 id="Bottom-Up-–自底向上"><a href="#Bottom-Up-–自底向上" class="headerlink" title="Bottom Up –自底向上"></a>Bottom Up –自底向上</h1><p>读入：读取下一个待匹配字符进去stack，如果为#，停机<br>检查：是否可以被reduction，即可以被某个产生式右部匹配，用左部分替换<br>如果可以，pop待匹配字符，push那个被reduct的字符进去stack，回到检查<br>如果不行，回到读入</p>
+<p>存在问题：</p>
+<ol>
+<li>对于重复的字符匹配，比如 $ A \to ** $，出现一个＊就会被规约，导致错误。使用Handling来特殊处理$ \epsilon $</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag"># 编译原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/wo-de-ge-ren-bo-ke-jian-cheng-la" rel="next" title="我的个人博客建成啦！^^">
+      我的个人博客建成啦！^^ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Top-Down-%E2%80%93%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E7%9A%84%E6%96%87%E6%B3%95%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">Top Down –自顶向下的文法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E9%80%92%E5%BD%92"><span class="nav-number">1.1.</span> <span class="nav-text">左递归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%B5%8B%E8%A1%A8"><span class="nav-number">1.2.</span> <span class="nav-text">预测表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bottom-Up-%E2%80%93%E8%87%AA%E5%BA%95%E5%90%91%E4%B8%8A"><span class="nav-number">2.</span> <span class="nav-text">Bottom Up –自底向上</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

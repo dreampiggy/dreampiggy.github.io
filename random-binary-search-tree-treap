@@ -1,38 +1,639 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="BST插入顺序与平衡性众所周知，二查搜索树(BST)的搜索、插入、删除的复杂度等于树高，所以平衡度越高，越接近$ O(nlogn) $，越有序越退化为$ O(n) $   对于左侧的BST来说，只有唯一的构造序列：$ &lt;1,2,\dots,14&gt; $ 但对于右侧的BST，可以存在21964800种不同序列  也就是说，随即插入序列到二叉树所形成的平衡度，将大于部分有序插入所形成的二叉树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Random Binary Search Tree －Treap">
+<meta property="og:url" content="http://dreampiggy.com/random-binary-search-tree-treap">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="BST插入顺序与平衡性众所周知，二查搜索树(BST)的搜索、插入、删除的复杂度等于树高，所以平衡度越高，越接近$ O(nlogn) $，越有序越退化为$ O(n) $   对于左侧的BST来说，只有唯一的构造序列：$ &lt;1,2,\dots,14&gt; $ 但对于右侧的BST，可以存在21964800种不同序列  也就是说，随即插入序列到二叉树所形成的平衡度，将大于部分有序插入所形成的二叉树">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/3/9f/4b2394fd756bcf2edcee109bb18ef.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/e/a2/3419e63d7126ece4996634b3f7dad.png">
+<meta property="og:image" content="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1086.png">
+<meta property="og:image" content="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1102.png">
+<meta property="og:image" content="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1108.png">
+<meta property="og:image" content="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1114.png">
+<meta property="article:published_time" content="2016-03-29T18:21:50.000Z">
+<meta property="article:modified_time" content="2016-03-29T18:29:56.000Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/image/3/9f/4b2394fd756bcf2edcee109bb18ef.png">
+
+<link rel="canonical" href="http://dreampiggy.com/random-binary-search-tree-treap">
 
 
-{% block content %}
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+  <title>Random Binary Search Tree －Treap | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/random-binary-search-tree-treap">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Random Binary Search Tree －Treap
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2016-03-30 02:21:50 / 修改时间：02:29:56" itemprop="dateCreated datePublished" datetime="2016-03-30T02:21:50+08:00">2016-03-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Code/" itemprop="url" rel="index"><span itemprop="name">Code</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="BST插入顺序与平衡性"><a href="#BST插入顺序与平衡性" class="headerlink" title="BST插入顺序与平衡性"></a>BST插入顺序与平衡性</h2><p>众所周知，二查搜索树(BST)的搜索、插入、删除的复杂度等于树高，所以平衡度越高，越接近$ O(nlogn) $，越有序越退化为$ O(n) $</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/3/9f/4b2394fd756bcf2edcee109bb18ef.png" alt="线性BST"><br><img src="http://dreampiggy-image.test.upcdn.net/image/e/a2/3419e63d7126ece4996634b3f7dad.png" alt="随机BST"></p>
+<ul>
+<li>对于左侧的BST来说，只有唯一的构造序列：$ &lt;1,2,\dots,14&gt; $</li>
+<li>但对于右侧的BST，可以存在21964800种不同序列</li>
+</ul>
+<p>也就是说，随即插入序列到二叉树所形成的平衡度，将大于部分有序插入所形成的二叉树</p>
+<p>形式化证明可以得到（具体证明过程，参见<a target="_blank" rel="noopener" href="http://opendatastructures.org/ods-java/7_1_Random_Binary_Search_Tr.html#fig:rbst-records">Open Data Structures</a>：</p>
+<p>对每个$ x \in{0,\ldots,{n}-1} $, x所需要的搜索长度（即深度）是 $ H_{x+1} + H_{n-x} - O(1) $</p>
+<p>对每个$ x \in(-1,n) $，x所需要的搜索长度是$ H_{\lceil x \rceil} H_{n-\lceil x \rceil} $</p>
+<h2 id="Treap-Random-BST实现"><a href="#Treap-Random-BST实现" class="headerlink" title="Treap - Random BST实现"></a>Treap - Random BST实现</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Treap">Treap-wikipedia</a></p>
+</blockquote>
+<p>Treap，顾名思义，就是<code>Tree</code>和<code>Head</code>的结合体，除了要满足BST的要求外，还需要满足堆的要求，即</p>
+<ol>
+<li> <code>BST</code>: 对每个结点，左子女的值 &lt; 根的值 &lt; 右子女的值</li>
+<li> <code>Heap</code>: 对除了跟结点的每个结点，双亲结点的优先级要小于该结点的优先级</li>
+</ol>
+<p>所以Treap的每个结点除了包括BST结点的值value外，还需要包括一个唯一的优先级p</p>
+<p>比如这样就是一个典型的Treap，每个结点表示为(value,p) <img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1086.png" alt="Treap"></p>
+<p>并且可以证明，由Heap的约束，最小优先级将成为根结点，而BST又保证了小于根的值将在左子树上，大于根的值在右子树</p>
+<p>由于Heap的约束，我们可以认为Treap是按照优先级排序插入BST的，比如上述Treap可以由以下序列构造</p>
+<p>$ (3,1), (1,6), (0,9), (5,11), (4,14), (9,17), (7,22), (6,42), (8,49), (2,99) $</p>
+<h2 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h2><p>为了确保<code>Heap原则</code>，那么就需要对树进行旋转，在旋转中同时还要确保<code>BST原则</code>，比如这样的例子：</p>
+<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1102.png" alt="BST旋转"></p>
+<p>对w.value &lt; u.value，旋转将交换w和u的父子关系，同时将把原来的B放在新的儿子上。比如右旋，可以看作左旋和右旋是一个对称的操作</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateRight</span><span class="params">(Node *u)</span> </span>&#123;</span><br><span class="line">    Node* w = u-&gt;left;</span><br><span class="line">    w-&gt;parent = u-&gt;parent;  <span class="comment">//parent -&gt; w</span></span><br><span class="line">    <span class="keyword">if</span> (w-&gt;parent != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (w-&gt;parent-&gt;left == u) &#123; <span class="comment">//u is left or right</span></span><br><span class="line">            w-&gt;parent-&gt;left = w;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            w-&gt;parent-&gt;right = w;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;left = w-&gt;right; <span class="comment">//u.left = B</span></span><br><span class="line">    <span class="keyword">if</span> (u-&gt;left != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        u-&gt;left-&gt;parent = u;    <span class="comment">// B.parent = u</span></span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;parent = w;  <span class="comment">// w.right = u</span></span><br><span class="line">    w-&gt;right = u;</span><br><span class="line">    <span class="keyword">if</span> (u == root) &#123;   <span class="comment">//if u is root</span></span><br><span class="line">        root = w;</span><br><span class="line">        root-&gt;parent = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加-删除"><a href="#添加-删除" class="headerlink" title="添加/删除"></a>添加/删除</h2><ul>
+<li>  添加</li>
+</ul>
+<p>比如，对上述的Treap，加入一个值1.5，生成的优先级为4，即插入结点为(1.5,4)。首先使用BST的Add，插入在(2,99)的左子女上。为了满足<code>Heap规则</code>，依次进行以下旋转：</p>
+<p>99 &gt; 4 =&gt;右旋;<br>6 &gt; 4 =&gt; 左旋;<br>1 &lt; 4 =&gt; 停止;</p>
+<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1108.png" alt="Treap插入"></p>
+<p>由前面的引理，可以知道，旋转的次数为$ 2ln(n) + O(1) $，复杂度为$ O(logn) $</p>
+<ul>
+<li>  删除</li>
+</ul>
+<p>核心基本为添加的逆操作，对上述的Treap，删除一个结果(9)，那么将删除结点(9,17)。首先使用BST的Find，找到value为9的结点，然后将以(9,17)开始，向下不断旋转，直到最终为叶结点，然后把这个叶子剪去(Cut down)。</p>
+<p>旋转原则：</p>
+<ol>
+<li>left = NULL &amp; right = NULL ，不动</li>
+<li>left = NULL，左旋(right = NULL则右旋) <code>注:原文这里描述写反了</code></li>
+<li>left.p &lt; right.p，右旋(right.p &lt; left.p则左旋)</li>
+</ol>
+<p>依次进行以下旋转：</p>
+<p>right = NULL =&gt; 右旋;<br>right = NULL =&gt; 右旋;<br>叶结点 =&gt; 停止;</p>
+<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1114.png" alt="Treap删除"></p>
+<p>和添加相反，复杂度为$ O(logn) $</p>
+<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><p><code>构造</code>: $ O(logn) $ <code>查找</code>: $ O(logn) $ <code>添加</code>: $ O(logn) $ <code>删除</code>: $ O(logn) $</p>
+<p>虽说都是$ O(logn) $，但是对比另一种高级数据结构<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Skip_list">Skip List(跳表)</a>，查找复杂度在常数上有不同：</p>
+<p><code>Skip List</code>: $ elnn + O(1) \approx 1.884log(n) + O(1) $ <code>Treap</code>: $ 2ln(n) + O(1) \approx 1.386log(n) + O(1) $</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><blockquote>
+<p>完整版C++实现，这里面的随机优先级，直接使用了value当种子srand()然后rand()获取随机数……（先进行BST的Add，确保value不会重复），实际中可以采用其他随机数方式获得更好的期望复杂度 （吐槽……开始没注意这是Java版伪代码，以后一定用Java或者JavaScript写……指针地狱）</p>
+</blockquote>
+<p>代码链接：<a target="_blank" rel="noopener" href="http://www.dreampiggy.com/source/413-2/">Treap</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/fa-shi-wo-bu-xie-monadjiao-cheng" rel="prev" title="发誓我不写Monad教程">
+      <i class="fa fa-chevron-left"></i> 发誓我不写Monad教程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/retroactive-data-structure" rel="next" title="Retroactive Data Structure">
+      Retroactive Data Structure <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BST%E6%8F%92%E5%85%A5%E9%A1%BA%E5%BA%8F%E4%B8%8E%E5%B9%B3%E8%A1%A1%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">BST插入顺序与平衡性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Treap-Random-BST%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">Treap - Random BST实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC"><span class="nav-number">3.</span> <span class="nav-text">旋转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-%E5%88%A0%E9%99%A4"><span class="nav-number">4.</span> <span class="nav-text">添加&#x2F;删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">5.</span> <span class="nav-text">复杂度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text">代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

@@ -1,38 +1,581 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="背景自己很早之前曾经写过一些CocoaPods管理Resource资源的文章：CocoaPods的资源管理和Asset Catalog优化 ，当时列举了对普通图片类型的管理方式和一些用法，也普及了一下UIImage获取Bundle去加载不在mainBundle图像的方式。 但是苹果早在iOS 9，Xcode 7时代，苹果就已经推出了Data Asset的概念，并在随后的Xcode，尤其是Xcode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CocoaPods资源管理—Data Asset最低部署版本的坑">
+<meta property="og:url" content="http://dreampiggy.com/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="背景自己很早之前曾经写过一些CocoaPods管理Resource资源的文章：CocoaPods的资源管理和Asset Catalog优化 ，当时列举了对普通图片类型的管理方式和一些用法，也普及了一下UIImage获取Bundle去加载不在mainBundle图像的方式。 但是苹果早在iOS 9，Xcode 7时代，苹果就已经推出了Data Asset的概念，并在随后的Xcode，尤其是Xcode">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957403_29bd9b59c2bbaa1f363122a8276779b6.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957281_7b787078bbae747abaf28cde1a513955.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957352_30cb4a561799eec3da92fa1c607c101e.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957323_ceced1da15007185b48893a6eda48754.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957272_fa17b69e9dd37090291bc0a6952baa38.png">
+<meta property="article:published_time" content="2021-07-16T08:16:18.000Z">
+<meta property="article:modified_time" content="2021-07-16T10:13:17.942Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="CocoaPods">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957403_29bd9b59c2bbaa1f363122a8276779b6.png">
+
+<link rel="canonical" href="http://dreampiggy.com/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/">
 
 
-{% block content %}
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+  <title>CocoaPods资源管理—Data Asset最低部署版本的坑 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CocoaPods资源管理—Data Asset最低部署版本的坑
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-16 16:16:18 / 修改时间：18:13:17" itemprop="dateCreated datePublished" datetime="2021-07-16T16:16:18+08:00">2021-07-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>自己很早之前曾经写过一些CocoaPods管理Resource资源的文章：<a target="_blank" rel="noopener" href="https://bytedance.feishu.cn/wiki/wikcnJUiDWMmCbkSnfFvYpcMT0f">CocoaPods的资源管理和Asset Catalog优化</a> ，当时列举了对普通图片类型的管理方式和一些用法，也普及了一下UIImage获取Bundle去加载不在mainBundle图像的方式。</p>
+<p>但是苹果早在iOS 9，Xcode 7时代，苹果就已经推出了Data Asset的概念，并在随后的Xcode，尤其是Xcode 10中，为Data Asset提供了App Slicing的能力（即App Store提审包会根据选择的不同设备/内存/分辨率/GPU/CPU，最终下载到唯一匹配的一份文件），这个功能渐渐地开始被一些国内开发者使用。</p>
+<p>在NSHipster这里，有一篇专门的文章介绍：《<a target="_blank" rel="noopener" href="https://nshipster.cn/nsdataasset/">NSDataAsset</a>》</p>
+<p>不过，这篇文章主要的内容是，最近有同事踩到一个关于Data Asset和最低部署版本的坑，这里单独列举一下以防后人重复踩坑。</p>
+<h1 id="Data-Asset初见"><a href="#Data-Asset初见" class="headerlink" title="Data Asset初见"></a>Data Asset初见</h1><p>标准的配置下，我们可以直接在Xcode里创建一个Asset Catalog，然后拖入想要的文件。注意我们可以在右侧针对不同的配置设置不同的文件内容。</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957403_29bd9b59c2bbaa1f363122a8276779b6.png" alt="1625559957403_29bd9b59c2bbaa1f363122a8276779b6"></p>
+<p>最终一个Data Asset的输入大概的形式是这样子的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Image.xcassets</span><br><span class="line"></span><br><span class="line">- A.dataset</span><br><span class="line"></span><br><span class="line">-- Contents.json</span><br><span class="line"></span><br><span class="line">-- 1.zip</span><br><span class="line"></span><br><span class="line">-- 2.webp</span><br></pre></td></tr></table></figure>
+
+<p>可以看到除了后缀名以外，其他的结构和普通的imageset保持一致。</p>
+<h1 id="Data-Asset产物"><a href="#Data-Asset产物" class="headerlink" title="Data Asset产物"></a>Data Asset产物</h1><p>在执行Xcode标准的<code>Copy Bundle Resources</code>的Build Phase之后，可以看到我们的Data Asset会被编译为一个Assets.car文件，这个格式也是老熟人了。</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957281_7b787078bbae747abaf28cde1a513955.png" alt="1625559957281_7b787078bbae747abaf28cde1a513955"></p>
+<h1 id="Data-Asset获取代码"><a href="#Data-Asset获取代码" class="headerlink" title="Data Asset获取代码"></a>Data Asset获取代码</h1><p>类似于图像，由于Data Asset最终会编译到Car中，无法直接获取文件路径（Flutter/H5等跨平台库又需要使用Bridge方案来调用Native接口）</p>
+<p>在运行时，我们需要使用Fondation提供的专门类<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/uikit/nsdataasset?language=objc">NSDataAsset</a>相关接口，来获取真正的NSData，接口比较简单直观：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/** 如果是非Main Bundle，要获取Bundle</span><br><span class="line"></span><br><span class="line">NSString *bundlePath = [[NSBundle bundleForClass:self.class].resourcePath stringByAppendingPathComponent:@&quot;A.bundle&quot;];</span><br><span class="line"></span><br><span class="line">NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];</span><br><span class="line"></span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">NSBundle *bundle = [NSBundle mainBundle];</span><br><span class="line"></span><br><span class="line">NSDataAsset *asset = [[NSDataAsset alloc] initWithName:@&quot;TestImageAnimated&quot; bundle:bundle];</span><br><span class="line"></span><br><span class="line">NSData *data = asset.data;</span><br></pre></td></tr></table></figure>
+
+<p>看起来比UIImage的相关接口简单理解多了，对吧。</p>
+<h1 id="坑-最低部署版本影响行为"><a href="#坑-最低部署版本影响行为" class="headerlink" title="坑-最低部署版本影响行为"></a>坑-最低部署版本影响行为</h1><p>然而最近有同事发现，他们的一个SDK，使用了Data Asset，在不同的宿主App中行为不一致。某个宿主中可以能访问到数据，另一个一直访问不到。前来咨询（？）了我，因此做了一番排查，发现了一个坑：</p>
+<p><strong>先说结论：Data Asset的编译单元，在最低部署版本iOS 9以下时，不会产出Asset.car而是直接拷贝了文件到原Bundle路径下；只有iOS 9及以上才会产出Asset.car</strong></p>
+<p>如图，这是SDK的资源。SDK使用了CocoaPods进行托管，Podspec里面使用了<code>resource_bundles</code>来提供对外的资源。这里的Data Asset里面内容是一个WebP文件。</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957352_30cb4a561799eec3da92fa1c607c101e.png" alt="1625559957352_30cb4a561799eec3da92fa1c607c101e"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">s.ios.deployment_target = &quot;8.0&quot;</span><br><span class="line"></span><br><span class="line">s.subspec &#x27;Core&#x27; do |ss|</span><br><span class="line"></span><br><span class="line">  ss.resource_bundle     =  &#123;&#x27;splashResourceCore&#x27; =&gt; [&#x27;TTAdSplashSDK/Assets/splashResource/CoreImage.xcassets&#x27;, &#x27;TTAdSplashSDK/Assets/splashResource/ShakeMusic.mp3&#x27;]&#125;</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<p>看起来非常正常，但是实际上行为就是有所不同。于是简单开始从源头排查差异。</p>
+<h2 id="宿主A"><a href="#宿主A" class="headerlink" title="宿主A"></a>宿主A</h2><p>我们搜索查看Xcode最终编译的命令。负责编译xcassets的命令是actool。我们可以看到，在<code>com.apple.actool.compilation-results</code>这里有打印所有的输出，是符合预期的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">CompileAssetCatalog /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Products/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy/splashResourceCore.bundle /Users/bytedance/TTiOS/subs/tt_splash_sdk/TTAdSplashSDK/Assets/splashResource/CoreImage.xcassets (in target &#x27;TTAdSplashSDK-Core-Interactive-Privacy-splashResourceCore&#x27; from project &#x27;TTAdSplashSDK&#x27;)</span><br><span class="line"></span><br><span class="line">    cd /Users/bytedance/TTiOS/subs/tt_splash_sdk/Example/Pods</span><br><span class="line"></span><br><span class="line">    /Applications/Xcode.app/Contents/Developer/usr/bin/actool --output-format human-readable-text --notices --warnings --export-dependency-info /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Intermediates.noindex/TTAdSplashSDK.build/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy-splashResourceCore.build/assetcatalog_dependencies --output-partial-info-plist /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Intermediates.noindex/TTAdSplashSDK.build/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy-splashResourceCore.build/assetcatalog_generated_info.plist --compress-pngs --enable-on-demand-resources NO --optimization space --filter-for-device-model iPhone13,2 --filter-for-device-os-version 14.5 --development-region en --target-device iphone --target-device ipad --minimum-deployment-target 10.0 --platform iphonesimulator --compile /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Products/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy/splashResourceCore.bundle /Users/bytedance/TTiOS/subs/tt_splash_sdk/TTAdSplashSDK/Assets/splashResource/CoreImage.xcassets</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">/* com.apple.actool.compilation-results */</span><br><span class="line"></span><br><span class="line">/Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Intermediates.noindex/TTAdSplashSDK.build/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy-splashResourceCore.build/assetcatalog_generated_info.plist</span><br><span class="line"></span><br><span class="line">/Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Products/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy/splashResourceCore.bundle/Assets.car</span><br></pre></td></tr></table></figure>
+
+<p>检索产物Assets.car，也符合预期：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957323_ceced1da15007185b48893a6eda48754.png" alt="1625559957323_ceced1da15007185b48893a6eda48754"></p>
+<h2 id="宿主B"><a href="#宿主B" class="headerlink" title="宿主B"></a>宿主B</h2><p>同样的，我们查看编译命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">CompileAssetCatalog /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Products/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy/splashResourceCore.bundle /Users/bytedance/TTiOS/subs/tt_splash_sdk/TTAdSplashSDK/Assets/splashResource/CoreImage.xcassets (in target &#x27;TTAdSplashSDK-Core-Interactive-Privacy-splashResourceCore&#x27; from project &#x27;TTAdSplashSDK&#x27;)</span><br><span class="line"></span><br><span class="line">    cd /Users/bytedance/TTiOS/subs/tt_splash_sdk/Example/Pods</span><br><span class="line"></span><br><span class="line">    /Applications/Xcode.app/Contents/Developer/usr/bin/actool --output-format human-readable-text --notices --warnings --export-dependency-info /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Intermediates.noindex/TTAdSplashSDK.build/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy-splashResourceCore.build/assetcatalog_dependencies --output-partial-info-plist /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Intermediates.noindex/TTAdSplashSDK.build/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy-splashResourceCore.build/assetcatalog_generated_info.plist --compress-pngs --enable-on-demand-resources NO --optimization space --filter-for-device-model iPhone13,2 --filter-for-device-os-version 14.5 --development-region en --target-device iphone --target-device ipad --minimum-deployment-target 8.0 --platform iphonesimulator --compile /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Products/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy/splashResourceCore.bundle /Users/bytedance/TTiOS/subs/tt_splash_sdk/TTAdSplashSDK/Assets/splashResource/CoreImage.xcassets</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/* com.apple.actool.compilation-results */</span><br><span class="line"></span><br><span class="line">/Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Intermediates.noindex/TTAdSplashSDK.build/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy-splashResourceCore.build/assetcatalog_generated_info.plist</span><br><span class="line"></span><br><span class="line">/Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Products/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy/splashResourceCore.bundle/Assets.car</span><br><span class="line"></span><br><span class="line">/Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Products/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy/splashResourceCore.bundle/ad_btn_hand.webp</span><br><span class="line"></span><br><span class="line">/Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSplashSDK-bouxjwktwlrwfthejbcmzvcqddie/Build/Products/Debug-iphonesimulator/TTAdSplashSDK-Core-Interactive-Privacy/splashResourceCore.bundle/ad_btn_triangle.webp</span><br></pre></td></tr></table></figure>
+
+<p>此时，在actool的编译结果中，我们发现，原本预期应该在Data Asset的<code>ad_btn_hand.webp</code>和<code>ad_btn_triangle.webp</code>两个文件，竟然直接拷贝到了.bundle的根路径，而不是Assets.car中！</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957272_fa17b69e9dd37090291bc0a6952baa38.png" alt="1625559957272_fa17b69e9dd37090291bc0a6952baa38"></p>
+<p>对比两者的命令，只有<code>--minimum-deployment-target</code>这一项有差距，宿主A是iOS 10.0，宿主B是iOS 8.0。</p>
+<p>经过再次Demo验证，确定了是这个导致了行为的差异！</p>
+<h2 id="SDK调用代码"><a href="#SDK调用代码" class="headerlink" title="SDK调用代码"></a>SDK调用代码</h2><p>SDK运行时需要获取这些代码，经过查看，这里的代码是假设按照.bundle根路径存在Data Asset的文件名的方式去取的，因此在宿主A中会出现异常：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 伪代码</span><br><span class="line"></span><br><span class="line">NSString *bundlePath = [[NSBundle bundleForClass:TTAdSplashManager.class].resourcePath stringByAppendingPathComponent:@&quot;splashResourceCore.bundle&quot;];</span><br><span class="line"></span><br><span class="line">NSbundle* bundle = [NSBundle bundleWithPath:bundlePath];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">NSString *trianglePath = [bundle.resourcePath stringByAppendingPathComponent:@&quot;ad_btn_triangle.webp&quot;];</span><br><span class="line"></span><br><span class="line">NSData *triangleData = [NSData dataWithContentsOfFile:trianglePath];</span><br><span class="line"></span><br><span class="line">self.imageView.image = [UIImage imageWithData:triangleData];</span><br></pre></td></tr></table></figure>
+
+<h2 id="进一步排查最低部署版本变化"><a href="#进一步排查最低部署版本变化" class="headerlink" title="进一步排查最低部署版本变化"></a>进一步排查最低部署版本变化</h2><p>本质原因了解清楚后，进一步排查这个疑问：</p>
+<blockquote>
+<p>为什么宿主A和宿主B，对于一个SDK的Pod，最低部署版本不一致？</p>
+</blockquote>
+<p>因为SDK的Podspec的最低部署版本已经指明了iOS 8，按理说在哪个宿主集成都应该走的是路径的逻辑，而不应该受限于宿主iOS App自己的编译最低部署版本。</p>
+<p>查看宿主A，发现宿主A使用了CocoaPods的插件，在Pod Project Generate的时候，强制修改了所有Pod，伪代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">all_targets.each do |target|</span><br><span class="line"></span><br><span class="line">  target.set_build_settings(&#x27;IPHONEOS_DEPLOYMENT_TARGET&#x27;) do |_, old|</span><br><span class="line"></span><br><span class="line">    old.to_f &lt; 10.0 ? &#x27;10.0&#x27; : old</span><br><span class="line"></span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  target.set_build_settings(&#x27;ASSETCATALOG_COMPILER_OPTIMIZATION&#x27;) do |_, old|</span><br><span class="line"></span><br><span class="line">    definitions = &#x27;space&#x27;</span><br><span class="line"></span><br><span class="line">    definitions</span><br><span class="line"></span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<p>导致SDK的编译Assets.car时，<code>--minimum-deployment-target</code>传入了iOS 10.0，Data Asset编译到Assets.car里</p>
+<p>而宿主B，并没有这个逻辑，按照iOS 8.0传入，Data Asset散落在Bundle根路径。</p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>从这个坑可以看到，最低部署版本，这个编译配置，设置时需要谨慎。由于iOS App不会针对不同的部署版本，单独打一份独立的ipa包（类似PC等平台），所以很多工具链对针对最低部署版本，有着可能不同的兼容性行为，iOS系统快速迭代的节奏下尤其是这样。</p>
+<p>这里有两个改进方案：</p>
+<ol>
+<li> 对于宿主，除非你清楚知道改变最低部署版本的副作用，否则要慎重处理外部Pod的最低部署版本，建议在修改后进行一定的回归测试，或者针对白名单来进行修改。</li>
+<li> 对于SDK作者，如果没有用到Data Asset的特性（App Slicing），可以考虑直接不用Data Asset而直接放到Bundle中，省去踩坑的问题。如果需要利用Data Asset，并且你无法保证引入方宿主会对你的Pod做额外的修改，可以考虑这种兼容代码来判断：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">NSString *bundlePath = [[NSBundle bundleForClass:self.class].resourcePath stringByAppendingPathComponent:@&quot;Image.bundle&quot;];</span><br><span class="line"></span><br><span class="line">NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];</span><br><span class="line"></span><br><span class="line">// 如果编译时的最低部署版本iOS 9以上，Data Asset需要用NSDataAsset类获取，否则用直接取路径</span><br><span class="line"></span><br><span class="line">NSDataAsset *asset = [[NSDataAsset alloc] initWithName:@&quot;TestImageAnimated&quot; bundle:bundle]; // 此处是Asset名，不是文件名！</span><br><span class="line"></span><br><span class="line">NSData *data = asset.data;</span><br><span class="line"></span><br><span class="line">if (!data) &#123;</span><br><span class="line"></span><br><span class="line">    // Fallback到路径</span><br><span class="line"></span><br><span class="line">    data = [NSData dataWithContentsOfFile:[bundlePath stringByAppendingPathComponent:&quot;TestImageAnimated.webp&quot;]]; // 此处是文件名，注意！</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/CocoaPods/" rel="tag"># CocoaPods</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/30/iOS%E7%AB%AF%E7%9F%A2%E9%87%8F%E5%9B%BE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%B1%87%E6%80%BB%EF%BC%88SVG%E7%AF%87%EF%BC%89/" rel="prev" title="iOS端矢量图解决方案汇总（SVG篇）">
+      <i class="fa fa-chevron-left"></i> iOS端矢量图解决方案汇总（SVG篇）
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Data-Asset%E5%88%9D%E8%A7%81"><span class="nav-number">2.</span> <span class="nav-text">Data Asset初见</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Data-Asset%E4%BA%A7%E7%89%A9"><span class="nav-number">3.</span> <span class="nav-text">Data Asset产物</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Data-Asset%E8%8E%B7%E5%8F%96%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">Data Asset获取代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9D%91-%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E5%BD%B1%E5%93%8D%E8%A1%8C%E4%B8%BA"><span class="nav-number">5.</span> <span class="nav-text">坑-最低部署版本影响行为</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%BF%E4%B8%BBA"><span class="nav-number">5.1.</span> <span class="nav-text">宿主A</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%BF%E4%B8%BBB"><span class="nav-number">5.2.</span> <span class="nav-text">宿主B</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SDK%E8%B0%83%E7%94%A8%E4%BB%A3%E7%A0%81"><span class="nav-number">5.3.</span> <span class="nav-text">SDK调用代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E6%8E%92%E6%9F%A5%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E5%8F%98%E5%8C%96"><span class="nav-number">5.4.</span> <span class="nav-text">进一步排查最低部署版本变化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">6.</span> <span class="nav-text">结论</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

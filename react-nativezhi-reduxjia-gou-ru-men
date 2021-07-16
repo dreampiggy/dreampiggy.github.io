@@ -1,38 +1,653 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="如今也是入了移动iOS开发的坑，最近不仅学习了Core Animation的部分知识，还接触到React Native，这一Facebook出品的React for Native Platform框架，其中React本身入门是相对简单的，而Redux入门就相对困难了，因此在这里总结一下，最后有自己写的Slides可以参考  背景 为什么需要Redux   RN的state（可变，子组件不可见）和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native之Redux架构入门">
+<meta property="og:url" content="http://dreampiggy.com/react-nativezhi-reduxjia-gou-ru-men">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="如今也是入了移动iOS开发的坑，最近不仅学习了Core Animation的部分知识，还接触到React Native，这一Facebook出品的React for Native Platform框架，其中React本身入门是相对简单的，而Redux入门就相对困难了，因此在这里总结一下，最后有自己写的Slides可以参考  背景 为什么需要Redux   RN的state（可变，子组件不可见）和">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/6/ac/b29d443e4577ad15dd62c800c5fc4.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/a/b8/1e6f0b3d3f531817fb9bf7aed7ad3.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/2/5c/d3050cfb96161668957d6b51fe00a.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/4/2d/bbcfa2df98958ec1a4c027b7a883e.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/e/c6/3c631d1a7bd31016e1fdf45e63428.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/9/19/10bde796c214db134bb166bbac540.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/e/8c/42c765d2eea6cb90e2eef9dfae949.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/b/71/a6d9a50d4ff1c8eebbd462279c073.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/7/db/e8fcbe8a12f6d2796e64a37e5c4ae.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/9/7f/7b039ac17e7828a2fe4f3d033ad73.png">
+<meta property="article:published_time" content="2016-10-26T09:23:28.000Z">
+<meta property="article:modified_time" content="2016-10-26T09:39:01.000Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="React Native">
+<meta property="article:tag" content="Redux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/image/6/ac/b29d443e4577ad15dd62c800c5fc4.png">
+
+<link rel="canonical" href="http://dreampiggy.com/react-nativezhi-reduxjia-gou-ru-men">
 
 
-{% block content %}
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+  <title>React Native之Redux架构入门 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/react-nativezhi-reduxjia-gou-ru-men">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React Native之Redux架构入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2016-10-26 17:23:28 / 修改时间：17:39:01" itemprop="dateCreated datePublished" datetime="2016-10-26T17:23:28+08:00">2016-10-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>如今也是入了移动iOS开发的坑，最近不仅学习了Core Animation的部分知识，还接触到React Native，这一Facebook出品的React for Native Platform框架，其中React本身入门是相对简单的，而Redux入门就相对困难了，因此在这里总结一下，最后有自己写的Slides可以参考</p>
+</blockquote>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><blockquote>
+<p>为什么需要Redux</p>
+</blockquote>
+<ol>
+<li>RN的state（可变，子组件不可见）和props（不可变，子组件可见）的设计，在面对大型项目时候，容易因为不经意修改state造成状态混乱，组件渲染错误</li>
+<li>RN使用了Virtual DOM，不需要Target绑定-&gt;Action修改UI属性，只要当状态变化，render新状态下的组件，数据单向传递，而MVC的设计模式存在双向数据流</li>
+<li>RN不易进行测试，Redux提供了非常方便的mock测试方式</li>
+</ol>
+<h1 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">安装Redux：</span><br><span class="line">	npm install --save redux</span><br><span class="line">安装React Native和Redux绑定库：</span><br><span class="line">	npm install --save react-redux</span><br><span class="line">安装Redux Thunk异步Action中间件：</span><br><span class="line">	npm install --save redux-thunk</span><br></pre></td></tr></table></figure>
+
+<h1 id="Redux-原则"><a href="#Redux-原则" class="headerlink" title="Redux 原则"></a>Redux 原则</h1><ol>
+<li>单一数据源<br> <strong>描述：</strong> 整个应用的 state 被储存在一个对象树中，对象树存在于唯一的 store 中<br> <strong>说明：</strong> Redux把所有state集中管理，避免了各处临时的状态造成的不可控</li>
+<li>State 是只读的<br> <strong>描述：</strong> 惟一改变 state 的方法就是触发 action<br> <strong>说明：</strong> action 是一个含有 type 属性的普通JS对象，type 属性可以用具体的string常量，来表示事件</li>
+<li>使用纯函数来执行修改<br> <strong>描述：</strong> 编写 reducers 来描述对应action如何修改 state<br> <strong>说明：</strong> reducer函数是纯函数，无副作用，定义为reducer(state, action) =&gt; newState，一般可以用 switch(action.type) 来判断不同的action，同时return一个新的state</li>
+</ol>
+<h1 id="Redux-数据流"><a href="#Redux-数据流" class="headerlink" title="Redux 数据流"></a>Redux 数据流</h1><p><img src="http://dreampiggy-image.test.upcdn.net/image/6/ac/b29d443e4577ad15dd62c800c5fc4.png"></p>
+<ol>
+<li>Component触发一个Action Creator（用来dispatch某个具体的Action的函数），dispatch到Store中    </li>
+<li>Reducer进行判断，通过(state, action) =&gt; newState得到新的状态，写回到Store中    </li>
+<li>Store绑定到Component，把state赋回Component的props，然后Component就可以render了，整个流程也比较清晰    </li>
+</ol>
+<h1 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h1><p>Action是一个普通JS对象，至少包括一个<code>type</code>属性代表事件，其他属性可以用来传递数据。实践上对一个流程定义一个函数，流程可以包括网络请求，最后返回Action，这个函数叫Action Creator</p>
+<p>Type:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ADD_TODO = <span class="string">&#x27;ADD_TODO&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>Action：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> action = &#123; <span class="attr">type</span>: ADD_TODO, <span class="attr">text</span>: <span class="string">&#x27;Build my first Redux app&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Action Creator：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addTodo</span>(<span class="params">input</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123; <span class="attr">type</span>: ADD_TODO, <span class="attr">text</span>: input &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举例：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/a/b8/1e6f0b3d3f531817fb9bf7aed7ad3.png"><br><img src="http://dreampiggy-image.test.upcdn.net/image/2/5c/d3050cfb96161668957d6b51fe00a.png"></p>
+<h1 id="Reducer"><a href="#Reducer" class="headerlink" title="Reducer"></a>Reducer</h1><p>Reducer是一个函数，根据Store中的前一次的state，和Store中被dispatch过来的Action，返回一个新的state并写入Store，即： <code>(state, action) =&gt; newState</code></p>
+<p>Reducer：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">toDoReducer</span>(<span class="params">state, action</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">switch</span>(action.type) &#123;</span><br><span class="line">		<span class="keyword">case</span> ADD_TODO:</span><br><span class="line">			<span class="keyword">return</span> &#123;<span class="attr">text</span>: action.text,<span class="attr">completed</span>: <span class="literal">false</span>&#125;</span><br><span class="line">		<span class="attr">default</span>:</span><br><span class="line">			<span class="keyword">return</span> state;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ol>
+<li>返回的是新state，如果需要保留部分旧state值，使用…state（ES7的对象展开语法，对对象会浅拷贝对应属性，这里等价于Object.assign({}, state, newState)），对应合并state的话只会合并一层，而子属性会被覆盖掉，对复杂state需要手动合并</li>
+<li>为了遵循Reducer的纯函数性，不应该直接修改state的值，然后return state，除非使用Immutable.js（见后）</li>
+<li>实际中，应当把不同模块的代码，构造不同的Reducer，最后再合并（因为纯函数性，无副作用）</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; combineReducers &#125; <span class="keyword">from</span> <span class="string">&#x27;redux’;</span></span><br><span class="line"><span class="string">import todos from &#x27;</span>./todos’;</span><br><span class="line"><span class="keyword">import</span> counter <span class="keyword">from</span> <span class="string">&#x27;./counter’;</span></span><br><span class="line"><span class="string">export default combineReducers(&#123; todos, counter &#125;)</span></span><br></pre></td></tr></table></figure>
+
+<p>举例：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/4/2d/bbcfa2df98958ec1a4c027b7a883e.png"></p>
+<h1 id="Store"><a href="#Store" class="headerlink" title="Store"></a>Store</h1><p>Store存储了一个Provider的<code>所有的state</code>，同时接收dispatch过来Action。Redux提供的每个Provider根组件有唯一对应的Store。实践中可以拆分多个业务模块到多个Provider组件，每个Provider组件利用Redux架构，绑定自己的Store，模块内的业务流程写到对应的Action Creator中</p>
+<p>Store：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">&#x27;redux&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> reducer <span class="keyword">from</span> <span class="string">&#x27;./reducers/BusListReducer&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = createStore(reducer);</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>Store的读写，可以调用getState()来获取当前state，用dispatch()来分发Action改变state</li>
+<li>Store创建的时候，除了需要绑定Reducer，还可以应用中间件，比如日志中间件，React Thunk中间件（针对异步Action Creator）    </li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> logger = <span class="function"><span class="params">store</span> =&gt;</span> <span class="function"><span class="params">next</span> =&gt;</span> <span class="function"><span class="params">action</span> =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">&#x27;dispatching&#x27;</span>, action);</span><br><span class="line">	<span class="keyword">let</span> result = next(action);</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">&#x27;next state&#x27;</span>, store.getState());</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> createStoreWithMiddleware = applyMiddleware([logger, thunk])(createStore);</span><br></pre></td></tr></table></figure>
+
+<p>举例：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/e/c6/3c631d1a7bd31016e1fdf45e63428.png"></p>
+<h1 id="Component绑定"><a href="#Component绑定" class="headerlink" title="Component绑定"></a>Component绑定</h1><p>整个控制流，就差最后Store中的state绑定到组件了，我们通过Redux提供的<code>connect()</code>，绑定需要的state以及Action Creator到你的组件的props上，这样组件就可以通过props来调用Action Creator，或者根据不同props来render()不同的组件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapStateToProps</span>(<span class="params">state</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">name</span>: state.name</span><br><span class="line">    <span class="attr">age</span>: state.age</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapDispatchToProps</span>(<span class="params">dispatch</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">actions</span>: bindActionCreators(actions, dispatch)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> connect(mapStateToProps, mapDispatchToProps)(BusList);</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>注意connect返回的就是绑定后的React Component，用的时候记得export default</li>
+</ol>
+<p>举例：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/9/19/10bde796c214db134bb166bbac540.png"></p>
+<h1 id="State合并和Immutable-js"><a href="#State合并和Immutable-js" class="headerlink" title="State合并和Immutable.js"></a>State合并和Immutable.js</h1><blockquote>
+<p>为什么State合并很困难</p>
+</blockquote>
+<ol>
+<li>Reducer中，通过…state对象扩展符，再合并action的state，这种合并是一层合并，不会合并子属性而会直接覆盖掉，意味着对于复杂的state，如果想要修改子层级的属性，就得手动创建一个新的对象，并合并部分state的属性，而不是用…state直接扩展</li>
+<li>Reducer为了保持纯函数性，应当禁止对state直接修改部分属性，但直接…state的拷贝在大量项目state树庞大的情形下会有一定的效率影响</li>
+<li>在1，2两条的情形下，如何在不修改原始state的前提上，又能返回一个原state属性部分变化后的newState就成了一个问题</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123; <span class="attr">b</span>: &#123; <span class="attr">c</span>: <span class="number">4</span> &#125; &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等价写法</span></span><br><span class="line"><span class="comment">// let g = Object.assign(&#123;&#125;, a, &#123;</span></span><br><span class="line"><span class="comment">// 	b: &#123; d: 5 &#125;</span></span><br><span class="line"><span class="comment">// &#125;);</span></span><br><span class="line"><span class="keyword">let</span> g = &#123;</span><br><span class="line">	...a,</span><br><span class="line">	<span class="attr">b</span>: &#123; <span class="attr">d</span>: <span class="number">5</span> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(g); <span class="comment">// &#123; b: &#123; d: 5 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Immutable.js解决了什么</p>
+</blockquote>
+<ol>
+<li>Immutable.js的实现复杂不可变对象的高效copy和部分修改，内部通过Persistent Data Structure（持久化数据结构），即一个不可变的对象树。在使用旧数据创建新数据时，通过部分结构共享，如果对象树中一个节点发生变化，只修改这个节点和受它影响的父节点，其它节点则进行共享</li>
+<li>这样既避免了DeepCopy造成的性能开销，又能达到所有返回的数据仍然是不可变的，符合了reducer(state,action) =&gt; newState的纯函数性</li>
+</ol>
+<blockquote>
+<p>具体如何实践配合Redux</p>
+</blockquote>
+<ol>
+<li>对state中<code>部分复杂的属性</code>，可以使用Immutable的数据单独包裹，在组件render()处单独解包所有Immutable对象</li>
+<li>如果state本身就含有各种复杂属性，可以直接<code>把state本身包裹</code>，用Immutable.Map表示state本身，然后通过Immutable的API操作修改部分属性，返回一个新的Immutable对象作为newState，在组件的mapStateToProps()方法中，把Immutable对象包裹的state解包为JavaScript的对象</li>
+<li>对于其他组件，可以在<code>shouldComponentUpdate()</code>方法中，通过Immutable的比较，来避免无用的re-render</li>
+</ol>
+<p>举例：ListView简单应用（避免re-render)</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/e/8c/42c765d2eea6cb90e2eef9dfae949.png"><br><img src="http://dreampiggy-image.test.upcdn.net/image/b/71/a6d9a50d4ff1c8eebbd462279c073.png"><br><img src="http://dreampiggy-image.test.upcdn.net/image/7/db/e8fcbe8a12f6d2796e64a37e5c4ae.png"><br><img src="http://dreampiggy-image.test.upcdn.net/image/9/7f/7b039ac17e7828a2fe4f3d033ad73.png"></p>
+<h1 id="更多思考"><a href="#更多思考" class="headerlink" title="更多思考"></a>更多思考</h1><ol>
+<li>Action的定义规范？（对于不需要rerender的所有Action定义一个单独type？）<br>Reducer中state复杂多级结构，如何规范合并得到newState？（Immutable.js必要性）</li>
+<li>大型组件的render方法解耦合方式（switch？）</li>
+<li>移动端是否有服务端渲染的必要？（dispatch过去的Action如果需要复杂计算，把整个store交给服务端来计算）</li>
+<li>网络请求使用fetch API封装是否足够？</li>
+<li>Native Module的JS端引入（callback？还是Promise + async await）</li>
+<li>Mock测试的具体实践？（Action，Reducer，Component三个方面）</li>
+</ol>
+<h1 id="Slides"><a href="#Slides" class="headerlink" title="Slides"></a>Slides</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/dreampiggy/iOS-Resume/master/React%20Native%E8%BF%9B%E9%98%B6-Redux%E6%9E%B6%E6%9E%84%E5%92%8C%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86.pptx">React Native进阶-Redux架构和状态管理.pptx</a></li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="http://facebook.github.io/react-native/docs">React Native官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="http://redux.js.org/">Redux官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="http://cn.redux.js.org/">Redux官方文档（中文）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/camsong/blog/issues/3">Immutable.js解析</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></li>
+<li><a target="_blank" rel="noopener" href="http://redux.js.org/docs/recipes/UsingObjectSpreadOperator.html">Object Spread Syntax（对象展开符）</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/14933fd9c312">React Native Redux架构参考</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/React-Native/" rel="tag"># React Native</a>
+              <a href="/tags/Redux/" rel="tag"># Redux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/core-graphicsfang-she-bian-huan" rel="prev" title="Core Graphics仿射变换知识">
+      <i class="fa fa-chevron-left"></i> Core Graphics仿射变换知识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/core-animation-3dfang-she-bian-huan-zhi-shi" rel="next" title="Core Animation 3D仿射变换知识">
+      Core Animation 3D仿射变换知识 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redux-%E5%8E%9F%E5%88%99"><span class="nav-number">3.</span> <span class="nav-text">Redux 原则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redux-%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-number">4.</span> <span class="nav-text">Redux 数据流</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Action"><span class="nav-number">5.</span> <span class="nav-text">Action</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reducer"><span class="nav-number">6.</span> <span class="nav-text">Reducer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Store"><span class="nav-number">7.</span> <span class="nav-text">Store</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Component%E7%BB%91%E5%AE%9A"><span class="nav-number">8.</span> <span class="nav-text">Component绑定</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#State%E5%90%88%E5%B9%B6%E5%92%8CImmutable-js"><span class="nav-number">9.</span> <span class="nav-text">State合并和Immutable.js</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A%E6%80%9D%E8%80%83"><span class="nav-number">10.</span> <span class="nav-text">更多思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Slides"><span class="nav-number">11.</span> <span class="nav-text">Slides</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">12.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

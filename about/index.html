@@ -1,48 +1,505 @@
-{% extends '_layout.swig' %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
 
-{% block title %}
-  {% set page_title_suffix = ' | ' + config.title %}
+<link rel="stylesheet" href="/css/main.css">
 
-  {% if page.type === "categories" and not page.title  %}
-    {{ __('title.category') + page_title_suffix }}
-  {% elif page.type === "tags" and not page.title  %}
-    {{ __('title.tag') + page_title_suffix }}
-  {% else %}
-    {{ page.title + page_title_suffix }}
-  {% endif %}
-{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  <div id="posts" class="posts-expand">
-  {% include '_partials/page-header.swig' %}
-    {# tagcloud page support #}
-    {% if page.type === "tags" %}
-      <div class="tag-cloud">
-        <div class="tag-cloud-title">
-            {{ _p('counter.tag_cloud', site.tags.length) }}
-        </div>
-        <div class="tag-cloud-tags">
-          {{ tagcloud({min_font: 12, max_font: 30, amount: 200, color: true, start_color: '#ccc', end_color: '#111'}) }}
-        </div>
-      </div>
-    {% elif page.type === 'categories' %}
-      <div class="category-all-page">
-        <div class="category-all-title">
-            {{ _p('counter.categories', site.categories.length) }}
-        </div>
-        <div class="category-all">
-          {{ list_categories() }}
-        </div>
-      </div>
-    {% else %}
-      {{ page.content }}
-    {% endif %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="迁移Again (2016&#x2F;11&#x2F;1)  我也是了解了国内这些云主机(PaaS)，云服务(SaaS)的作风了。之前使用的DaoCloud，现在已经强制把所有免费的仅仅256MB的一个空间，变成了测试环境，每两天自动关闭应用，如果两周内再不管直接删数据库，也是见识了。 不多说，这次直接换静态博客Hexo，托管到GitHub Pages上，主题就用Next主题，真心不想再折腾了（代码高亮、评论、La">
+<meta property="og:type" content="website">
+<meta property="og:title" content="关于">
+<meta property="og:url" content="http://dreampiggy.com/about/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="迁移Again (2016&#x2F;11&#x2F;1)  我也是了解了国内这些云主机(PaaS)，云服务(SaaS)的作风了。之前使用的DaoCloud，现在已经强制把所有免费的仅仅256MB的一个空间，变成了测试环境，每两天自动关闭应用，如果两周内再不管直接删数据库，也是见识了。 不多说，这次直接换静态博客Hexo，托管到GitHub Pages上，主题就用Next主题，真心不想再折腾了（代码高亮、评论、La">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/d/6d/77bd41d3257dc83b3345b8af594af.png">
+<meta property="article:published_time" content="2016-11-14T15:31:03.000Z">
+<meta property="article:modified_time" content="2019-10-22T12:58:43.192Z">
+<meta property="article:author" content="DreamPiggy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/image/d/6d/77bd41d3257dc83b3345b8af594af.png">
+
+<link rel="canonical" href="http://dreampiggy.com/about/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>关于 | 小猪的博客
+</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(false) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">关于
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <blockquote>
+<p>迁移Again (2016/11/1)</p>
+</blockquote>
+<p>我也是了解了国内这些云主机(PaaS)，云服务(SaaS)的作风了。之前使用的<a target="_blank" rel="noopener" href="https://www.daocloud.io/">DaoCloud</a>，现在已经强制把所有免费的仅仅256MB的一个空间，变成了测试环境，每两天自动关闭应用，如果两周内再不管直接删数据库，也是见识了。</p>
+<p>不多说，这次直接换静态博客Hexo，托管到GitHub Pages上，主题就用<a target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">Next</a>主题，真心不想再折腾了（代码高亮、评论、LaTeX支持什么都费时间），以后纯粹慢慢写博文吧，毕竟还是要注重技术博客的技术，而不是这些表面上的东西。</p>
+<blockquote>
+<p>第二次迁移</p>
+</blockquote>
+<p>由于Coding现在也改为了收费机制（每天1块，想想以前的永久免费承诺，呵呵……），所以不得不再次选择迁移。本来也打算用阿里云主机直接跑，但是想想备案之路的异常艰辛，于是只能找到了国内另一家PaaS提供商：<a target="_blank" rel="noopener" href="https://www.daocloud.io/">DaoCloud</a></p>
+<p>DaoCloud允许免费的Docker镜像的部署，幸好我当时采用了七牛云来放图片资源，所以迁移异常轻松，简单写个Dockerfile，改下配置文件即可。</p>
+<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">0.12</span>.<span class="number">14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create work directory</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> mkdir -p /usr/<span class="built_in">local</span>/app/</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /usr/<span class="built_in">local</span>/app/</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Install dependence</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> . /usr/<span class="built_in">local</span>/app/</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> npm install --unsafe-perm --registry=https://registry.npm.taobao.org</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Expose port</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Start</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>同时也支持对未备案域名的绑定（自动解析到海外），免去备案因素，比起Coding，由于支持Docker的部署，相当于所有类型应用都可以Docker化以后来部署，特别方便（代价是每次改动主题什么代码，部署可能得花10分钟……不过保证稳定而且不会出错）</p>
+<p>唉……现在想想如果之后这些PaaS提供商再抛弃用户，还是老老实实去备案了，真实服了国内的这种”良好的互联网监管机制”。</p>
+<blockquote>
+<p>第一次迁移</p>
+</blockquote>
+<p>我原先的博客是架设在<a target="_blank" rel="noopener" href="http://www.sinacloud.com/">新浪云</a>（原先的SAE）上的，使用的是WordPress，用的PHP5.3。自己在别人基础上改进了主题和插件，也写了很多文章。然而，由于新浪云自从2016/3/21开始，对所有用户的数据库征收0.48元/天的租金（无论是否使用），并对应用实例征收0.1元/天/用户的租金，相当于一天0.58元，而一年下来总计211.7元。已经远远超出了一个空间提供商的费用，逼近主机提供商，于是看到Coding承诺对老用户的演示项目永不收费，便打算到Coding上来部署新的博客</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/d/6d/77bd41d3257dc83b3345b8af594af.png" alt="http://www.sinacloud.com/index/price.html"></p>
+<p>而同时我也早已对WordPress不满，落后的管理方式（主题-&gt;博客-&gt;内容）和不完全的GitHub Markdown和LaTeX支持（也还是要靠插件），过于繁冗，加之新浪云的PHP空间是禁止在线上传代码和写入服务器本地磁盘的，导致很多插件无法正常使用，于是最终还是决定全部迁移到现在流行的Ghost博客上面</p>
+<blockquote>
+<p>Ghost的优点</p>
+</blockquote>
+<ul>
+<li><p>完全支持GitHub Markdown语法，对熟悉GitHub的md格式的人很方便</p>
+</li>
+<li><p>方便集成<a target="_blank" rel="noopener" href="http://www.disqus.com/">Disqus</a>，告别国内多说的各种推广广告，而且国际通用，自动同步，很不错</p>
+</li>
+<li><p>简单的LaTeX支持，使用<a target="_blank" rel="noopener" href="http://www.mathjax.org/">MathJax</a>来简单支持LaTeX，我配置的是使用</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ \latex $ 来行内渲染</span><br><span class="line">$$ \latex $$ 来单独块渲染</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>完善代码着色<br>采取了<a target="_blank" rel="noopener" href="http://prismjs.com/">Prismjs</a>来支持超级全面的代码着色，无论是</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Hello Swift&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>还是</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">qsort</span> :: (<span class="type">Ord</span> a <span class="type">Bool</span>) =&gt; [a] -&gt; [a]</span><br><span class="line"><span class="title">qsort</span> [] = []</span><br><span class="line"><span class="title">qsort</span> (x:xs) = qsort (filter (&lt;= x) xs) ++ [x] ++ qsort (filter (&gt; x) xs)</span><br></pre></td></tr></table></figure>
+
+<p>更可能是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">section     .text</span><br><span class="line">global      _start                              ;must be declared for linker (ld)</span><br><span class="line"></span><br><span class="line">_start:                                         ;tell linker entry point</span><br><span class="line"></span><br><span class="line">    mov     edx,len                             ;message length</span><br><span class="line">    mov     ecx,msg                             ;message to write</span><br><span class="line">    mov     ebx,1                               ;file descriptor (stdout)</span><br><span class="line">    mov     eax,4                               ;system call number (sys_write)</span><br><span class="line">    int     0x80                                ;call kernel</span><br><span class="line"></span><br><span class="line">    mov     eax,1                               ;system call number (sys_exit)</span><br><span class="line">    int     0x80                                ;call kernel</span><br><span class="line"></span><br><span class="line">section     .data</span><br><span class="line"></span><br><span class="line">msg     db  &#x27;Hello, world!&#x27;,0xa                 ;our dear string</span><br><span class="line">len     equ $ - msg                             ;length of our dear string</span><br></pre></td></tr></table></figure>
+
+<p>都能正确着色，还有语言名提示和其他插件支持，非常爽</p>
+<ul>
+<li>图片存储和邮箱</li>
+</ul>
+<p>这也是Coding的缺陷，由于Coding演示不支持文件持久化（虽然能运行时写入了，但是一重新部署全部丢失），所以还是把图片等资源放在国内的<a target="_blank" rel="noopener" href="http://www.qiniu.com/">七牛云</a>上，而且迁移方便，邮箱服务器就用Gmail就行。</p>
+<blockquote>
+<p>最后吐槽</p>
+</blockquote>
+<p>Coding竟然不支持绑定多个域名或者子域名，只能绑<code>www</code>域名了……唉，免费总是没有好处，主要是不想再用一个大陆以外的主机单独跑博客（Ghost用的Node.js还是比较吃资源的）</p>
+<p>什么？你说国内主机？我是备案一生黑。</p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

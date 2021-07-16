@@ -1,23 +1,1115 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
 
-{% block title %} {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}
-  {% if is_home() %} page-home {% endif %}
-{% endblock %}
 
-{% block content %}
-  <section id="posts" class="posts-expand">
-    {% for post in page.posts %}
-      {{ post_template.render(post, true) }}
-    {% endfor %}
-  </section>
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-  {% include '_partials/pagination.swig' %}
-{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
 
-{% block sidebar %}
-  {{ sidebar_template.render(false) }}
-{% endblock %}
+  <meta name="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小猪的博客">
+<meta property="og:url" content="http://dreampiggy.com/page/2/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="DreamPiggy">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dreampiggy.com/page/2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/" class="post-title-link" itemprop="url">iOS平台图片编解码入门教程（第三方编解码篇）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-30 18:05:14" itemprop="dateCreated datePublished" datetime="2017-10-30T18:05:14+08:00">2017-10-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>这篇教程，是系列教程的第二篇，前篇名为《iOS平台图片编解码入门教程（Image/IO篇）》。这篇主要讲第三方解码器如何在iOS平台上处理（和Image/IO的几大要点一一对应），更会介绍一些基本的Bitmap概念，总结通用的处理方法，毕竟授人以鱼不如授人以渔</p>
+</blockquote>
+<h1 id="第三方编解码"><a href="#第三方编解码" class="headerlink" title="第三方编解码"></a>第三方编解码</h1><p>对于图片编解码来说，Apple自带的Image/IO确实非常的易用，但是对于Image/IO不支持的图像格式就能无能为力了。截止到iOS 11，Image/IO不支持WebP，BPG，对于一些需要依赖WebP的业务就比较麻烦了（WebP的优点就不再介绍了）。不过我们可以自己集成第三方的图片解码器，去支持这些需要的的格式。</p>
+<p>一般来说，我们需要根据自己想要支持的图像格式，选择相对应的编解码器，进行编解码。这里我们以WebP的解码库<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/docs/api">libwebp</a>为例子，其他解码器需要根据对应解码器的API处理，基本概念类似。</p>
+<h1 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h1><p>不像Image/IO那样封装了整套流程，第三方解码的关键之处，就是在于获取到图像的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Raster_graphics">Bitmap</a>数据，通常情况就是<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/RGBA_color_space">RGBA</a>的矢量表示。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89/" class="post-title-link" itemprop="url">iOS平台图片编解码入门教程（Image/IO篇）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-30 17:32:29" itemprop="dateCreated datePublished" datetime="2017-10-30T17:32:29+08:00">2017-10-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>这篇教程是系列教程的第一篇，主要是面向于没有怎么接触过iOS平台上图像编解码的人的，不会涉及到多媒体处理中的数字信号处理、图像编码的深入知识。这是系列最简单的一篇，之后会有关于第三方编解码，以及vImage的另两篇教程。</p>
+</blockquote>
+<h1 id="Image-IO"><a href="#Image-IO" class="headerlink" title="Image/IO"></a>Image/IO</h1><p>Image/IO是Apple提供的一套用于图片编码解码的系统库，对外是一层非常直观易用的C的接口。上层的UIKit，Core Image，还有Core Graphics中的CGImage处理，都是依赖Image/IO库的。因此，掌握Image/IO的基本编解码操作，对一些图像相关的数据处理是非常必要的。这篇教程就主要从简单的用法，说明Image/IO的用法，完整的文档，可以参考<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/imageio">Apple Image/IO</a></p>
+<h1 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h1><p>解码，指的是讲已经编码过的图像封装格式的数据，转换为可以进行渲染的图像数据。具体来说，iOS平台上就指的是将一个输入的二进制Data，转换为上层UI组件渲染所用的UIImage对象。</p>
+<p>Image/IO的解码，支持了常见的图像格式，包括PNG（包括APNG）、JPEG、GIF、BMP、TIFF（具体的，可以通过<code>CGImageSourceCopyTypeIdentifiers</code>来打印出来，不同平台不完全一致）。在iOS 11之后另外支持了HEIC（即使用了HEVC编码的HEIF格式）。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/07/25/%E8%BF%91%E6%9C%9F%E5%8F%82%E4%B8%8E%E7%9A%84APNG%E5%92%8CWebP%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%BB%8F%E5%8E%86%E5%8F%8A%E6%84%9F%E5%8F%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/07/25/%E8%BF%91%E6%9C%9F%E5%8F%82%E4%B8%8E%E7%9A%84APNG%E5%92%8CWebP%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%BB%8F%E5%8E%86%E5%8F%8A%E6%84%9F%E5%8F%97/" class="post-title-link" itemprop="url">近期参与的APNG和WebP开源项目的经历及感受</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-07-25 22:44:10" itemprop="dateCreated datePublished" datetime="2017-07-25T22:44:10+08:00">2017-07-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Code/" itemprop="url" rel="index"><span itemprop="name">Code</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>这篇文章讲的是有关近期自己参与的几个开源项目的经历以及感受，不过巧合的是内容都和APNG和WebP这两种图像格式相关，阅读前建议先简单略读一下之前写的一篇文章：<a href="http://dreampiggy.com/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">客户端上动态图格式对比和解决方案</a></p>
+</blockquote>
+<h1 id="SDWebImage"><a href="#SDWebImage" class="headerlink" title="SDWebImage"></a>SDWebImage</h1><p><a target="_blank" rel="noopener" href="https://github.com/rs/SDWebImage">SDWebImage</a>是iOS平台上非常著名的图片下载、缓存库，而今年发布的SDWebImage 4.0在架构、接口变动并带来性能优化的同时，还支持了Animated WebP，因此我就高兴地去实验了一下，本想着可以替代之前使用的<a target="_blank" rel="noopener" href="https://github.com/ibireme/YYImage">YYImage</a>。但是一测试就发现渲染不正常，追回去看源码，发现SDWebImage的实现可以说是Too naive，压根没有按照WebP规范实现，大部分Animated WebP动图渲染都挂了，完全不可用（连测试都过不了，更别说生产环境了）。演示Demo在此：<a target="_blank" rel="noopener" href="https://github.com/dreampiggy/AnimatedWebPDemo">AnimatedWebPDemo</a></p>
+<p>总结出来的具体问题有以下几个：</p>
+<ol>
+<li>SD绘制每帧的canvas大小不正确，在代码中，直接取得当前帧frame的大小，而非整个canvas的大小。这就导致最后生成的所有帧图片的数组中，每帧的图像大小不一致。这样渲染就会出现Bug（把所有帧拉伸到最大的那个图像大小上）。</li>
+<li>SD的实现没有考虑过<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/docs/riff_container#animation">WebP Disposal Method</a>，这个在很多动图中都会用到，因为能够重复利用前一帧的画布，来大幅减少最后生成动图的体积。常见的动图格式如GIF、APNG生成工具一般都采用这种Disposal，不然最终文件体积较大（但Google提供的WebP工具暂时没有自带这种优化的方式，一般使用第三方工具处理）。</li>
+<li>UIKit自带的<code>UIImage.animatedImages</code>是非常弱的，SD并没有提供额外的抽象，而是直接用的这个接口。这带来的最大的问题，是UIImage需要提供一个图片数组和总时长，但是会对数组中每个图片平均分配时长。这与Animated WebP的规范就是不同的，后者允许对每帧设置一个不同的持续时长。</li>
+<li>UIImageView直接设置<code>image</code>属性，是不支持设置循环次数的，会默认无限循环播放。而有些Animated WebP图片需要有循环次数。</li>
+</ol>
+<p>既然知道这么多坑，想着SD毕竟是主流框架，就赶紧提了<a target="_blank" rel="noopener" href="https://github.com/rs/SDWebImage/issues/1951">Issue</a>，但是过了一周多，SD社区依然没有任何回应。于是尝试自己一个个解决。最后的成果也比较好，上述4个问题都得到了解决。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/07/25/%E8%BF%91%E6%9C%9F%E5%8F%82%E4%B8%8E%E7%9A%84APNG%E5%92%8CWebP%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%BB%8F%E5%8E%86%E5%8F%8A%E6%84%9F%E5%8F%97/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/06/04/Objective-C%E4%BB%A3%E7%A0%81%E5%BA%93%E7%9A%84%E5%AE%9E%E7%8E%B0%E9%9A%90%E8%97%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/06/04/Objective-C%E4%BB%A3%E7%A0%81%E5%BA%93%E7%9A%84%E5%AE%9E%E7%8E%B0%E9%9A%90%E8%97%8F/" class="post-title-link" itemprop="url">Objective-C代码库的实现隐藏</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-06-04 17:46:41" itemprop="dateCreated datePublished" datetime="2017-06-04T17:46:41+08:00">2017-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>虽然Swift现在是开发iOS推荐入手的最佳语言，但是对于代码库而言，最大的一个问题是Swift ABI仍然没有定下（今年发布的的Swift 4.0，依然放弃ABI稳定性，而注重于Swift源代码3.x-&gt;4.0的兼容性）。所以这就意味着Swift 3.x编译的二进制库，在Swift 4.0将无法链接，只能重新代码编译。看来这又将是Objective-C这门古老的语法，能够作为一些framework首选开发语言的一年。</p>
+</blockquote>
+<p>对于一个代码库来说，有时候我们为了隐藏一些实现的细节，或者内部处理流程，需要编译到二进制进行分发，并提供Public Header来供其他开发者调用。</p>
+<p>因此，开发代码库的时候，需要明确哪些API是对外公开的，可以由其他开发者调用。那些是库内部之间互相调用的，不应该由外部使用者调用。而Objective-C不像C++提供了private关键字来限制直接访问成员变量和成员方法。因此，就需要尽量避免私有属性和私有方法的定义出现在头文件中。只要不引入私有的头文件，那就无法直接访问这些属性和方法。</p>
+<h1 id="隐藏内部属性"><a href="#隐藏内部属性" class="headerlink" title="隐藏内部属性"></a>隐藏内部属性</h1><p>私有属性，可以分成两种，一种是希望放到类内部而纯粹不想暴露给任何人的，可以叫做内部属性。一种是希望暴露到Private Header中，只限于引入该头文件的地方进行访问。</p>
+<p>内部属性的声明非常简单，我们可以直接使用类扩展声明属性，而编译器会自动生成getter和setter，不需要任何额外工作。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/06/04/Objective-C%E4%BB%A3%E7%A0%81%E5%BA%93%E7%9A%84%E5%AE%9E%E7%8E%B0%E9%9A%90%E8%97%8F/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" class="post-title-link" itemprop="url">客户端上动态图格式对比和解决方案</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-06 14:51:04" itemprop="dateCreated datePublished" datetime="2017-03-06T14:51:04+08:00">2017-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>对各种客户端来说，无论是Web还是移动端，图片占据的容量和传输资源一定是非常大的。对于静态图，我们常见的PNG和JPEG格式在压缩率和画质无损上都存在着不尽如人意的地方，而动图格式的GIF更是存在着很多问题，比如因此，在很多情况下，我们需要迁移到新的图片格式。</p>
+</blockquote>
+<h1 id="GIF"><a href="#GIF" class="headerlink" title="GIF"></a>GIF</h1><p>为什么我们不用GIF呢，GIF由于时代限制，存在的天生的问题。GIF的规范最新版本是在1989年制定的，一个24位色都没有普及的时代，因此，GIF规范只支持256色索引颜色，并且只能通过抖动、差值等方式模拟较多丰富的颜色。更为悲剧的是，它的alpha通道只有1bit，换言之，一个像素要么完全透明，要么完全不透明，而不像现在PNG的RGBA的8bit alpha通道，alpha值也可以和RGB一样都有255个透明值。这导致了所有GIF的图片带上透明度以后，边缘会出现明显的锯齿。所以如果你的客户端需要展示带透明度的动图，GIF基本上可以不考虑</p>
+<p><img src="http://blog.ibireme.com/wp-content/uploads/2015/11/gif_apng_demo.gif" title="GIF和APNG对比"></p>
+<p>实际的在线Demo，建议用Safari或者Chrome+插打开：<a target="_blank" rel="noopener" href="http://apng.onevcat.com/demo">http://apng.onevcat.com/demo</a></p>
+<h1 id="APNG"><a href="#APNG" class="headerlink" title="APNG"></a>APNG</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/12/31/2016%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93%E5%92%8C%E8%BF%91%E6%9C%9F%E6%84%9F%E6%83%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/31/2016%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93%E5%92%8C%E8%BF%91%E6%9C%9F%E6%84%9F%E6%83%B3/" class="post-title-link" itemprop="url">2016年末总结和近期感想</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-31 20:38:16" itemprop="dateCreated datePublished" datetime="2016-12-31T20:38:16+08:00">2016-12-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Life/" itemprop="url" rel="index"><span itemprop="name">Life</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>年后的最后一天，也是该总结一下这一年的成长了。</p>
+</blockquote>
+<h1 id="从校园到实习"><a href="#从校园到实习" class="headerlink" title="从校园到实习"></a>从校园到实习</h1><p>软件专业的大三学年，如果你不考研留学的话，说起来都是会走实习加校招的流程。自己这年印象最深的，也就是整个下半年的实习，面试，以及现在的实习了。</p>
+<p>大三上的实习当时自己错过了机会，只进入了一个普通的互联网公司，但是也学到了更多校园中无法见到的东西（比如多移动App多Project管理，MapKit，React Native），开阔了一点眼界。真正的下半年好几个月都在忙着校招面试相关的东西，从中也总结了一些经验吧（虽然不知道对社招是否有帮助）。然而到现在，从南京来到了北京，提前过来头条这边实习。</p>
+<p>实习开始都是兴奋和好奇的，因为可以看到公司的各种设施，福利，还有认识各式各样的人。来这边也是专门拉了两个同公司的应届生一起来，也挺愉快的。公司离得近，组里的人也都比较厉害（至少都是我请教别人教育的情形），虽然上班累了些，但是感觉自己成长也是非常的大，很难想象假如不来实习，全靠自己摸索，明年直接毕业过来上班自己是什么样的水平。</p>
+<h1 id="近期工作感想"><a href="#近期工作感想" class="headerlink" title="近期工作感想"></a>近期工作感想</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/12/31/2016%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93%E5%92%8C%E8%BF%91%E6%9C%9F%E6%84%9F%E6%83%B3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/11/17/FRP%E7%AE%80%E4%BB%8B%E2%80%94ReactiveCocoa%E3%80%81RxSwift%E3%80%81Bacon%E4%BB%A5%E5%8F%8A%E8%83%8C%E5%90%8E%E7%9A%84Functional/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/11/17/FRP%E7%AE%80%E4%BB%8B%E2%80%94ReactiveCocoa%E3%80%81RxSwift%E3%80%81Bacon%E4%BB%A5%E5%8F%8A%E8%83%8C%E5%90%8E%E7%9A%84Functional/" class="post-title-link" itemprop="url">FRP对比—ReactiveCocoa、RxSwift、Bacon以及背后的Functional</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-11-17 14:57:20" itemprop="dateCreated datePublished" datetime="2016-11-17T14:57:20+08:00">2016-11-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="ReactiveCocoa和RxSwift"><a href="#ReactiveCocoa和RxSwift" class="headerlink" title="ReactiveCocoa和RxSwift"></a>ReactiveCocoa和RxSwift</h1><p>iOS的开发上，Objective-C可以说既是一个巨大的成功，也是一个巨大的限制。Cocoa Touch提供的原生API本身就是目标当年的事件驱动和消息派发的GUI编程模型，并且专门为Objective-C这门类smalltalk的消息式OO语言设计的，更为尴尬的是iOS上没有OS X上自带的<a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CocoaBindings/CocoaBindings.html">Data Binding</a>。种种原因，导致Target-Acion，KVO，Notification，Apple式MVC架构才会一直成为iOS开发的主流。然而，做过开发的都知道，这套架构在大型App，尤其复杂是网络请求和人机交互特别多的情况下，非常容易让整个App架构变得难以维护。</p>
+<p>Apple式的MVC，又称为Massive View Controller，会让你整个业务代码和UI绑定代码充斥同一个文件中，并且导致很多人经常会在View中，直接#include一个Modeld的头文件，然后起一个<code>configureInfo: </code>的方法，直接在里面把Model的数据拿来绑定到View的属性上。不信？试试搜一遍你所有的View，把Model的头文件删掉，看看能否编译通过。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> userCell <span class="operator">=</span> tableView.dequeueReusableCellWithIdentifier(<span class="string">&quot;identifier&quot;</span>) <span class="keyword">as</span> <span class="type">UserCell</span></span><br><span class="line">userCell.configureWithUser(user)</span><br></pre></td></tr></table></figure>
+
+<p>MVP架构或许是你的救星，不过实际上，MVP只是一个工程化的解决问题，把Massive View Controller变成Massive View Presenter，带来相对明确的架构分层的副作用就是近乎两倍的代码量。而在这种情况下，MVVM的架构就是一个非常大的突破，和MVP一样把View/ViewController扔到一起，但是引入单独的ViewModel，通过View到ViewModel的单向绑定，ViewModel对Model的订阅，既避免了MVC造成的代码混乱，又减少了MVP的造成的重复代码。而实践上，提到MVVM，就得 提到<a target="_blank" rel="noopener" href="https://github.com/ReactiveCocoa/ReactiveCocoa">ReactiveCocoa</a>或者<a target="_blank" rel="noopener" href="https://github.com/ReactiveX/RxSwift">RxSwift</a>，这两者都是FRP的GUI框架实现。</p>
+<h2 id="ReactiveCocoa"><a href="#ReactiveCocoa" class="headerlink" title="ReactiveCocoa"></a>ReactiveCocoa</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/11/17/FRP%E7%AE%80%E4%BB%8B%E2%80%94ReactiveCocoa%E3%80%81RxSwift%E3%80%81Bacon%E4%BB%A5%E5%8F%8A%E8%83%8C%E5%90%8E%E7%9A%84Functional/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/11/16/FRP%E7%AE%80%E4%BB%8B%E2%80%94%E8%AE%BAGUI%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/11/16/FRP%E7%AE%80%E4%BB%8B%E2%80%94%E8%AE%BAGUI%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/" class="post-title-link" itemprop="url">FRP简介—论GUI程序架构发展</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-11-16 22:31:10" itemprop="dateCreated datePublished" datetime="2016-11-16T22:31:10+08:00">2016-11-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Code/" itemprop="url" rel="index"><span itemprop="name">Code</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>熟悉做端GUI程序（客户端，Web前端）的同学一定会知道，做UI最大的问题就是模型和视图对象的绑定，视图对象的状态管理，以及事件消息的处理。</p>
+</blockquote>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>传统的GUI编程的一大核心，就是使用了事件驱动编程模型。UI对象的布局、状态等，通过外部的消息事件（点击，触摸，网络请求响应等等）来触发。这是由于GUI程序的人机交互的天生性质决定的（当然，这里的GUI不包括游戏，游戏一般采用立即的帧驱动而非事件）。对于GUI编程的架构方面，从发现到现在，不外乎这几种：</p>
+<h1 id="传统的事件监听，消息派发机制："><a href="#传统的事件监听，消息派发机制：" class="headerlink" title="传统的事件监听，消息派发机制："></a>传统的事件监听，消息派发机制：</h1><p><img src="http://www.codeproject.com/KB/java/677591/EventModel.jpg"></p>
+<p>这是最常见，也是最贴近GUI程序底层实现的模型。一般来说，GUI程序的框架入口就是一个大的while(true)循环，通过在循环内不断向窗口管理器请求消息（比如点击事件等用户输入），通过把底层的消息回调函数回调或者IPC机制，封装成一个个对开发者友好的事件对象来派发出来。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/11/16/FRP%E7%AE%80%E4%BB%8B%E2%80%94%E8%AE%BAGUI%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

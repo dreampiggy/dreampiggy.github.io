@@ -1,38 +1,618 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="最近一段时间到南京某公司实习之后，就一直没有更新博客，而校招季节到来，也是投了几家公司，之前不发面经是担心有泄题之类的风险，而且自己也需要调整一下心态。而现在，终于可以谈谈iOS开发的面试了  面试技术栈技术岗位面试，基本上离不开这三方面的东西：  数据结构与算法 语言／框架方面基础知识 通用知识，项目  所以今天专门整理了一些最近的面试中遇到的问题，对自己的能力也正确的评价一下 #数据结构与算">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发面试面试知识合集">
+<meta property="og:url" content="http://dreampiggy.com/ioskai-fa-mian-shi-mian-shi-zhi-shi-he-ji">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="最近一段时间到南京某公司实习之后，就一直没有更新博客，而校招季节到来，也是投了几家公司，之前不发面经是担心有泄题之类的风险，而且自己也需要调整一下心态。而现在，终于可以谈谈iOS开发的面试了  面试技术栈技术岗位面试，基本上离不开这三方面的东西：  数据结构与算法 语言／框架方面基础知识 通用知识，项目  所以今天专门整理了一些最近的面试中遇到的问题，对自己的能力也正确的评价一下 #数据结构与算">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-09-25T11:27:00.000Z">
+<meta property="article:modified_time" content="2016-09-26T13:53:48.000Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Objective-C">
+<meta property="article:tag" content="面试">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dreampiggy.com/ioskai-fa-mian-shi-mian-shi-zhi-shi-he-ji">
 
 
-{% block content %}
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+  <title>iOS开发面试面试知识合集 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/ioskai-fa-mian-shi-mian-shi-zhi-shi-he-ji">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS开发面试面试知识合集
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-09-25 19:27:00" itemprop="dateCreated datePublished" datetime="2016-09-25T19:27:00+08:00">2016-09-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2016-09-26 21:53:48" itemprop="dateModified" datetime="2016-09-26T21:53:48+08:00">2016-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>最近一段时间到南京某公司实习之后，就一直没有更新博客，而校招季节到来，也是投了几家公司，之前不发面经是担心有泄题之类的风险，而且自己也需要调整一下心态。而现在，终于可以谈谈iOS开发的面试了</p>
+</blockquote>
+<h1 id="面试技术栈"><a href="#面试技术栈" class="headerlink" title="面试技术栈"></a>面试技术栈</h1><p>技术岗位面试，基本上离不开这三方面的东西：</p>
+<ul>
+<li>数据结构与算法</li>
+<li>语言／框架方面基础知识</li>
+<li>通用知识，项目</li>
+</ul>
+<p>所以今天专门整理了一些最近的面试中遇到的问题，对自己的能力也正确的评价一下</p>
+<p>#数据结构与算法</p>
+<p>对于国内的校招来说，《剑指offer》确实是一个特别好的书，同时也有用Web版的<a target="_blank" rel="noopener" href="http://www.nowcoder.com/ta/coding-interviews?page=1">在线答题</a>来做，里面的题基本上面试都会见到，而且并没有超出一般程序员的水平（ACMer请忽略），基本上是人人必备宝典，推荐认真读一遍，<a target="_blank" rel="noopener" href="https://leetcode.com/">LeetCode</a>的话，难度是Easy和Normal的题目尽量做（当然，一些特别复杂比如迷宫搜索，就不必强求了）</p>
+<p>常见的题目，基本上分两类：数据结构类（比如什么<code>反转链表</code>、<code>各种遍历</code>、<code>二叉搜索树插入删除</code>、<code>最大堆实现</code>）和算法类（<code>ATOI</code>、<code>2sum</code>、<code>TopK问题</code>（很常见）、DP问题如<code>最长公共子串</code>等），基本面试的题目不会特别难（要考虑手写出来的时间），保证基础功好一点，临场不断提出新的解题方法（暴力-&gt;递归-&gt;DP），总会有方法的</p>
+<p>数据结构：</p>
+<ul>
+<li>链表（反转，合并，找环，排序）</li>
+<li>二叉树（检查，遍历，高度，反转）</li>
+<li>堆（最大堆，最小堆，TopK问题）</li>
+<li>哈希表（再散列法，拉链法，冲突处理，简单Hash算法）</li>
+<li>字典树（实现，配合TopK问题）</li>
+</ul>
+<p>算法：</p>
+<ul>
+<li>排序（插入，选择，冒泡，归并，快排，堆排，基数，计数）</li>
+<li>搜索（二分、二叉搜索树、DFS/BFS、图的最小生成树，最短路径（Dijkstra））</li>
+<li>递归（树的各种问题，包括迭代求法（stack/queue实现），LCA之类）</li>
+<li>贪心（出现的比较少，比如股票问题之类）</li>
+<li>动态规划（楼梯、硬币、LCSequence、LCString、回文）</li>
+</ul>
+<p>#语言方面</p>
+<p>iOS的话，基本上面试只会考虑Objective-C，毕竟是国内公司现状，产品线和项目基本都是纯Obejctive-C写的，短期无法改变。Swift可能会作为加分项目，但其实如果熟悉C或者C++的话加分的概率会更大（实际项目中，多是Objective-C和C结合用的）。对于不知道问题的方向的，可以先参考这篇<a target="_blank" rel="noopener" href="https://github.com/ChenYilong/iOSInterviewQuestions">《招聘一个靠谱的 iOS》</a>，权当自我检测一下</p>
+<p>对于Objective-C的语言知识，基本上下面的都问道过，建议应该打好基础，了解清楚：</p>
+<ul>
+<li>内存管理（MRC，ARC，assign，weak，strong，copy，unsafe_unretain）</li>
+<li>Block（循环引用，__block关键字，block类型，block_copy）</li>
+<li>多线程（GCD，NSOperationQueue， NSThread），了解复杂同步异步混合逻辑如何处理，线程安全</li>
+<li>消息转发机制（objc_msgSend），五个对应消息转发方法的顺序，isa指针，self/super，method swizzling</li>
+<li>RunLoop（Source，Observer，Timer，NSTimer滚动回调问题），AutoreleasePool在RunLoop作用，source源和UIKit事件</li>
+<li>Runtime（AssociatedType实现Category属性，消息，swizzling）</li>
+<li>AutoreleasePool（UI事件会隐式创建AutoreleasePool，循环体内手动创建避免内存峰值），autorelease消息，Pool drain的时机（Runloop一次周期的休眠前）</li>
+<li>KVC/KVO原理（isa_swizzling），和其他方式对比</li>
+<li>属性观察（NSNotification、Delegate、KVO）的对比，线程安全</li>
+<li>设计模式，观察者模式，代理模式，工厂模式等</li>
+<li>响应者链，HitTest，第一响应者概念</li>
+<li>ViewController/View生命周期，依次调用方法，手动布局步骤</li>
+<li>性能优化、离屏渲染（drawRect和UIBezierPath）</li>
+<li>UIView，CALayer的关系，动画处理（Core Animation）</li>
+<li>CoreData使用，SQLite对比优/缺点，managedObject跨线程问题</li>
+<li>MVC，MVP，MVVM区别</li>
+</ul>
+<p>#通用知识，项目</p>
+<p>通用知识，一般是本科的课程基础知识，基本上以下对于移动开发都是重要的，因此一定要注意。而且面试也会问到（以HTTP/TCP最多）：</p>
+<ul>
+<li>HTTP协议具体请求/响应格式，HTTPS原理</li>
+<li>TCP/UDP区别，TCP/UDP头，TCP三次握手四次挥手，滑动窗口机制</li>
+<li>线程和进程的区别，调度方式</li>
+<li>操作系统时间片法，多级队列，内存LRU，磁盘SCAN等</li>
+<li>数据库范式、索引、数据库锁</li>
+</ul>
+<p>项目，基本上是你自己做的一些应用，你需要了解自己做的项目的大体架构，同时对一些组件、复用、网络层的功能实现要知晓，使用的开源库的源代码如果也看过或者了解过最好不过了，比如：</p>
+<ul>
+<li>自动布局/手动布局，解释Constrains，手动布局步骤（initWithFrame:，addSubviews:，layoutSubviews:，sizeThatFits:等之类）</li>
+<li>动态TableView高度，下拉刷新控件实现，进度条实现</li>
+<li>SDWebImage源码，NSCache原理简介</li>
+<li>AFNetworking对RunLoop的利用</li>
+<li>JSPatch/wxPatch之类的原理简介</li>
+<li>异步请求回调，对象线程安全问题</li>
+<li>优化问题，圆角图片等</li>
+</ul>
+<p>#其他问题</p>
+<p>其他问题，一般就是类似HR面的内容，可能会有一些对项目管理的看法，人际交往能力、对待加班态度。注意面试官问到你“你还有什么要问我的吗”一定要主动交谈，可以问一些关于对应事业部的环境、技术氛围、是否可以实习等等问题。但是不必谈薪资或者录用与否，毕竟这主要是最终企业还有多方共同决定的。到这一步的话，面试主要的目的就是一个双方互相了解的过程，所以你也应当主动去问各种问题，去了解公司、团队以及职位等相应内容。</p>
+<p>总体来说，基本上原则还是那句话：“真话挑着说，假话绝不说”，保持自信，主动提问，基本上就没问题。如果真到最后却还是失之交臂，一般都是自己前几面表现有些问题，毕竟招聘不是过关制度，最后决定是否录用的时候，前几面的面试官意见都会参考，所以只能说每一面都需要做好准备，尽量表现自己</p>
+<p>#学习福利<br>对于我这种自学iOS开发的，很多基本知识都是后来才补的，在这过程中参考了很多资料，这里就列举出其中最有用的吧：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ChenYilong/iOSInterviewQuestions">GitHub-必看面试问题</a></p>
+<p><a target="_blank" rel="noopener" href="https://objccn.io/issues/">objc期刊-各种iOS进阶知识，架构</a></p>
+<p><a target="_blank" rel="noopener" href="http://nshipster.com/">NSHipster-包括KVC/KVO，Swizzling等，非常全面</a></p>
+<p><a target="_blank" rel="noopener" href="http://nshipster.cn/">NSHipster-中文版</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.raywenderlich.com/46988/ios-design-patterns">iOS设计模式</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/0b0d9b1f1f19">iOS多线程</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.raywenderlich.com/115695/getting-started-with-core-data-tutorial">Core Data教程</a></p>
+<p><a target="_blank" rel="noopener" href="http://blog.ibireme.com/">ibireme博客-主要是Runtime，RunLoop</a></p>
+<p><a target="_blank" rel="noopener" href="http://blog.sunnyxx.com/">sunnyxx博客-主要是高级iOS知识和优化</a></p>
+<p><a target="_blank" rel="noopener" href="http://blog.devtang.com/">唐巧的博客-主要是iOS开发工具</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/ba4cbf8dfe49">SDWebImage原理</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/358dc280fb33">AFNetworking原理</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/bang590/JSPatch/wiki/JSPatch-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3">JSPatch原理</a></p>
+<p>#结语<br>经历了某公司实习，还有一些面试的碰壁，也慢慢认清自己的实力，自己在iOS开发这个方向上自己还有很长很长的路要走，现在也应该继续努力提升自己。在祝愿自己的同时，也希望处于就职路途中的iOS程序猿们能够一起共勉，找到心仪的offer</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+              <a href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag"># 面试</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/objective-c-arcxia-blockbiao-xian-he-guan-jian-zi-ying-xiang" rel="prev" title="Objective-C ARC下block表现和关键字影响">
+      <i class="fa fa-chevron-left"></i> Objective-C ARC下block表现和关键字影响
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/core-graphicsfang-she-bian-huan" rel="next" title="Core Graphics仿射变换知识">
+      Core Graphics仿射变换知识 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%A2%E8%AF%95%E6%8A%80%E6%9C%AF%E6%A0%88"><span class="nav-number">1.</span> <span class="nav-text">面试技术栈</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

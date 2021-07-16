@@ -1,38 +1,559 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="又是一个学期过去了，我在软件工程这条路上又迈出一步，这只是写给自己的，对自己这一学期的总结罢了。  最后的PHP？学期初，最开始便是做的一个基于ThinkPHP的毕业生投票网站，也做了一个简单的微信和手机Web版本。 嘛，关于PHP我还是比较冷静的，PHP适用于传统中等业务逻辑和低并发要求的Web应用。 毕竟没有太多时间，我和另一个同学就直接用了ThinkPHP这种简单无脑框架(当然，还理所应当">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学期感想和总结">
+<meta property="og:url" content="http://dreampiggy.com/xue-qi-gan-xiang-he-zong-jie">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="又是一个学期过去了，我在软件工程这条路上又迈出一步，这只是写给自己的，对自己这一学期的总结罢了。  最后的PHP？学期初，最开始便是做的一个基于ThinkPHP的毕业生投票网站，也做了一个简单的微信和手机Web版本。 嘛，关于PHP我还是比较冷静的，PHP适用于传统中等业务逻辑和低并发要求的Web应用。 毕竟没有太多时间，我和另一个同学就直接用了ThinkPHP这种简单无脑框架(当然，还理所应当">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/5/8c/38da4b884adeda88d1fc1ca859f9f.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/8/61/1805572762590de47e5071b94362e.png">
+<meta property="article:published_time" content="2016-03-29T18:06:55.000Z">
+<meta property="article:modified_time" content="2016-03-29T18:14:12.000Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="感悟">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/image/5/8c/38da4b884adeda88d1fc1ca859f9f.png">
+
+<link rel="canonical" href="http://dreampiggy.com/xue-qi-gan-xiang-he-zong-jie">
 
 
-{% block content %}
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+  <title>学期感想和总结 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/xue-qi-gan-xiang-he-zong-jie">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          学期感想和总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2016-03-30 02:06:55 / 修改时间：02:14:12" itemprop="dateCreated datePublished" datetime="2016-03-30T02:06:55+08:00">2016-03-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Life/" itemprop="url" rel="index"><span itemprop="name">Life</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>又是一个学期过去了，我在软件工程这条路上又迈出一步，这只是写给自己的，对自己这一学期的总结罢了。</p>
+</blockquote>
+<h1 id="最后的PHP？"><a href="#最后的PHP？" class="headerlink" title="最后的PHP？"></a>最后的PHP？</h1><p>学期初，最开始便是做的一个基于ThinkPHP的毕业生投票网站，也做了一个简单的微信和手机Web版本。</p>
+<p>嘛，关于PHP我还是比较冷静的，PHP适用于传统中等业务逻辑和低并发要求的Web应用。</p>
+<p>毕竟没有太多时间，我和另一个同学就直接用了ThinkPHP这种简单无脑框架(当然，还理所应当的踩了坑，这些细节就不说了)</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/5/8c/38da4b884adeda88d1fc1ca859f9f.png"><br>所谓国人自己的框架——ThinkPHP</p>
+<p>最后嘛，我基本上只是做了5天就转战别的东西了，留下队友暴力撸前端…最后也没多少钱分，主要就是又熟悉了一下框架，知道了一点SMTP协议的东西和关于数据库事务的设计和使用(毕竟投票需要多次SQL，安全、事务和回滚是非常重要的)。</p>
+<h1 id="入坑iOS开发"><a href="#入坑iOS开发" class="headerlink" title="入坑iOS开发"></a>入坑iOS开发</h1><p>对于我这种从来不能静下心来的人，完成了上个Web项目之后，由于加入了学校的<a target="_blank" rel="noopener" href="http://herald.seu.edu.cn/index/">先声网</a>，于是我就又有活干了……先声网是我们学校的一个提供各种校园在线服务的组织，一个技术至上的团队（技术栈包括了Java，PHP，C++，Android开发，iOS开发，Web安全等，也承办各种程序设计大赛，短码比赛之类的活动）。当然，作为我这种菜鸟进去的时候前辈已经积累下了很多经验，而我主要最后就加入了iOS开发。</p>
+<p>我们最早的iOS客户端－<a target="_blank" rel="noopener" href="https://itunes.apple.com/cn/app/xian-sheng/id871801426?mt=8">先声</a>，是由学长开发的，而那名学长最后也转向别的方向，所以我主要就是在此之上二次开发的。对于我这种从前对iOS开发一无所知的新手，看到Objective-C所谓的：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>,<span class="string">@&quot;fuck&quot;</span>);</span><br><span class="line"><span class="keyword">@property</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">compare(<span class="literal">nil</span>, Nil, <span class="literal">NULL</span>, <span class="built_in">NSNull</span>);</span><br><span class="line">compare(<span class="number">0</span>, <span class="number">1</span>, <span class="literal">YES</span>, <span class="literal">NO</span>);</span><br><span class="line">Fuck *fuckPointer = [[Fuck alloc] init];</span><br></pre></td></tr></table></figure>
+<p>“优雅”语法，我发现我实在难以平静下心来写，于是就直接上手了Swift来重构整个项目。 学习的过程其实是挺愉快的，最开始当然就是看《The Swift Programming Language》中英配合，大概也就2天时间。Swift的语法真是爱不释手，比如你可以这么写for-in 循环</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1</span><span class="operator">...</span><span class="number">101</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(i <span class="operator">%</span> <span class="number">2</span>) <span class="operator">==</span> <span class="number">1</span>&#123;</span><br><span class="line">        println(i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于Swift支持FP，你甚至可以这么简写闭包函数，与lambda表达式无异</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//little calculator</span></span><br><span class="line">knownOps[<span class="string">&quot;+&quot;</span>] <span class="operator">=</span> <span class="type">Op</span>.<span class="type">BinaryOperation</span>(<span class="string">&quot;+&quot;</span>)&#123; <span class="variable">$0</span> <span class="operator">+</span> <span class="variable">$1</span> &#125;</span><br><span class="line">knownOps[<span class="string">&quot;-&quot;</span>] <span class="operator">=</span> <span class="type">Op</span>.<span class="type">BinaryOperation</span>(<span class="string">&quot;-&quot;</span>)&#123; <span class="variable">$1</span> <span class="operator">-</span> <span class="variable">$0</span> &#125;</span><br><span class="line">knownOps[<span class="string">&quot;*&quot;</span>] <span class="operator">=</span> <span class="type">Op</span>.<span class="type">BinaryOperation</span>(<span class="string">&quot;*&quot;</span>)&#123; <span class="variable">$0</span> <span class="operator">*</span> <span class="variable">$1</span> &#125;</span><br><span class="line">knownOps[<span class="string">&quot;/&quot;</span>] <span class="operator">=</span> <span class="type">Op</span>.<span class="type">BinaryOperation</span>(<span class="string">&quot;/&quot;</span>)&#123; (<span class="variable">$0</span> <span class="operator">!=</span> <span class="number">0</span>) <span class="operator">?</span> <span class="variable">$1</span> <span class="operator">/</span> <span class="variable">$0</span> : <span class="literal">nil</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>虽然Swift 2.0之前，没有异常处理（全靠assert，或者optional处理……），不能有static成员（可以自己构造一个计算属性，里面存一个static变量……），可选链经常容易写错……等等各种小问题，但是有各种方法和框架来解决，并且随着如今Swift 2.0已经发布，这些问题都将不会再困扰初学者……</p>
+<p>之后，幸好找到了Stanford的<a target="_blank" rel="noopener" href="http://web.stanford.edu/class/cs193p/cgi-bin/drupal/">CS193P课程</a>，那个课程老师讲的非常详细，代码写的也是非常顺……（live code），由于紧接着就是五一，所以直接连着看了3天……现在回想起来真是一个悲惨的时光……</p>
+<p>从最开始ViewController的生命周期，delegate，消息，UIKit，TableView，Autolayout……一系列以前从未仔细考虑过的东西慢慢的理解。其中对我感触最大的，就是multi-MVC模式，以前对MVC的理解大概只停留在view层分离UI层，controller控制数据流，从模型层拿，而model直接面向数据库或者数据生成……而multi-MVC更上了一层，每个MVC都可以以其它MVC为model，从而使得整体的模型复用程度提升，而又不会导致过高的耦合。消息机制和代理模式的实际使用也让我对GUI编程可能有了更多的理解（只是GUI编程而不是GUI哦，我现在还是很讨厌做UI或者前端……）</p>
+<p>总之，技能的培养这样慢慢起来了，原来看起来那样离我很遥远的iOS开发，渐渐的我也可以稍微接触了。当然，我也许不能当一个iOS开发者吧，毕竟所有的UI都是靠XIB拖控件以及使用Autolayout和Size Classes做出来的，并没有一丝代码控制……（实际上我并不会），这在大型项目中是不可能的。或许我只适合写逻辑或者模型层吧。Anyway，我最后还是花了大概1周时间把整个项目重构，iOS客户端就变成了如今的样子……API封装成一个可动态修改的模式，所有类型转换都采用optional控制，也是基本达到了最后的要求……</p>
+<p>虽然也许我今后可能不会真正入坑iOS开发，但是GUI编程来说，Cocoa Touch框架以及Swift确实让我感受到了一种编程的乐趣以及这种高效率的爽快（对比Android SDK来说……有点可怕的Activity和Fragment很难让我有这种感觉）。</p>
+<h1 id="再战JavaScript-Node-js"><a href="#再战JavaScript-Node-js" class="headerlink" title="再战JavaScript-Node.js"></a>再战JavaScript-Node.js</h1><p>或许是这种二流学校的命吧，我们有一个叫做“SRTP”－课外研学学分的东西，所以，我被迫（也是无奈）选择了一个SRTP项目做。由于我点偏了技能点导致Web后端知识比较多，我们选择了一个实时协作编辑系统作为项目要求，当然，最开始的目标就是做成Google Docs那种可以同时看到多个人编辑的位置。 当时Node.js非常火，而且具有事件驱动和非阻塞IO两大特点，感觉上非常适合这个情景。于是我就再次面对了JavaScript这门比较奇葩的语言。</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/8/61/1805572762590de47e5071b94362e.png"><br>我们的目标</p>
+<p>如今许多前端工程师都想凭借Node.js深入后端领域，达到所谓大前端或者全栈的理想境界，但实际上，Node.js对新手极不友好…… 首先，由于非阻塞的IO，各种事件，包括数据库读写，文件读写都是异步的，由事件轮询来处理，看起来先后顺序依次的a(),b(),c()三个函数，实际执行顺序完全可能是c()-&gt;b()-&gt;a()。</p>
+<p>为了强行让他们按照顺序执行，聪明的你可能会使用回调写法，但是很快就会面对最可怕的<code>callback hell</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   log(<span class="string">&quot;Wait for it ...&quot;</span>);</span><br><span class="line">   <span class="comment">// Sequence of four Long-running async activities</span></span><br><span class="line">   <span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      log(<span class="string">&#x27;result first&#x27;</span>);</span><br><span class="line">      <span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">         log(<span class="string">&#x27;result second&#x27;</span>);</span><br><span class="line">         <span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            log(<span class="string">&#x27;result third&#x27;</span>);</span><br><span class="line">            <span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">               log(<span class="string">&#x27;result fourth&#x27;</span>)</span><br><span class="line">            &#125;, <span class="number">1000</span>);</span><br><span class="line">         &#125;, <span class="number">1000</span>);</span><br><span class="line">      &#125;, <span class="number">1000</span>);</span><br><span class="line">   &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;;</span><br><span class="line">validate();</span><br></pre></td></tr></table></figure>
+
+<p>由于人类写代码都是竖直向下的，如此横向发展绝对不是一个好事情。当然，我们现如今也有各种解决方案，包括依旧是回调的高级语法糖<code>async</code>，全部使用事件处理的<code>EventEmitter</code>，同步思维写异步的<code>promise</code>，都是不错的解决方法……</p>
+<p>Node.js有很多槽点（以至于我不想展开写），但是我基本配合着《Node.js权威指南》，外加网上各种教程，GitHub各种开源轮子，把我们的项目做起来了。说是项目，其实更是一个实验新技术的体验，我们整个技术中，有核心的Node.js,Redis,Mongodb，有我以前从未使用过的Mongoose(ORM框架)，而且由于Node.js的纯粹性，对HTTP协议认识（比如手动实现multipart/form-data），Session手动处理，非关系性数据的组织，路由控制，RESTful API设计都有了一些认识，也许是不幸中的万幸吧……</p>
+<h1 id="奇怪的技能点"><a href="#奇怪的技能点" class="headerlink" title="奇怪的技能点"></a>奇怪的技能点</h1><p>当然，我现在承认我就是一个容易三心二意的人，在这一学期中，我又开始点奇怪的技能点了。</p>
+<p>最早是括号神教的<code>Lisp</code>（这也是我为什么喜欢Swift的原因，FP自然有它的优势，高阶逻辑写起来是非常爽的一件事）</p>
+<p>接下来还有蟒蛇大法<code>Python</code>，也许挺惭愧，大一真的只学过C++的我，一直对Python就是只会Hello world，如今也是真正花了一周入门Python 2（很抱歉不是3……），Python对我的感觉就是非常精简，动态，类似于Ruby的体验（我并未深入过Ruby，不过还是见识一些简单的语法的），以及FP的支持，（lambda），有各种非常好用的库来简化所有开发，你想做什么基本都可以在Python中找到，怪不得Stanford如今采用Python作为CS新生的入门课程……</p>
+<p>最后，我也得安利一下微软，<code>C#</code>相比于Java的优势，不是在你看书和Java对比的时候，而是当你写下第一行C#时才会发现……（抱歉又黑了Java），无论是非常丰富的关键字，还是在语法层面提供的委托方法（而不是Java的设计模式撑起的东西），也有灵巧的<code>async</code>和<code>lineq</code>，都会让你眼前一亮。当然，虽然C#已开源，但是跨平台还并不可信，想要靠这个吃饭，还是得跟着微软帝国干。当然，现如今搞游戏用Unity开发也是不错的前景，你看仙剑六，啊不，比如最近我喜欢玩的一个音乐游戏（MUSYNC），无论是画面还是游戏性都是非常之棒，而Java阵营在游戏的表现或许只有那个代码不堪入目的Minecraft吧……</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>也许扯了很长时间，不过反正这也是给自己看的。如果说大一一学期我是完全迷惘地度过，那么大二上我第一次觉得自己能做些什么，大二下我便认为自己能有资格说可以做什么。或许在编程这方面，我已经接触过多，接触过浅，正如我“装作什么都懂的……xx菜鸟，xx菜鸟……”知乎签名一样，我到现在并没有下定决心要去做某个领域的开发，或者其他之类，但是我也许大概了解了这些领域是在干什么，或许在今后的选择中不会茫然无措。</p>
+<p>大二终将结束，如此迷茫的我，或许终于找到了一点点前进的方向了吧。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%84%9F%E6%82%9F/" rel="tag"># 感悟</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/ge-ren-bi-ji-bing-fa-bian-cheng" rel="prev" title="个人笔记-《并发编程》">
+      <i class="fa fa-chevron-left"></i> 个人笔记-《并发编程》
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/promiseda-fa-hao" rel="next" title="Promise大法好">
+      Promise大法好 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E5%90%8E%E7%9A%84PHP%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">最后的PHP？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%A5%E5%9D%91iOS%E5%BC%80%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">入坑iOS开发</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%8D%E6%88%98JavaScript-Node-js"><span class="nav-number">3.</span> <span class="nav-text">再战JavaScript-Node.js</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A5%87%E6%80%AA%E7%9A%84%E6%8A%80%E8%83%BD%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">奇怪的技能点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

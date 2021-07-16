@@ -1,38 +1,634 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="ReactiveCocoa和RxSwiftiOS的开发上，Objective-C可以说既是一个巨大的成功，也是一个巨大的限制。Cocoa Touch提供的原生API本身就是目标当年的事件驱动和消息派发的GUI编程模型，并且专门为Objective-C这门类smalltalk的消息式OO语言设计的，更为尴尬的是iOS上没有OS X上自带的Data Binding。种种原因，导致Target-Acio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FRP对比—ReactiveCocoa、RxSwift、Bacon以及背后的Functional">
+<meta property="og:url" content="http://dreampiggy.com/2016/11/17/FRP%E7%AE%80%E4%BB%8B%E2%80%94ReactiveCocoa%E3%80%81RxSwift%E3%80%81Bacon%E4%BB%A5%E5%8F%8A%E8%83%8C%E5%90%8E%E7%9A%84Functional/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="ReactiveCocoa和RxSwiftiOS的开发上，Objective-C可以说既是一个巨大的成功，也是一个巨大的限制。Cocoa Touch提供的原生API本身就是目标当年的事件驱动和消息派发的GUI编程模型，并且专门为Objective-C这门类smalltalk的消息式OO语言设计的，更为尴尬的是iOS上没有OS X上自带的Data Binding。种种原因，导致Target-Acio">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://koenig-media.raywenderlich.com/uploads/2014/01/CombinePipeline.png">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-4b572f2ac5bc28905f043c7999c83c2a_r.jpg">
+<meta property="og:image" content="https://baconjs.github.io/logo.png">
+<meta property="og:image" content="http://adit.io/imgs/functors/bind_def.png">
+<meta property="article:published_time" content="2016-11-17T06:57:20.000Z">
+<meta property="article:modified_time" content="2019-10-22T12:58:43.152Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Functional">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="Swift">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://koenig-media.raywenderlich.com/uploads/2014/01/CombinePipeline.png">
+
+<link rel="canonical" href="http://dreampiggy.com/2016/11/17/FRP%E7%AE%80%E4%BB%8B%E2%80%94ReactiveCocoa%E3%80%81RxSwift%E3%80%81Bacon%E4%BB%A5%E5%8F%8A%E8%83%8C%E5%90%8E%E7%9A%84Functional/">
 
 
-{% block content %}
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+  <title>FRP对比—ReactiveCocoa、RxSwift、Bacon以及背后的Functional | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/11/17/FRP%E7%AE%80%E4%BB%8B%E2%80%94ReactiveCocoa%E3%80%81RxSwift%E3%80%81Bacon%E4%BB%A5%E5%8F%8A%E8%83%8C%E5%90%8E%E7%9A%84Functional/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FRP对比—ReactiveCocoa、RxSwift、Bacon以及背后的Functional
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-11-17 14:57:20" itemprop="dateCreated datePublished" datetime="2016-11-17T14:57:20+08:00">2016-11-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="ReactiveCocoa和RxSwift"><a href="#ReactiveCocoa和RxSwift" class="headerlink" title="ReactiveCocoa和RxSwift"></a>ReactiveCocoa和RxSwift</h1><p>iOS的开发上，Objective-C可以说既是一个巨大的成功，也是一个巨大的限制。Cocoa Touch提供的原生API本身就是目标当年的事件驱动和消息派发的GUI编程模型，并且专门为Objective-C这门类smalltalk的消息式OO语言设计的，更为尴尬的是iOS上没有OS X上自带的<a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CocoaBindings/CocoaBindings.html">Data Binding</a>。种种原因，导致Target-Acion，KVO，Notification，Apple式MVC架构才会一直成为iOS开发的主流。然而，做过开发的都知道，这套架构在大型App，尤其复杂是网络请求和人机交互特别多的情况下，非常容易让整个App架构变得难以维护。</p>
+<p>Apple式的MVC，又称为Massive View Controller，会让你整个业务代码和UI绑定代码充斥同一个文件中，并且导致很多人经常会在View中，直接#include一个Modeld的头文件，然后起一个<code>configureInfo: </code>的方法，直接在里面把Model的数据拿来绑定到View的属性上。不信？试试搜一遍你所有的View，把Model的头文件删掉，看看能否编译通过。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> userCell <span class="operator">=</span> tableView.dequeueReusableCellWithIdentifier(<span class="string">&quot;identifier&quot;</span>) <span class="keyword">as</span> <span class="type">UserCell</span></span><br><span class="line">userCell.configureWithUser(user)</span><br></pre></td></tr></table></figure>
+
+<p>MVP架构或许是你的救星，不过实际上，MVP只是一个工程化的解决问题，把Massive View Controller变成Massive View Presenter，带来相对明确的架构分层的副作用就是近乎两倍的代码量。而在这种情况下，MVVM的架构就是一个非常大的突破，和MVP一样把View/ViewController扔到一起，但是引入单独的ViewModel，通过View到ViewModel的单向绑定，ViewModel对Model的订阅，既避免了MVC造成的代码混乱，又减少了MVP的造成的重复代码。而实践上，提到MVVM，就得 提到<a target="_blank" rel="noopener" href="https://github.com/ReactiveCocoa/ReactiveCocoa">ReactiveCocoa</a>或者<a target="_blank" rel="noopener" href="https://github.com/ReactiveX/RxSwift">RxSwift</a>，这两者都是FRP的GUI框架实现。</p>
+<h2 id="ReactiveCocoa"><a href="#ReactiveCocoa" class="headerlink" title="ReactiveCocoa"></a>ReactiveCocoa</h2><blockquote>
+<p>为了统一术语，ReactiveCocoa中的概念这里都描述成Rx中类似的概念，本质上都是一样的东西</p>
+</blockquote>
+<p>ReactiveCocoa把事件流的接口，定义为<code>RACStream</code>。而实际上，通常的事件流实现都是<code>RACSignal</code>对象，这个Signal是一个冷事件流（也可以叫做push-driven），即有订阅者订阅后，才会<code>开始从头依次发送事件</code>。而对应的冷事件流接口叫做<code>RACMulticastConnection</code>，即没有订阅者也会发送事件流。热事件可以通过<code>publish</code>和<code>multicast</code>转换到热事件流，这对于很多请求，比如WebSocket这种不需要重入的事件流来说很有用。</p>
+<p>另外，为了支持Objective-C语言上对泛函性的缺乏，提供了另一个事件流的实现<code>RACSequence</code>对象，用来处理集合类型的事件流。</p>
+<p>一旦订阅之后，事件流就可以解包，拿到不同状态下的数据，Objective-C的接口就是和Rx类似的三种：<br><code>void (^next)(id) </code>：拿到事件本身，事件流本身继续流动<br><code>void (^error)(NSError *)</code>：处理错误事件，error和completed后事件流均结束，两种状态必局其一<br><code>void (^completed)()</code>：事件流正常结束的处理</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[[<span class="keyword">self</span>.usernameTextField.rac_textSignal</span><br><span class="line">filter:^<span class="built_in">BOOL</span>(<span class="keyword">id</span> value)&#123;</span><br><span class="line">   <span class="built_in">NSString</span>*text = value;</span><br><span class="line">   <span class="keyword">return</span> text.length &gt; <span class="number">3</span>;</span><br><span class="line">&#125;]</span><br><span class="line">subscribeNext:^(<span class="keyword">id</span> x)&#123;</span><br><span class="line">   <span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, x);</span><br><span class="line">  &#125;];</span><br></pre></td></tr></table></figure>
+
+<p>这里，<code>rac_textSignal</code>就是一个事件源，而后面的filter，是一个操作符，对事件流的事件变换到真正订阅者关心的数据，最后的<code>subscribeNext</code>是一个便捷方法，订阅并生命next状态的处理方式。整个流程模拟的是一个TextFiled的用户输入事件流的走向，用户的所有输入，一旦超过3个文本，就会流动并且打印出来，注意冷事件流是<strong>整个流从头开始的</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hel</span><br><span class="line">hell</span><br><span class="line">hello</span><br></pre></td></tr></table></figure>
+
+<p>就如上一篇简介中提到的那样，我们可以不断添加新的操作符，来灵活处理我们的关心的事件流。虽然Objective-C本身没有任何泛函性的接口，但是ReactiveCocoa封装的<code>RACSequence</code>本身提供了相当丰富的操作符，包括常见的<code>map</code>,<code>flatmap</code>,<code>filter</code>,<code>combine</code>,<code>switch</code>等，比如你可以把用户名和密码框的检验事件应用<code>combineLastest</code>来确保二者永远同时满足才允许登陆。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RACSignal *signUpActiveSignal =</span><br><span class="line">  [RACSignal combineLatest:@[validUsernameSignal, validPasswordSignal]</span><br><span class="line">                    reduce:^<span class="keyword">id</span>(<span class="built_in">NSNumber</span> *usernameValid, <span class="built_in">NSNumber</span> *passwordValid) &#123;</span><br><span class="line">                      <span class="keyword">return</span> @([usernameValid boolValue] &amp;&amp; [passwordValid boolValue]);</span><br><span class="line">                    &#125;];</span><br></pre></td></tr></table></figure>
+
+<p>为了和非Reactive代码和谐相处，ReactiveCocoa提供了一个<code>RACSubject</code>类型，是用来处理有副作用的流的，即这个流是可变的。你可以手动创造一个新的流，并不断调用<code>sendNext:</code>来手动发送事件给其他订阅者，这就类似了传统的消息事件绑定机制。这个对于一些条件下，比如类似连续加载页面的信号，视图跳转等等有一定的作用，不过对于网络请求等，应当使用<code>RACSignal</code>。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[[_button rac_signalForControlEvents:<span class="built_in">UIControlEventTouchUpInside</span>] subscribeNext:^(<span class="keyword">id</span> x) &#123;  </span><br><span class="line">    [<span class="keyword">self</span>.loggerSubject sendNext:<span class="string">@&quot;pop&quot;</span>];  </span><br><span class="line">    [<span class="keyword">self</span>.navigationController popViewControllerAnimated:<span class="literal">YES</span>];  </span><br><span class="line">      </span><br><span class="line">&#125;];  </span><br></pre></td></tr></table></figure>
+
+<p>如前面所说，ReactiveCocoa是一个方便打造MVVM架构的框架，提供的<code>RAC宏</code>可以方便的进行单向绑定，把事件结果同你的UI对象属性绑定起来，避免了繁琐的代码处理，达到Reactive Programming</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RAC(<span class="keyword">self</span>.passwordTextField, backgroundColor) =</span><br><span class="line">  [validPasswordSignal</span><br><span class="line">    map:^<span class="keyword">id</span>(<span class="built_in">NSNumber</span> *passwordValid) &#123;</span><br><span class="line">      <span class="keyword">return</span> [passwordValid boolValue] ? [<span class="built_in">UIColor</span> clearColor] : [<span class="built_in">UIColor</span> yellowColor];</span><br><span class="line">    &#125;];</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://koenig-media.raywenderlich.com/uploads/2014/01/CombinePipeline.png"></p>
+<p>简单来看，ReactiveCocoa真不愧是Cocoa，所有的设计围绕Cocoa的设计模式，提供了方便的宏，并且弱化了泛函概念，提供了很多副作用处理的方式，不像Rx那样纯粹。然而随着Objective-C语言的慢慢淡化，整个项目之后也转为依赖ReactiveSwift的实现。在当前iOS开发的情况下，如果使用Objective-C语言，那么这就是不二的FRP之选。但是如果使用Swift，最好使用正统的RxSwift。</p>
+<h2 id="RxSwift"><a href="#RxSwift" class="headerlink" title="RxSwift"></a>RxSwift</h2><p><img src="https://pic3.zhimg.com/v2-4b572f2ac5bc28905f043c7999c83c2a_r.jpg"></p>
+<p><a target="_blank" rel="noopener" href="http://reactivex.io/">ReactiveX</a>，也就是Rx，是一个大的语言无关的FRP架构设计，只要你了解了一个语言下的用法，那么就可以达到<code>learn once, write everywhere</code>（跑……）</p>
+<p>在Rx中，事件流定义为一个<code>Observable</code>，而订阅者对应的是<code>Disposable</code>接口（RxJava里面对应的就是<code>Subscriber</code>），事件流可以通过subscribe来订阅，也是对应了三个状态<code>onNext</code>，<code>onError</code>，<code>onCompleted</code>。</p>
+<p>这里，就以RxSwift为准，介绍一下简单的区别。首先，得益于Swift的语法，ReactiveCocoa的Data Binding也变得更简单了，不需要宏包裹和提前声明，看起来更为清晰</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> subscription <span class="operator">=</span> primeTextField.rx.text           <span class="comment">// Observable&lt;String&gt;</span></span><br><span class="line">	.map &#123; <span class="type">WolframAlphaIsPrime</span>(<span class="type">Int</span>(<span class="variable">$0</span>) <span class="operator">??</span> <span class="number">0</span>) &#125;      <span class="comment">// Observable&lt;Observable&lt;Prime&gt;&gt;</span></span><br><span class="line">	.concat()                                       <span class="comment">// Observable&lt;Prime&gt;</span></span><br><span class="line">	.filter &#123; <span class="variable">$0</span>.isPrime &#125;                          <span class="comment">// Observable&lt;Prime&gt;</span></span><br><span class="line">	.map &#123; <span class="string">&quot;number <span class="subst">\(<span class="variable">$0</span>.n)</span> is prime&quot;</span> &#125;              <span class="comment">// Observable&lt;String&gt;</span></span><br><span class="line">	.bindTo(resultLabel.rx.text)                    <span class="comment">// bind to label text</span></span><br></pre></td></tr></table></figure>
+
+<p>另外，Rx中，不同于ReactiveCocoa，事件流本身都是<code>Observable</code>，至于是冷还是热，是通过<code>publish</code>和<code>connect</code>操作得到的，不同于ReactiveCocoa中的<code>RACSignal</code>和<code>RACMulticastConnection</code>这种分开的设计，导致必须用对应的操作符，在Rx中，所有的操作符都是一致的表现，这点是一个非常大的改进。</p>
+<p>同时，Rx的操作符也是最丰富的，什么<code>lift</code>，<code>switch</code>这种常用的，在ReactiveCocoa中就得自己组合一套。当然，Rx的自定义操作符也很多简单，你只需要一个<code>T -&gt; Observable&lt;T&gt;</code>类型的函数来定义</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">ObservableType</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">replaceWith</span>&lt;<span class="type">R</span>&gt;(<span class="params">value</span>: <span class="type">R</span>)</span> -&gt; <span class="type">Observable</span>&lt;<span class="type">R</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> map &#123; <span class="keyword">_</span> <span class="keyword">in</span> value &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>整体上看，Rx是如今比较有名，并且成套的FRP解决方案，并且迁移到不同平台上的学习成本非常低。ReactiveCocoa本身如今已经分离为Swift版和Objective-C版，并且后者不再继续维护，因此对于混合Objective-C和Swift，或者纯Swift项目，RxSwift是一个构建MVVM和FRP架构的不二选择。</p>
+<h1 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h1><p>为什么这里要提到Promise呢，因为Reactive Programming需要处理的很多，就是对异步请求和频繁事件响应的处理。而Promise是一个比较流行的JavaScript平台异步解决方案。在和FRP的配合上面，可以通过不断的then组合成需要的Promise事件，并且Promise的超集，也就是Future，本身就有搭配不同的Future操作符来达到类似于Rx的组合效果。</p>
+<p>不过，Promise的目的，在于对异步请求流程的控制，而本身并没有对事件流的管理。原始的Promise虽然有着类似Rx的事件流类似特点：<code>不可变性</code>、<code>可组合性</code>，但是关键区别在于Promise自身是单次流动，数据流只会从then开始走到结束或者catch掉，无法多次重新流动；不支持流程中断取消；需要配合其他框架层面的东西，来达到完整事件流和GUI数据绑定，这里就得提到<a target="_blank" rel="noopener" href="https://github.com/baconjs/bacon.js/">Bacon</a></p>
+<h1 id="Bacon"><a href="#Bacon" class="headerlink" title="Bacon"></a>Bacon</h1><p><img src="https://baconjs.github.io/logo.png"></p>
+<p>Bacon是JavaScript上的一个FRP框架，借鉴于知名的<a target="_blank" rel="noopener" href="https://github.com/dominictarr/event-stream">EventStream</a>所实现的事件流，Bacon在这之上完成了FRP所需要的一切：事件流，变换，数据绑定，比起正统的RxJS来说，提供了更适合Web前端应用的的<code>EventStream</code>和<code>Property</code>，不需要被RxJS的Hot/Cold Observerable烦扰。并且原生支持了所有惰性求值，在benchmark上比起RxJS有着不错的性能优势。</p>
+<ul>
+<li>示例——计数器</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> plus = $(<span class="string">&quot;#plus&quot;</span>).asEventStream(<span class="string">&quot;click&quot;</span>).map(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">let</span> minus = $(<span class="string">&quot;#minus&quot;</span>).asEventStream(<span class="string">&quot;click&quot;</span>).map(-<span class="number">1</span>)</span><br><span class="line"><span class="keyword">let</span> both = plus.merge(minus)</span><br><span class="line">	.scan(<span class="number">0</span>, add) <span class="comment">// add +1 or -1 base on click eventstream</span></span><br><span class="line">	.onValue(<span class="function"><span class="params">sum</span> =&gt;</span> $(<span class="string">&quot;#sum&quot;</span>).text(sum))</span><br><span class="line">	.onError(<span class="function"><span class="params">e</span> =&gt;</span> <span class="built_in">console</span>.log(e))</span><br><span class="line">	.onEnd(<span class="function">() =&gt;</span> alert(<span class="string">&#x27;total: &#x27;</span> + $(<span class="string">&quot;#sum&quot;</span>).text));</span><br></pre></td></tr></table></figure>
+
+<p>除了专门提供的EventStream和Propery的两种Observable，并且提供了更好的事件源支持，你可以从原生的DOM事件来触发事件源，可以从Promise来触发（这是一个大的优势），甚至从callback或者自定义的binder都可以。在RxJS的基础上有了比较大的提升。不过具体工程上讲两者都是Rx实现的FRP，取舍还要看自己的特定选择（幸好我不做前端）</p>
+<h1 id="Functional"><a href="#Functional" class="headerlink" title="Functional"></a>Functional</h1><blockquote>
+<p>由于自己也不是Haskell Guy，仅仅接触过一点点JS、Closure和Swift这些有泛函编程思想的语言 ，如果想具体了解函数式编程中，关于<code>Functor</code>、<code>Applicative</code>以及<code>Monad</code>的知识，推荐花上10分钟看一下简单的图文教程：分别有<a target="_blank" rel="noopener" href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html">原文(推荐)</a>、<a target="_blank" rel="noopener" href="http://www.mokacoding.com/blog/functor-applicative-monads-in-pictures/">Swift版</a>和<a target="_blank" rel="noopener" href="https://medium.com/@tzehsiang/javascript-functor-applicative-monads-in-pictures-b567c6415221#.5upsphilw">JS版</a></p>
+</blockquote>
+<p><img src="http://adit.io/imgs/functors/bind_def.png"></p>
+<p>下面这些内容，默认为已经掌握了上述简单理解，如果看不太懂可以回过头重新看一下对应的Functional知识</p>
+<h2 id="ReactiveX"><a href="#ReactiveX" class="headerlink" title="ReactiveX"></a>ReactiveX</h2><p>Rx的<code>Observable</code>的本质就是一个<code>Event Monad</code>，即上下文（就是图文教程中包裹的盒子）为Event的一个Monad，这里的Event定义，可以对应语言的struct或者enum，包括了<code>next</code>、<code>error</code>和<code>complete</code>三个上下文即可。这里截取的是Swift语言的实现，<code>map</code>方法实现拆装箱（类似Optional，即Haskell的Maybe）</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">Event</span>&lt;<span class="title">Element</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/// Next element is produced.</span></span><br><span class="line">    <span class="keyword">case</span> next(<span class="type">Element</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">/// Sequence terminated with an error.</span></span><br><span class="line">    <span class="keyword">case</span> error(<span class="type">Swift</span>.<span class="type">Error</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">/// Sequence completed successfully.</span></span><br><span class="line">    <span class="keyword">case</span> completed</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Event</span> </span>&#123;</span><br><span class="line">    <span class="comment">/// Maps sequence elements using transform. If error happens during the transform .error</span></span><br><span class="line">    <span class="comment">/// will be returned as value</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">func</span> <span class="title">map</span>&lt;<span class="type">Result</span>&gt;(<span class="keyword">_</span> <span class="params">transform</span>: (<span class="type">Element</span>) <span class="keyword">throws</span> -&gt; <span class="type">Result</span>)</span> -&gt; <span class="type">Event</span>&lt;<span class="type">Result</span>&gt; &#123;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">switch</span> <span class="keyword">self</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="keyword">let</span> .next(element):</span><br><span class="line">                <span class="keyword">return</span> .next(<span class="keyword">try</span> transform(element))</span><br><span class="line">            <span class="keyword">case</span> <span class="keyword">let</span> .error(error):</span><br><span class="line">                <span class="keyword">return</span> .error(error)</span><br><span class="line">            <span class="keyword">case</span> .completed:</span><br><span class="line">                <span class="keyword">return</span> .completed</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> <span class="keyword">let</span> e &#123;</span><br><span class="line">            <span class="keyword">return</span> .error(e)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>而Rx的<code>subscribe</code>方法就是一个解包，也就是<code>Monad&lt;Event&gt;.map()</code>，接收一个<code>(Event) -&gt; void</code>的参数。或者使用更一般直观的三个参数<code>onNext: (Element) -&gt; Void</code>、<code>onError: (Error) -&gt; Void</code>、<code>onCompleted: (Void) -&gt; Void</code>方法（在其他语言实践上，RxJS就是三个function参数，而RxJava为了支持Java7可以使用匿名内部类）</p>
+<p>理论：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Monad</span> <span class="type">Event</span> &lt;$&gt; subscribe</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> subscription <span class="operator">=</span> <span class="type">Observable</span>&lt;<span class="type">Int</span>&gt;.interval(<span class="number">0.3</span>)</span><br><span class="line">	.subscribe &#123; event <span class="keyword">in</span></span><br><span class="line">		<span class="built_in">print</span>(event) <span class="comment">// unwraped event</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> cancel <span class="operator">=</span> searchWikipedia(<span class="string">&quot;me&quot;</span>)</span><br><span class="line">	.subscribe(onNext: &#123; results <span class="keyword">in</span></span><br><span class="line">		<span class="built_in">print</span>(results)</span><br><span class="line">	&#125;, onError: &#123; error <span class="keyword">in</span></span><br><span class="line">		<span class="built_in">print</span>(error)</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>Rx的Operator是<code>Functor</code>，也就是说<code>(Event) -&gt; Event</code>，因此可以通过Monad不断<code>bind</code>你想要的组合子，直到最终符合UI控件需要的数据</p>
+<p>理论：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Monad</span> <span class="type">Event</span> &gt;&gt;= map &gt;&gt;= concat &gt;&gt;= filter &gt;&gt;= map &lt;$&gt; subscribe</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> subscription <span class="operator">=</span> primeTextField.rx.text           <span class="comment">// Observable&lt;String&gt;</span></span><br><span class="line">	.map &#123; <span class="type">WolframAlphaIsPrime</span>(<span class="type">Int</span>(<span class="variable">$0</span>) <span class="operator">??</span> <span class="number">0</span>) &#125;      <span class="comment">// Observable&lt;Observable&lt;Prime&gt;&gt;</span></span><br><span class="line">	.concat()                                       <span class="comment">// Observable&lt;Prime&gt;</span></span><br><span class="line">	.filter &#123; <span class="variable">$0</span>.isPrime &#125;                          <span class="comment">// Observable&lt;Prime&gt;</span></span><br><span class="line">	.map &#123; <span class="variable">$0</span>.intValue &#125;                            <span class="comment">// Observable&lt;Int&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Promise-Future"><a href="#Promise-Future" class="headerlink" title="Promise / Future"></a>Promise / Future</h2><p>Promise本质上也是一个<code>Monad</code>，包裹的上下文就是<code>resolve</code>和<code>reject</code>。<br>你可能反驳说<code>Promise.then(f)</code>中的<code>f</code>，可以是<code>value =&gt; value</code>，而并不是一个被Promise包裹的类型啊。但是实际上，由于JavaScript类型的动态性，Promise.then中直接返回value类型是个语法糖罢了，实际上会处理为<code>value =&gt; Promise.resolve(value)</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">1</span>)</span><br><span class="line">.then(<span class="function"><span class="params">v</span> =&gt;</span> v+<span class="number">1</span>) <span class="comment">//便捷写法罢了，返回的是resolved状态的Promise对象</span></span><br><span class="line">.then(<span class="function"><span class="params">v</span> =&gt;</span> <span class="built_in">Promise</span>.resolve(v+<span class="number">1</span>)) <span class="comment">//完整写法</span></span><br><span class="line">.then(<span class="function"><span class="params">v</span> =&gt;</span> <span class="built_in">Promise</span>.reject(<span class="string">&#x27;error &#x27;</span> + v)) <span class="comment">//想要返回rejected状态，无便捷方法</span></span><br><span class="line">.catch(<span class="function"><span class="params">e</span> =&gt;</span> <span class="built_in">console</span>.log(e)) <span class="comment">// error 3</span></span><br></pre></td></tr></table></figure>
+
+<p>原理：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Monad</span> <span class="type">Promise</span> &gt;&gt;= <span class="keyword">then</span> &gt;&gt;= <span class="keyword">then</span> &gt;&gt;= catch &gt;&gt;= <span class="keyword">then</span></span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.resolve(<span class="number">1</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> v + <span class="number">1</span>; <span class="comment">// 1</span></span><br><span class="line">  &#125;.then(<span class="function"><span class="params">v</span> =&gt;</span>  &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;error&#x27;</span>); <span class="comment">//reject</span></span><br><span class="line">  &#125;.catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(e); <span class="comment">// error</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve(<span class="number">0</span>);</span><br><span class="line">  &#125;.then(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;end&#x27;</span>, v); <span class="comment">// end 0</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>FRP本身发展时间并不长，主要是因为当年的GUI程序的复杂度和需求变化成都，和现如今相比有着明显的差距。传统的事件驱动在构件原型和简单交互的App确实非常简单，但随着架构的发展和业务增多，到了连MVP都无法承担的地步，MVVM的提出和相应的FRP框架就是一个救命稻草。</p>
+<p>虽然现如今来说，FRP的主要问题在于入门门槛相对高一点，不过在我看来，这就和当年Web走向Angular和React一样，都是需要一段时间过渡的。在Android平台上，RxJava已经获得了相当大的成功和推广，ReactiveCocoa可能在国内并不如RxJava那样出名，但估计在日后，FRP＋MVVM＋Reactive Native＋Redux这种混合App架构将会得到更大推广和发展，如果Apple或者Google再加一把推手，到那时候才可以说Reactive Programming的时代真正到来了吧。</p>
+<p>#参考资料</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/ReactiveCocoa/ReactiveObjC">RxObjc</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ReactiveCocoa/ReactiveSwift">RxSwift</a></li>
+<li><a target="_blank" rel="noopener" href="http://reactivex.io/">ReactiveX</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/baconjs/bacon.js/">Bacon</a></li>
+<li><a target="_blank" rel="noopener" href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html">Monad</a></li>
+<li><a target="_blank" rel="noopener" href="http://nshipster.cn/reactivecocoa/">NSHipster</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.raywenderlich.com/62699/reactivecocoa-tutorial-pt1">ReactiveCocoa Tutorial</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.leichunfeng.com/blog/2015/11/08/functor-applicative-and-monad/">ReactiveCocoa Monad</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Functional/" rel="tag"># Functional</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/Swift/" rel="tag"># Swift</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/11/16/FRP%E7%AE%80%E4%BB%8B%E2%80%94%E8%AE%BAGUI%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/" rel="prev" title="FRP简介—论GUI程序架构发展">
+      <i class="fa fa-chevron-left"></i> FRP简介—论GUI程序架构发展
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/12/31/2016%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93%E5%92%8C%E8%BF%91%E6%9C%9F%E6%84%9F%E6%83%B3/" rel="next" title="2016年末总结和近期感想">
+      2016年末总结和近期感想 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ReactiveCocoa%E5%92%8CRxSwift"><span class="nav-number">1.</span> <span class="nav-text">ReactiveCocoa和RxSwift</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ReactiveCocoa"><span class="nav-number">1.1.</span> <span class="nav-text">ReactiveCocoa</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RxSwift"><span class="nav-number">1.2.</span> <span class="nav-text">RxSwift</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Promise"><span class="nav-number">2.</span> <span class="nav-text">Promise</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bacon"><span class="nav-number">3.</span> <span class="nav-text">Bacon</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Functional"><span class="nav-number">4.</span> <span class="nav-text">Functional</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ReactiveX"><span class="nav-number">4.1.</span> <span class="nav-text">ReactiveX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise-Future"><span class="nav-number">4.2.</span> <span class="nav-text">Promise &#x2F; Future</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

@@ -1,38 +1,601 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="对各种客户端来说，无论是Web还是移动端，图片占据的容量和传输资源一定是非常大的。对于静态图，我们常见的PNG和JPEG格式在压缩率和画质无损上都存在着不尽如人意的地方，而动图格式的GIF更是存在着很多问题，比如因此，在很多情况下，我们需要迁移到新的图片格式。  GIF为什么我们不用GIF呢，GIF由于时代限制，存在的天生的问题。GIF的规范最新版本是在1989年制定的，一个24位色都没有普及的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="客户端上动态图格式对比和解决方案">
+<meta property="og:url" content="http://dreampiggy.com/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="对各种客户端来说，无论是Web还是移动端，图片占据的容量和传输资源一定是非常大的。对于静态图，我们常见的PNG和JPEG格式在压缩率和画质无损上都存在着不尽如人意的地方，而动图格式的GIF更是存在着很多问题，比如因此，在很多情况下，我们需要迁移到新的图片格式。  GIF为什么我们不用GIF呢，GIF由于时代限制，存在的天生的问题。GIF的规范最新版本是在1989年制定的，一个24位色都没有普及的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.ibireme.com/wp-content/uploads/2015/11/gif_apng_demo.gif">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/1/14/Animated_PNG_example_bouncing_beach_ball.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/0/9e/63a17a7087e6ab1a209460b54136b.webp">
+<meta property="og:image" content="http://img.t.sinajs.cn/t6/style/images/common/steps_gold2.png">
+<meta property="og:image" content="http://blog.ibireme.com/wp-content/uploads/2015/11/anim_bench.png">
+<meta property="article:published_time" content="2017-03-06T06:51:04.000Z">
+<meta property="article:modified_time" content="2019-10-22T12:58:43.184Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="Image">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.ibireme.com/wp-content/uploads/2015/11/gif_apng_demo.gif">
+
+<link rel="canonical" href="http://dreampiggy.com/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
 
 
-{% block content %}
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+  <title>客户端上动态图格式对比和解决方案 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          客户端上动态图格式对比和解决方案
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-06 14:51:04" itemprop="dateCreated datePublished" datetime="2017-03-06T14:51:04+08:00">2017-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>对各种客户端来说，无论是Web还是移动端，图片占据的容量和传输资源一定是非常大的。对于静态图，我们常见的PNG和JPEG格式在压缩率和画质无损上都存在着不尽如人意的地方，而动图格式的GIF更是存在着很多问题，比如因此，在很多情况下，我们需要迁移到新的图片格式。</p>
+</blockquote>
+<h1 id="GIF"><a href="#GIF" class="headerlink" title="GIF"></a>GIF</h1><p>为什么我们不用GIF呢，GIF由于时代限制，存在的天生的问题。GIF的规范最新版本是在1989年制定的，一个24位色都没有普及的时代，因此，GIF规范只支持256色索引颜色，并且只能通过抖动、差值等方式模拟较多丰富的颜色。更为悲剧的是，它的alpha通道只有1bit，换言之，一个像素要么完全透明，要么完全不透明，而不像现在PNG的RGBA的8bit alpha通道，alpha值也可以和RGB一样都有255个透明值。这导致了所有GIF的图片带上透明度以后，边缘会出现明显的锯齿。所以如果你的客户端需要展示带透明度的动图，GIF基本上可以不考虑</p>
+<p><img src="http://blog.ibireme.com/wp-content/uploads/2015/11/gif_apng_demo.gif" title="GIF和APNG对比"></p>
+<p>实际的在线Demo，建议用Safari或者Chrome+插打开：<a target="_blank" rel="noopener" href="http://apng.onevcat.com/demo">http://apng.onevcat.com/demo</a></p>
+<h1 id="APNG"><a href="#APNG" class="headerlink" title="APNG"></a>APNG</h1><p>APNG是Mozilla在2008年发布的图片格式，本质上是在PNG的基础上加上一个扩展，而且非常简单即可实现。因此能够完全支持RGBA。规范可以参见<a target="_blank" rel="noopener" href="https://wiki.mozilla.org/APNG_Specification">APNG Specification</a>。</p>
+<p>虽然这个规范没有加入PNG开发组，但是很多浏览器已经支持了APNG。<br>最主推的是Apple的Safari（OS X 10.10以后的Safari，以及iOS 8以后的Safari和内置WebView），已经完全支持。Firefox亲儿子当然一直是支持的。Chrome桌面端已经从Chrome 59开始支持，现在就差Edge了。具体支持程度参见<a target="_blank" rel="noopener" href="http://caniuse.com/#feat=apng">浏览器兼容性</a>。</p>
+<p>APNG的优势，在于时间比较长，各种动图制作工具，优化工具都有相应的项目来支持。而且在iOS上的WebView里面是除GIF外，唯一官方支持的动图格式，因此如果做移动端开发需要WebView页引入动图，APNG还是必不可少的。</p>
+<p>当然，APNG终究是在PNG的基础上扩展，并没有引入特别出色的压缩算法，而且遗憾的是，短期内APNG还没有引入到Chrome，也就意味着Android平台的WebView也没有原生支持，因此，移动开发又会面临两端兼容性问题，这个后话再说。</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/1/14/Animated_PNG_example_bouncing_beach_ball.png" alt="APNG，Chrome需要59或者更高" title="APNG，Chrome需要插件支持或在线预览"></p>
+<h2 id="相关APNG工具"><a href="#相关APNG工具" class="headerlink" title="相关APNG工具"></a>相关APNG工具</h2><p>APNG图形化制作工具和在线预览:<a target="_blank" rel="noopener" href="http://isparta.github.io/index.html">iSparta</a><br>APNG大小优化:<a target="_blank" rel="noopener" href="https://sourceforge.net/projects/apng/files/APNG_Optimizer/">APNG Optimizer</a><br>APNG Chrome插件:<a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/detail/apng/ehkepjiconegkhpodgoaeamnpckdbblp">APNG for Chrome</a></p>
+<h1 id="WebP"><a href="#WebP" class="headerlink" title="WebP"></a>WebP</h1><p>WebP是Google在2010年发布的图片格式，完全开源，使用了VP8（就是WebM视频所用到的解码器）作为帧压缩编码器，而且在Chrome，Android上得到了原生的支持，具体规范参见:<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/">WebP</a></p>
+<p>同样的支持RGBA，而且静态WebP的压缩率比起同质量PNG平均要高上20%左右。现在各大App厂商已经有开始迁移WebP。除了静态的WebP，还有动态WebP格式(Animated WebP)支持，不过动态WebP需要libwebp 0.4以后才正式支持，并需要mux和demux模块，如果自行编译需要注意。</p>
+<p>Google官方提供了libwebp这个解码库在各个平台的二进制版本和Makefile，并且可以定制开启的功能。不过由于不像APNG那样基于PNG扩展，相关的工具很欠缺，基本全靠WebP Project提供的工具。</p>
+<p><code>cwebp</code>:PNG/JPEG -&gt; WebP<br><code>dwebp</code>:WebP -&gt; PNG/JPEG<br><code>vwebp</code>:WebP命令行预览工具<br><code>webpmux</code>:多张WebP制作动态WebP<br><code>gif2webp</code>:GIF -&gt; 动态WebP</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/0/9e/63a17a7087e6ab1a209460b54136b.webp" alt="Animated WebP，Safari不支持" title="Animated WebP，Safari不支持"></p>
+<h2 id="WebP工具"><a href="#WebP工具" class="headerlink" title="WebP工具"></a>WebP工具</h2><p>基本上来说，手动制作WebP会比较麻烦，因为Google没有提供WebP Optimizer之类的东西，如果我有100帧基本无差别的图使用webpmux合成动图，最终输出的文件大小会比较大。因此，一般推荐的做法，是先通过PNG制作APNG（比如iSparata），经过APNG Optimizer之后，再从APNG转换到动态WebP，这个流程可以用这个项目来一键搞定。<br>同时，也可以使用ffmpeg来转换视频到Animated WebP，一般使用MOV封装格式（UE常用的Pr导出的MOV可以支持alpha通道）。不过经过测试转换出来的Anmimated WebP大小相对比较大的（尤其同样的lossless下），不如PNG-&gt;APNG-&gt;Animtated Webp这个流程效果好。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Benny-/apng2webp">apng2webp</a>:APNG -&gt; Animated WebP<br><a target="_blank" rel="noopener" href="https://gist.github.com/dreampiggy/52c658253de3ba22fd3dec4d3f3182ab">ffmpeg</a>:MOV -&gt; Animated WebP</p>
+<h1 id="其他粗暴的解决方案"><a href="#其他粗暴的解决方案" class="headerlink" title="其他粗暴的解决方案"></a>其他粗暴的解决方案</h1><p>像国内的微博桌面版，提供的动图是通过PNG配合CSS Spirit，靠着不断JS轮播切换PNG子图所拼出来的，这个带来的带宽消耗会是非常高的，因为完全是多张图片混合，除非有着兼容性包袱（IE之类），一般不推荐使用。</p>
+<p><img src="http://img.t.sinajs.cn/t6/style/images/common/steps_gold2.png" alt="暴力实现" title="暴力实现"></p>
+<h1 id="APNG和WebP各平台实现"><a href="#APNG和WebP各平台实现" class="headerlink" title="APNG和WebP各平台实现"></a>APNG和WebP各平台实现</h1><h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><p><a target="_blank" rel="noopener" href="http://caniuse.com/#feat=apng">APNG 浏览器支持</a><br><a target="_blank" rel="noopener" href="http://caniuse.com/#feat=webp">WebP 浏览器支持，注意Animated WebP支持</a></p>
+<h2 id="iOS"><a href="#iOS" class="headerlink" title="iOS"></a>iOS</h2><p>APNG:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/ibireme/YYImage">YYImage</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/onevcat/APNGKit">APNGKit</a></li>
+</ul>
+<p>Animated WebP:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/ibireme/YYImage">YYImage</a></li>
+</ul>
+<p>WebP:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/rs/SDWebImage">SDWebImage</a>，注意SD使用的libwebp并没有加入mux和demux，故无法支持Animated WebP</li>
+</ul>
+<p>WebView:</p>
+<ul>
+<li>UIWebView，WKWebView和SafariViewController均只支持APNG（iOS 8以后），不支持Webp和Animated WebP</li>
+</ul>
+<p>YYImage，对显示动态图，使用了一个UIImageView的子类YYAnimatedImageView，通过直接插入了一个CALayer来作为图片的渲染layer，并用<code>CADisplayLink</code>这个帧定时器来刷新动图帧，通过异步线程处理解码，还有一些C的动态分配和回收内存来避免非常高的内存占用，保证了性能。并且自动处理了从视图消失以及滚动（可以切换到RunLoopCommonMode来滚动时候依然显示动图而不暂停）情况的问题，实现也非常有意思，有兴趣的人可以看一看。</p>
+<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><p>APNG:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/sahasbhop/apng-view">APNG View</a></li>
+</ul>
+<p>Animated WebP:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/facebook/fresco">Fresco</a></li>
+</ul>
+<p>WebView:</p>
+<ul>
+<li>Android 4.3以后才支持带lossless和alpha的WebP</li>
+</ul>
+<p>Android基本上对APNG可以说是没有什么支持的，所以如果是移动开发两个平台兼顾，建议同时准备APNG（for iOS WebView）和Animated WebP，客户端上建议都是用Animated WebP，因为VP8的解码速度相对于APNG有一些优势。</p>
+<p><img src="http://blog.ibireme.com/wp-content/uploads/2015/11/anim_bench.png"></p>
+<h1 id="存在的坑"><a href="#存在的坑" class="headerlink" title="存在的坑"></a>存在的坑</h1><h2 id="Web和移动端对于APNG和Animated-WebP循环次数不同"><a href="#Web和移动端对于APNG和Animated-WebP循环次数不同" class="headerlink" title="Web和移动端对于APNG和Animated WebP循环次数不同"></a>Web和移动端对于APNG和Animated WebP循环次数不同</h2><p>这个是一个非常大的坑，在Safari for iOS（Safari for macOS正常）和Chrome预览APNG和Animated WebP的时候，动图的循环次数为对应原图的loop+1。比如Animated WebP有100帧，loop为2，那么Chrome会循环总计展示300帧</p>
+<p>刚开始我以为是移动端实现库的问题，毕竟Google和Apple这种大厂一般不会出现问题。但是再参阅了APNG和Animated WebP的规范，发现确实是Safari和Chrome本身的问题，可以参考<a target="_blank" rel="noopener" href="https://wiki.mozilla.org/APNG_Specification">APNG规范</a>中的<code>num_plyas</code>字段，和<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/docs/riff_container">WebP规范</a>的<code>loop_count</code>字段</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Loop Count: 16 bits (uint16)</span><br><span class="line">The number of times to loop the animation. 0 means infinitely.</span><br><span class="line">This chunk MUST appear if the Animation flag in the VP8X chunk is set. If the Animation flag is not set and this chunk is present, it SHOULD be ignored.</span><br></pre></td></tr></table></figure>
+
+<p>规范提到的伪代码描述也表示，loop count为0表示无限循环展示首帧到尾帧，而loop count &gt;= 1，展示首帧到尾帧loop count次。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">assert</span> VP8X.flags.hasAnimation</span><br><span class="line">canvas ← new image of size VP8X.canvasWidth x VP8X.canvasHeight <span class="keyword">with</span></span><br><span class="line">         background color ANIM.background_color.</span><br><span class="line">loop_count ← ANIM.loopCount</span><br><span class="line">dispose_method ← ANIM.disposeMethod</span><br><span class="line"><span class="keyword">if</span> loop_count == <span class="number">0</span>:</span><br><span class="line">    loop_count = ∞</span><br><span class="line">frame_params ← nil</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">next</span> chunk <span class="keyword">in</span> image_data <span class="keyword">is</span> ANMF</span><br><span class="line"><span class="keyword">for</span> loop = <span class="number">0.</span>.loop_count - <span class="number">1</span></span><br><span class="line">    clear canvas to ANIM.background_color <span class="keyword">or</span> application defined color</span><br><span class="line">    until eof <span class="keyword">or</span> non-ANMF chunk</span><br><span class="line">        frame_params.frameX = Frame X</span><br><span class="line">        frame_params.frameY = Frame Y</span><br><span class="line">        frame_params.frameWidth = Frame Width Minus One + <span class="number">1</span></span><br><span class="line">        frame_params.frameHeight = Frame Height Minus One + <span class="number">1</span></span><br><span class="line">        frame_params.frameDuration = Frame Duration</span><br><span class="line">        <span class="comment">#......</span></span><br><span class="line">        Show the contents of the canvas <span class="keyword">for</span></span><br><span class="line">            frame_params.frameDuration * 1ms.</span><br></pre></td></tr></table></figure>
+
+<p>同样的，APNG对应的<code>num_plays</code>字段意思是一样的，大家可以使用这个在线测试用例，Safari表现错误而多循环了一次：<a target="_blank" rel="noopener" href="https://philip.html5.org/tests/apng/tests.html#num-plays-1">https://philip.html5.org/tests/apng/tests.html#num-plays-1</a></p>
+<p>解决办法：<br>由于不能更改浏览器的实现，部分情况也不好引入JS来手动实现，因此，对于APNG，一般只用在iOS的WebView上，因此可以直接制作APNG图的时候，把循环减一。而Animated WebP，可以在客户端实现加一个Hack，如果loop不是0手动减一，保持和Web一致性（当然，也可以专门提供一个loop count加一的图给Chrome/Android的WebView），希望之后两大浏览器是否可以把这个Bug修复了（当然，不排除联合一起更改了规范的可能性）</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>GIF作为一个动图格式已经太过于古老了，尤其是当前移动和Web站需要引入各种动态表情，头像的时候，GIF的透明问题已经是不可接受的。WebP长期发展也是比较看好（相比APNG没有进入PNG开发组，基本不再活跃），开源外加无授权费用，或许能够和WebM一样，成为互联网下首选的图片和视频格式。而移动客户端，在很多种需求下（动态表情，用户标志，广告）等上面，采用这种APNG和Animated WebP就能够轻松解决。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/Image/" rel="tag"># Image</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/31/2016%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93%E5%92%8C%E8%BF%91%E6%9C%9F%E6%84%9F%E6%83%B3/" rel="prev" title="2016年末总结和近期感想">
+      <i class="fa fa-chevron-left"></i> 2016年末总结和近期感想
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/06/04/Objective-C%E4%BB%A3%E7%A0%81%E5%BA%93%E7%9A%84%E5%AE%9E%E7%8E%B0%E9%9A%90%E8%97%8F/" rel="next" title="Objective-C代码库的实现隐藏">
+      Objective-C代码库的实现隐藏 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GIF"><span class="nav-number">1.</span> <span class="nav-text">GIF</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#APNG"><span class="nav-number">2.</span> <span class="nav-text">APNG</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3APNG%E5%B7%A5%E5%85%B7"><span class="nav-number">2.1.</span> <span class="nav-text">相关APNG工具</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#WebP"><span class="nav-number">3.</span> <span class="nav-text">WebP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#WebP%E5%B7%A5%E5%85%B7"><span class="nav-number">3.1.</span> <span class="nav-text">WebP工具</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%B2%97%E6%9A%B4%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">4.</span> <span class="nav-text">其他粗暴的解决方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#APNG%E5%92%8CWebP%E5%90%84%E5%B9%B3%E5%8F%B0%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">APNG和WebP各平台实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Web"><span class="nav-number">5.1.</span> <span class="nav-text">Web</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iOS"><span class="nav-number">5.2.</span> <span class="nav-text">iOS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android"><span class="nav-number">5.3.</span> <span class="nav-text">Android</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E7%9A%84%E5%9D%91"><span class="nav-number">6.</span> <span class="nav-text">存在的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Web%E5%92%8C%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%AF%B9%E4%BA%8EAPNG%E5%92%8CAnimated-WebP%E5%BE%AA%E7%8E%AF%E6%AC%A1%E6%95%B0%E4%B8%8D%E5%90%8C"><span class="nav-number">6.1.</span> <span class="nav-text">Web和移动端对于APNG和Animated WebP循环次数不同</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

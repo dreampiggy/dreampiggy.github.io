@@ -1,38 +1,610 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇教程，是系列教程的第二篇，前篇名为《iOS平台图片编解码入门教程（Image&#x2F;IO篇）》。这篇主要讲第三方解码器如何在iOS平台上处理（和Image&#x2F;IO的几大要点一一对应），更会介绍一些基本的Bitmap概念，总结通用的处理方法，毕竟授人以鱼不如授人以渔  第三方编解码对于图片编解码来说，Apple自带的Image&#x2F;IO确实非常的易用，但是对于Image&#x2F;IO不支持的图像格式就能无能为力了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS平台图片编解码入门教程（第三方编解码篇）">
+<meta property="og:url" content="http://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="这篇教程，是系列教程的第二篇，前篇名为《iOS平台图片编解码入门教程（Image&#x2F;IO篇）》。这篇主要讲第三方解码器如何在iOS平台上处理（和Image&#x2F;IO的几大要点一一对应），更会介绍一些基本的Bitmap概念，总结通用的处理方法，毕竟授人以鱼不如授人以渔  第三方编解码对于图片编解码来说，Apple自带的Image&#x2F;IO确实非常的易用，但是对于Image&#x2F;IO不支持的图像格式就能无能为力了">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/colorformatrgba32.gif">
+<meta property="article:published_time" content="2017-10-30T10:05:14.000Z">
+<meta property="article:modified_time" content="2019-10-22T12:58:43.170Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Image">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/colorformatrgba32.gif">
+
+<link rel="canonical" href="http://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/">
 
 
-{% block content %}
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+  <title>iOS平台图片编解码入门教程（第三方编解码篇） | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
 
-    <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS平台图片编解码入门教程（第三方编解码篇）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-30 18:05:14" itemprop="dateCreated datePublished" datetime="2017-10-30T18:05:14+08:00">2017-10-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>这篇教程，是系列教程的第二篇，前篇名为《iOS平台图片编解码入门教程（Image/IO篇）》。这篇主要讲第三方解码器如何在iOS平台上处理（和Image/IO的几大要点一一对应），更会介绍一些基本的Bitmap概念，总结通用的处理方法，毕竟授人以鱼不如授人以渔</p>
+</blockquote>
+<h1 id="第三方编解码"><a href="#第三方编解码" class="headerlink" title="第三方编解码"></a>第三方编解码</h1><p>对于图片编解码来说，Apple自带的Image/IO确实非常的易用，但是对于Image/IO不支持的图像格式就能无能为力了。截止到iOS 11，Image/IO不支持WebP，BPG，对于一些需要依赖WebP的业务就比较麻烦了（WebP的优点就不再介绍了）。不过我们可以自己集成第三方的图片解码器，去支持这些需要的的格式。</p>
+<p>一般来说，我们需要根据自己想要支持的图像格式，选择相对应的编解码器，进行编解码。这里我们以WebP的解码库<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/docs/api">libwebp</a>为例子，其他解码器需要根据对应解码器的API处理，基本概念类似。</p>
+<h1 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h1><p>不像Image/IO那样封装了整套流程，第三方解码的关键之处，就是在于获取到图像的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Raster_graphics">Bitmap</a>数据，通常情况就是<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/RGBA_color_space">RGBA</a>的矢量表示。</p>
+<p>简单解释一下，Bitmap可以理解为连续排列像素（Pixel）的二维数组，一个像素包括4个通道(Components)的点，每个点的位数叫做色深（常见的32位色，指的就是1个像素有4通道，每个通道8位），而像素的通道排列顺序按照对应的RGBA Mode顺序排列，比如说RGBA8888（大端序），就是这样一串连续的值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha...&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样的话，在内存中，一般就可以用<code>uint8_t bitmap[width * components * 8][height]</code>来表示。</p>
+<p>有了这样的知识，对照着就能看懂CGImage的BitmapInfo所表示的信息了。</p>
+<p><img src="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/colorformatrgba32.gif" alt="Bitmap的表示"></p>
+<h2 id="静态图"><a href="#静态图" class="headerlink" title="静态图"></a>静态图</h2><p>只要Bitmap数据到手，后面的过程其实都大同小异。第三方解码器主要处理图像编码数据到原始Bitmap的解码过程，后续就可以通过固定的方式来得到CGImage或者UIImage，用于上层UI组件的渲染。</p>
+<ol>
+<li>第三方解码器获取图像Bitmap</li>
+<li>通过Bitmap创建CGImage</li>
+<li>CGImage重绘（可选）</li>
+<li>生成上层的UIImage，清理</li>
+</ol>
+<h3 id="1-第三方解码器获取图像Bitmap"><a href="#1-第三方解码器获取图像Bitmap" class="headerlink" title="1. 第三方解码器获取图像Bitmap"></a>1. 第三方解码器获取图像Bitmap</h3><p>根据自己的需要，可以选择对应的编码器，来获取图像Bitmap。这里我们以WebP的解码库<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/docs/api">libwebp</a>为例子，其他解码器需要根据对应解码器的API处理，基本概念类似。</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSData</span> *data; <span class="comment">// 待解码的图像二进制数据</span></span><br><span class="line"></span><br><span class="line">WebPData webpData;</span><br><span class="line">WebPDataInit(&amp;webpData);</span><br><span class="line">webpData.bytes = data.bytes;</span><br><span class="line">webpData.size = data.length;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化Config，用于存储图像的Bitmap，大小等信息</span></span><br><span class="line">WebPDecoderConfig config;</span><br><span class="line"><span class="keyword">if</span> (!WebPInitDecoderConfig(&amp;config)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断是否能够解码</span></span><br><span class="line"><span class="keyword">if</span> (WebPGetFeatures(webpData.bytes, webpData.size, &amp;config.input) != VP8_STATUS_OK) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设定输出的Bitmap色彩空间，有Alpha通道选择RGBA，没有选择RGB </span></span><br><span class="line"><span class="keyword">bool</span> has_alpha = config.input.has_alpha;</span><br><span class="line">config.output.colorspace = has_alpha ? MODE_rgbA : MODE_RGB;</span><br><span class="line">config.options.use_threads = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 真正开始解码，输出RGBA数据到Config的output中</span></span><br><span class="line"><span class="keyword">if</span> (WebPDecode(webpData.bytes, webpData.size, &amp;config) != VP8_STATUS_OK) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取图像的大小</span></span><br><span class="line"><span class="keyword">int</span> width = config.input.width;</span><br><span class="line"><span class="keyword">int</span> height = config.input.height;</span><br><span class="line"><span class="keyword">if</span> (config.options.use_scaling) &#123;</span><br><span class="line">    width = config.options.scaled_width;</span><br><span class="line">    height = config.options.scaled_height;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//RGBA矢量和对应的大小</span></span><br><span class="line">uint8_t *rgba = config.output.u.RGBA.rgb;</span><br><span class="line">size_t rgbaSize = config.output.u.RGBA.size;</span><br></pre></td></tr></table></figure>
+
+<p>截止到这里，我们基本上调用通过第三方解码库的接口，就完成了获取Bitmap的工作。一般来说，以RGBA来说，最少需要知道以下信息：图像RGBA数组，数组大小，图像宽度、高度、是否含有Alpha通道这几个，以便开始下一步的创建CGImage的过程</p>
+<h3 id="2-通过Bitmap创建CGImage"><a href="#2-通过Bitmap创建CGImage" class="headerlink" title="2. 通过Bitmap创建CGImage"></a>2. 通过Bitmap创建CGImage</h3><p>有了图像的Bitmap数据之后，可以通过<code>CGImageCreate</code>来生成CGImage。对于RGBA的输入，需要的参数基本比较固定，以下代码基本上可以参考来复用。（需要注意，iOS上只支持<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000002990030">premultiplied-alpha</a>，macOS可以支持非premultiplied-alpha）</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过RGBA数组，创建一个DataProvider。最后一个参数是一个函数指针，用来在创建完成后清理内存用的</span></span><br><span class="line"><span class="built_in">CGDataProviderRef</span> provider = <span class="built_in">CGDataProviderCreateWithData</span>(<span class="literal">NULL</span>, rgba, rgbaSize, FreeImageData);</span><br><span class="line"><span class="comment">// 目标色彩空间，我们这里用的就是RGBA</span></span><br><span class="line"><span class="built_in">CGColorSpaceRef</span> colorSpaceRef = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line"><span class="comment">// Bitmap数据，如果含有Alpha通道，设置Premultiplied Alpha。没有就忽略Alpha通道</span></span><br><span class="line"><span class="built_in">CGBitmapInfo</span> bitmapInfo = has_alpha ? kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast : kCGBitmapByteOrder32Big | kCGImageAlphaNoneSkipLast;</span><br><span class="line"><span class="comment">// 通道数，有alpha就是4，没有就是3</span></span><br><span class="line">size_t components = has_alpha ? <span class="number">4</span> : <span class="number">3</span>;</span><br><span class="line"><span class="comment">// 这个是用来做色彩空间变换的指示，如果超出色彩空间，比如P3转RGBA，默认会进行兼容转换</span></span><br><span class="line"><span class="built_in">CGColorRenderingIntent</span> renderingIntent = kCGRenderingIntentDefault;</span><br><span class="line"><span class="comment">// 每行字节数（RGBA数组就是连续排列的多维数组，一行就是宽度*通道数），又叫做stride，因为Bitmap本质就是Pixel(uint_8)的二维数组，需要知道何时分行</span></span><br><span class="line">size_t bytesPerRow = components * width;</span><br><span class="line"><span class="comment">// 创建CGImage，参数分别意义为：宽度，高度，每通道的Bit数（RGBA自然是256，对应8Bit），每行字节数，色彩空间，Bitmap信息，数据Provider，解码数组（这个传NULL即可，其他值的话，会将经过变换比如premultiplied-alpha之后的Bitmap写回这个数组），是否过滤插值（这个一般不用开，可以在专门的图像锐化里面搞），色彩空间变换指示</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = <span class="built_in">CGImageCreate</span>(width, height, <span class="number">8</span>, components * <span class="number">8</span>, bytesPerRow, colorSpaceRef, bitmapInfo, provider, <span class="literal">NULL</span>, <span class="literal">NO</span>, renderingIntent);</span><br><span class="line"><span class="comment">// 别忘了清理DataProvider，此时会调用之前传入的清理函数</span></span><br><span class="line"><span class="built_in">CGDataProviderRelease</span>(provider);</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> FreeImageData(<span class="keyword">void</span> *info, <span class="keyword">const</span> <span class="keyword">void</span> *data, size_t size) &#123;</span><br><span class="line">    free((<span class="keyword">void</span> *)data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-CGImage重绘"><a href="#3-CGImage重绘" class="headerlink" title="3. CGImage重绘"></a>3. CGImage重绘</h3><p>这一步其实是可选的，但是建议都加上这一步骤。虽然我们之前通过RGBA创建了CGImage，但是实际上，CALayer和上层的UIImageView这些渲染的时候，要求的色彩是限定的，不然会有额外的内存和渲染消耗，我们解码出来的rgba的格式可能并不是按照这样的色彩空间排列，因此建议进行一次重绘，即将CGImage重绘到一个CGBitmapContext之上。这个代码比较简单。</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGImageRef</span> imageRef;</span><br><span class="line">size_t canvasWidth = <span class="built_in">CGImageGetWidth</span>(imageRef)</span><br><span class="line">size_t canvasHeight = <span class="built_in">CGImageGetHeight</span>(imageRef)</span><br><span class="line"><span class="built_in">CGBitmapInfo</span> bitmapInfo;</span><br><span class="line"><span class="keyword">if</span> (! has_alpha) &#123;</span><br><span class="line">    bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaNoneSkipLast;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 参数意思很简单，由于没有数据，对于RGBA可以自动计算bytesPerRow</span></span><br><span class="line"><span class="built_in">CGContextRef</span> canvas = <span class="built_in">CGBitmapContextCreate</span>(<span class="literal">NULL</span>, canvasWidth, canvasHeight, <span class="number">8</span>, <span class="number">0</span>, <span class="built_in">CGColorSpaceCreateDeviceRGB</span>(), bitmapInfo);</span><br><span class="line"><span class="keyword">if</span> (!canvas) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = image.CGImage;</span><br><span class="line">size_t width = <span class="built_in">CGImageGetWidth</span>(imageRef);</span><br><span class="line">size_t height = <span class="built_in">CGImageGetHeight</span>(imageRef);</span><br><span class="line"><span class="comment">// 画CGImage上去</span></span><br><span class="line"><span class="built_in">CGContextDrawImage</span>(canvas, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, width, height), imageRef);</span><br><span class="line"><span class="built_in">CGImageRef</span> newImageRef = <span class="built_in">CGBitmapContextCreateImage</span>(canvas);</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-生成上层的UIImage，清理"><a href="#4-生成上层的UIImage，清理" class="headerlink" title="4. 生成上层的UIImage，清理"></a>4. 生成上层的UIImage，清理</h3><p>有了最终的用于显示CGImage，那么我们就可以生成一个UIImage来给UI组件显示了。注意如果需要有特殊的scale，orientation处理（比如说图像可能有额外的EXIF Orientation信息），需要在这一步加上。<br>由于是C接口，需要手动清理内存，除了CGImage相关的，也需要清理第三方库自己的内存分配。对于错误提前返回的清理内存，灵活运用<code>__attribute__((cleanup))</code>，设置一个返回函数前清理的Block，可以减少犯错的可能性</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithCGImage:imageRef scale:<span class="number">1</span> orientation:<span class="built_in">UIImageOrientationUp</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 各种清理，省略</span></span><br><span class="line"><span class="built_in">CGImageRelease</span>(newImageRef);</span><br><span class="line"><span class="built_in">CGContextRelease</span>(canvas);</span><br></pre></td></tr></table></figure>
+
+<h2 id="动态图"><a href="#动态图" class="headerlink" title="动态图"></a>动态图</h2><p>动态图的解码过程，其实很直观的想，我们目标就是需要对所有动图帧，都拿到Bitmap，解码到CGImage和UIImage就行了。这样想的话，其实步骤就比较明确了。</p>
+<p>步骤：</p>
+<ol>
+<li>第三方解码器生成每帧的Bitmap</li>
+<li>重复静态图的2-3</li>
+<li>生成动图UIImage（参考Image/IO）</li>
+</ol>
+<h3 id="1-第三方解码器生成每帧的Bitmap"><a href="#1-第三方解码器生成每帧的Bitmap" class="headerlink" title="1. 第三方解码器生成每帧的Bitmap"></a>1. 第三方解码器生成每帧的Bitmap</h3><p>不同解码器可能对于动图有特殊的解码过程，拿libwebp举例来说，libwebp的动图，需要用到它的demux模块，其他解码器自行参考对应的API。</p>
+<p>同时，这里需要额外介绍一些概念。一般来说，动图格式的话不会直接将每帧原始的Bitmap都编码到文件中，这样得到的文件过于庞大（帧数 * 每帧Bitmap）。因此，会有Dispose Method的方式（可以参考WebP规范<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/docs/riff_container">Disposal method (D): 1 bit</a>，<a target="_blank" rel="noopener" href="https://blog.ibireme.com/2015/11/02/mobile_image_benchmark/">移动端图片格式调研</a>）。简单点来说，对于动图来说，每一帧有一个参考画布，在前一帧画完以后，后一帧可以利用前一帧已画好的图像，仅仅改变前后变化的部分，从而减小整体大小。因此我们创建动图时，需要准备好一个CGBitmapContext当作画布，根据Disposal Method（如果为None，不清空canvas；如果为Background，清空为Background Color，一般就是直接清空成透明）</p>
+<p>有了所有帧的Bitmap后，转成CGImage，UIImage，最后生成动图UIImage，这个在系列前篇已经介绍过了，不再赘述</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)decodeWebP &#123;</span><br><span class="line">	<span class="comment">// 前期准备代码，直接略过，假设已经创建好canvas</span></span><br><span class="line">	WebPDemuxer *demuxer;</span><br><span class="line">	WebPIterator iter;</span><br><span class="line">	<span class="keyword">if</span> (!WebPDemuxGetFrame(demuxer, <span class="number">1</span>, &amp;iter)) &#123;</span><br><span class="line">	    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	    </span><br><span class="line">	<span class="built_in">NSMutableArray</span>&lt;<span class="built_in">UIImage</span> *&gt; *images = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line">	<span class="keyword">double</span> durations[frameCount];</span><br><span class="line">	    </span><br><span class="line">	<span class="keyword">do</span> &#123;</span><br><span class="line">	    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">	        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> drawnWebpImageWithCanvas:canvas iterator:iter];</span><br><span class="line">	        <span class="keyword">int</span> duration = iter.duration;</span><br><span class="line">	        [images addObject:image];</span><br><span class="line">	        durations[frame_num] = duration;</span><br><span class="line">	    &#125;</span><br><span class="line">	    </span><br><span class="line">	&#125; <span class="keyword">while</span> (WebPDemuxNextFrame(&amp;iter));</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 创建UIImage动图，和Image/IO的相同，这里就直接封装成方法，略过</span></span><br><span class="line">	<span class="built_in">UIImage</span> *animatedImage = [<span class="keyword">self</span> animatedImageWithImages:images durations:durations];</span><br><span class="line">	    </span><br><span class="line">	<span class="comment">// 清理……略</span></span><br><span class="line">	WebPDemuxReleaseIterator(&amp;iter);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">nullable</span> <span class="built_in">UIImage</span> *)drawnWebpImageWithCanvas:(<span class="built_in">CGContextRef</span>)canvas iterator:(WebPIterator)iter &#123;</span><br><span class="line">    <span class="comment">// 这里是调用的前面静态图绘制的方法</span></span><br><span class="line">    <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> rawWebpImageWithData:iter.fragment];</span><br><span class="line">    <span class="keyword">if</span> (!image) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    size_t canvasWidth = <span class="built_in">CGBitmapContextGetWidth</span>(canvas);</span><br><span class="line">    size_t canvasHeight = <span class="built_in">CGBitmapContextGetHeight</span>(canvas);</span><br><span class="line">    <span class="built_in">CGSize</span> size = <span class="built_in">CGSizeMake</span>(canvasWidth, canvasHeight);</span><br><span class="line">    <span class="built_in">CGFloat</span> tmpX = iter.x_offset;</span><br><span class="line">    <span class="built_in">CGFloat</span> tmpY = size.height - iter.height - iter.y_offset;</span><br><span class="line">    <span class="built_in">CGRect</span> imageRect = <span class="built_in">CGRectMake</span>(tmpX, tmpY, iter.width, iter.height);</span><br><span class="line">    <span class="comment">// Blend</span></span><br><span class="line">    <span class="built_in">BOOL</span> shouldBlend = iter.blend_method == WEBP_MUX_BLEND;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 如果BlendMode开启，该帧应当混合画画布上，否则，应该覆盖，也就是清空指定范围后再重画</span></span><br><span class="line">    <span class="keyword">if</span> (!shouldBlend) &#123;</span><br><span class="line">        <span class="built_in">CGContextClearRect</span>(canvas, imageRect);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">CGContextDrawImage</span>(canvas, imageRect, image.CGImage);</span><br><span class="line">    <span class="built_in">CGImageRef</span> newImageRef = <span class="built_in">CGBitmapContextCreateImage</span>(canvas);</span><br><span class="line">    </span><br><span class="line">    image = [<span class="built_in">UIImage</span> imageWithCGImage:newImageRef];</span><br><span class="line">    <span class="built_in">CGImageRelease</span>(newImageRef);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Dispose如果是Background，表示解码下一帧需要清空画布</span></span><br><span class="line">    <span class="keyword">if</span> (iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND) &#123;</span><br><span class="line">        <span class="built_in">CGContextClearRect</span>(canvas, imageRect);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="渐进式解码"><a href="#渐进式解码" class="headerlink" title="渐进式解码"></a>渐进式解码</h2><p>渐进式解码的概念，在系列前篇中已经介绍过了，一般来说，第三方解码器支持渐进式解码的接口都比较类似，通过提供二进制流不断进行Update，每次能够得到当前解码的部分的Bitmap，最后可以拿到完整的Bitmap。之后只需要参考静态图对应步骤即可。</p>
+<p>这里还是以libwebp的接口为例，libwebp需要使用它的WebPIDecoder接口，来专门进行渐进式解码。注意，libwebp渐进式解码出来的Bitmap不会将未解码的部分自动填空，会保留随机的内存地址置，要么手动清空，要么画的时候仅仅画解码出来的高度部分。</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSData</span> *data; <span class="comment">// 输入的原始图像格式的二进制数据</span></span><br><span class="line"><span class="built_in">UIImage</span> *image;</span><br><span class="line">WebPIDecoder *idec = WebPINewRGB(MODE_rgbA, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (!idec) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里需要更新全部的数据，当然libwebp也有仅仅更新新增数据（非全部）的接口</span></span><br><span class="line">VP8StatusCode status = WebPIUpdate(idec, data.bytes, data.length);</span><br><span class="line"><span class="keyword">if</span> (status != VP8_STATUS_OK &amp;&amp; status != VP8_STATUS_SUSPENDED) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">int</span> width = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> height = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> last_y = <span class="number">0</span>; <span class="comment">// 已经解码出来的Bitmap数据的高度，即对应有效Bitmap的行数</span></span><br><span class="line"><span class="keyword">int</span> stride = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// 然后可以拿到Bitmap数据和相应的图像信息了</span></span><br><span class="line">uint8_t *rgba = WebPIDecGetRGB(_idec, &amp;last_y, &amp;width, &amp;height, &amp;stride);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 和静图解码的过程类似，构造一个DataProvider，略过</span></span><br><span class="line"><span class="built_in">CGDataProviderRef</span> provider;</span><br><span class="line"><span class="built_in">CGBitmapInfo</span> bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;</span><br><span class="line">size_t components = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//这里说一个坑，libwebp不能保证last_y以下的数据是全空的，所以一定注意，仅仅解码last_y范围内的Bitmap</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = <span class="built_in">CGImageCreate</span>(width, last_y, <span class="number">8</span>, components * <span class="number">8</span>, components * width, <span class="built_in">CGColorSpaceCreateDeviceRGB</span>(), bitmapInfo, provider, <span class="literal">NULL</span>, <span class="literal">NO</span>, kCGRenderingIntentDefault);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为了能得到完整的图片高度，创建一个canvas来画图，不画的部分保持透明状态即可</span></span><br><span class="line"><span class="built_in">CGContextRef</span> canvas = <span class="built_in">CGBitmapContextCreate</span>(<span class="literal">NULL</span>, width, height, <span class="number">8</span>, <span class="number">0</span>, <span class="built_in">CGColorSpaceCreateDeviceRGB</span>(), bitmapInfo);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 仅仅画last_y高度的图像（不是全部），注意CoreGraphics的坐标系统是右手系的，与UIKit的坐标相反</span></span><br><span class="line"><span class="built_in">CGContextDrawImage</span>(canvas, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, height - last_y, width, last_y), imageRef);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 拿到CGImage</span></span><br><span class="line"><span class="built_in">CGImageRef</span> newImageRef = <span class="built_in">CGBitmapContextCreateImage</span>(canvas);</span><br><span class="line"><span class="comment">// 创建UIImage</span></span><br><span class="line">image = [[<span class="built_in">UIImage</span> alloc] initWithCGImage:newImageRef];</span><br><span class="line"><span class="comment">// 各种清理，省略</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h1><p>编码过程其实比解码过程要简单得多，因为实际上，我们可以通过自带的接口，直接拿到当前UIImage的Bitmap数据，因此只要将Bitmap交给第三方编码库来进行编码，最后输出数据即可。</p>
+<h2 id="静态图-1"><a href="#静态图-1" class="headerlink" title="静态图"></a>静态图</h2><p>静态图的过程其实就可以直接分为两步：</p>
+<ol>
+<li>UIImage获取Bitmap</li>
+<li>调用编码器进行编码</li>
+</ol>
+<h3 id="1-UIImage获取Bitmap"><a href="#1-UIImage获取Bitmap" class="headerlink" title="1. UIImage获取Bitmap"></a>1. UIImage获取Bitmap</h3><p>UIImage本身能够直接通过方法拿到对应的CGImage，这样只需要调用<code>CGImageGetDataProvider</code>就可以拿到对应的Bitmap数据的DataProvider了，直接上代码吧。</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIImage</span> *image;</span><br><span class="line"><span class="built_in">NSData</span> *webpData; <span class="comment">// Bitmap数据的容器</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = image.CGImage;</span><br><span class="line">    </span><br><span class="line">size_t width = <span class="built_in">CGImageGetWidth</span>(imageRef);</span><br><span class="line">size_t height = <span class="built_in">CGImageGetHeight</span>(imageRef);    </span><br><span class="line">size_t bytesPerRow = <span class="built_in">CGImageGetBytesPerRow</span>(imageRef); <span class="comment">// 大部分编码器需要知道bytesPerRow，或者叫做stride</span></span><br><span class="line"><span class="built_in">CGDataProviderRef</span> dataProvider = <span class="built_in">CGImageGetDataProvider</span>(imageRef);</span><br><span class="line"><span class="built_in">CFDataRef</span> dataRef = <span class="built_in">CGDataProviderCopyData</span>(dataProvider);</span><br><span class="line">uint8_t *rgba = (uint8_t *)<span class="built_in">CFDataGetBytePtr</span>(dataRef);</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-调用编码器进行编码"><a href="#2-调用编码器进行编码" class="headerlink" title="2. 调用编码器进行编码"></a>2. 调用编码器进行编码</h3><p>我们还是以libwebp来对WebP进行编码，libwebp对于静态图片的编码非常简单（动态图片需要调用另一套mux的API，在动图章节讲）</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">uint8_t *data = <span class="literal">NULL</span>; <span class="comment">//编码输出的二进制数据</span></span><br><span class="line"><span class="keyword">float</span> quality = <span class="number">100.0</span>; <span class="comment">// libwebp可以选择编码质量，影响输出文件大小和编码速度</span></span><br><span class="line">size_t size = WebPEncodeRGBA(rgba, (<span class="keyword">int</span>)width, (<span class="keyword">int</span>)height, (<span class="keyword">int</span>)bytesPerRow, quality, &amp;data);</span><br><span class="line"><span class="built_in">CFRelease</span>(dataRef); <span class="comment">// 编码后清理Bitmap数据</span></span><br><span class="line">rgba = <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> (size) &#123;</span><br><span class="line">    <span class="comment">// success</span></span><br><span class="line">    webpData = [<span class="built_in">NSData</span> dataWithBytes:data length:size];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (data) &#123;</span><br><span class="line">    WebPFree(data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="动态图-1"><a href="#动态图-1" class="headerlink" title="动态图"></a>动态图</h2><p>对于动态图来说，也就是将多帧的Bitmap输入到编码器即可。对于libwebp的动态图编码，需要利用到它的mux模块，它能够将多个编码成WebP的二进制流，最后mux合并一次，最终得到了动态WebP。因此我们需要利用之前的静态图编码的步骤，只需要依次遍历取图并编码，最后使用mux处理即可。</p>
+<p>步骤：</p>
+<ol>
+<li>遍历每帧Bitmap，编码</li>
+</ol>
+<h3 id="1-遍历每帧Bitmap，编码"><a href="#1-遍历每帧Bitmap，编码" class="headerlink" title="1. 遍历每帧Bitmap，编码"></a>1. 遍历每帧Bitmap，编码</h3><p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSData</span> *data;</span><br><span class="line"><span class="built_in">NSArray</span>&lt;<span class="built_in">UIImgae</span> *&gt; *images;</span><br><span class="line"><span class="keyword">double</span> durations[frameCount];</span><br><span class="line"><span class="keyword">int</span> loopCount;</span><br><span class="line"><span class="comment">// 创建mux</span></span><br><span class="line">WebPMux *mux = WebPMuxNew();</span><br><span class="line"><span class="keyword">if</span> (!mux) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 遍历带编码的每帧</span></span><br><span class="line"><span class="keyword">for</span> (size_t i = <span class="number">0</span>; i &lt; framesCount; i++) &#123;</span><br><span class="line">    <span class="built_in">NSData</span> *webpData = [<span class="keyword">self</span> encodedWebpDataWithImage:images[i]]; <span class="comment">// 单帧编码后数据</span></span><br><span class="line">    <span class="keyword">int</span> duration = (<span class="keyword">int</span>)durations[i] * <span class="number">1000</span>; <span class="comment">// 单帧持续时长</span></span><br><span class="line">    <span class="comment">// 设置WebP每帧属性，包括Data，Blend，Disposal等</span></span><br><span class="line">    WebPMuxFrameInfo frame = &#123;.bitstream.bytes = webpData.bytes <span class="comment">//省略&#125;</span></span><br><span class="line">    <span class="keyword">if</span> (WebPMuxPushFrame(mux, &amp;frame, <span class="number">0</span>) != WEBP_MUX_OK) &#123;</span><br><span class="line">        WebPMuxDelete(mux);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置动图本身的属性</span></span><br><span class="line">WebPMuxAnimParams params;</span><br><span class="line">params.bgcolor = <span class="number">0</span>, params.loop_count = loopCount;</span><br><span class="line">WebPMuxSetAnimationParams(mux, &amp;params);</span><br><span class="line"></span><br><span class="line">WebPData outputData;</span><br><span class="line"><span class="comment">// 最后进行编码，拿到输出的二进制</span></span><br><span class="line">WebPMuxError error = WebPMuxAssemble(mux, &amp;outputData);</span><br><span class="line">WebPMuxDelete(mux);</span><br><span class="line"><span class="keyword">if</span> (error != WEBP_MUX_OK) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line">data = [<span class="built_in">NSData</span> dataWithBytes:outputData.bytes length:outputData.size];</span><br><span class="line">WebPDataClear(&amp;outputData);</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>第三方编解码其实相对于Image/IO来说，主要难度其实在于需要获取的Bitmap。开发者需要一点基本的图像知识，再者就是要能会用第三方编解码器的接口（一般来说第三方编解码器就是C或者C++写的，与OC和Swift交互也非常方便，至少不用像Java JNI那样调用）。之后只要按照通用的步骤，去编码和解码即可。</p>
+<p>到这里的话，一般的大部分格式的编解码就基本没有问题了。当然，关于进阶的方面，比如图像的编解码性能优化，进阶的图像处理（Bitmap的几何变化，Alpha合成，位数转换等等）这就需要用到更低层的库vImage了，会在之后的系列教程中进行介绍。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Image/" rel="tag"># Image</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89/" rel="prev" title="iOS平台图片编解码入门教程（Image/IO篇）">
+      <i class="fa fa-chevron-left"></i> iOS平台图片编解码入门教程（Image/IO篇）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/11/12/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88vImage%E7%AF%87%EF%BC%89/" rel="next" title="iOS平台图片编解码入门教程（vImage篇）">
+      iOS平台图片编解码入门教程（vImage篇） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">第三方编解码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">解码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%9B%BE"><span class="nav-number">2.1.</span> <span class="nav-text">静态图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%AC%AC%E4%B8%89%E6%96%B9%E8%A7%A3%E7%A0%81%E5%99%A8%E8%8E%B7%E5%8F%96%E5%9B%BE%E5%83%8FBitmap"><span class="nav-number">2.1.1.</span> <span class="nav-text">1. 第三方解码器获取图像Bitmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%80%9A%E8%BF%87Bitmap%E5%88%9B%E5%BB%BACGImage"><span class="nav-number">2.1.2.</span> <span class="nav-text">2. 通过Bitmap创建CGImage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-CGImage%E9%87%8D%E7%BB%98"><span class="nav-number">2.1.3.</span> <span class="nav-text">3. CGImage重绘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%94%9F%E6%88%90%E4%B8%8A%E5%B1%82%E7%9A%84UIImage%EF%BC%8C%E6%B8%85%E7%90%86"><span class="nav-number">2.1.4.</span> <span class="nav-text">4. 生成上层的UIImage，清理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%9B%BE"><span class="nav-number">2.2.</span> <span class="nav-text">动态图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%AC%AC%E4%B8%89%E6%96%B9%E8%A7%A3%E7%A0%81%E5%99%A8%E7%94%9F%E6%88%90%E6%AF%8F%E5%B8%A7%E7%9A%84Bitmap"><span class="nav-number">2.2.1.</span> <span class="nav-text">1. 第三方解码器生成每帧的Bitmap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8F%E8%A7%A3%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">渐进式解码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">编码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%9B%BE-1"><span class="nav-number">3.1.</span> <span class="nav-text">静态图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-UIImage%E8%8E%B7%E5%8F%96Bitmap"><span class="nav-number">3.1.1.</span> <span class="nav-text">1. UIImage获取Bitmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%B0%83%E7%94%A8%E7%BC%96%E7%A0%81%E5%99%A8%E8%BF%9B%E8%A1%8C%E7%BC%96%E7%A0%81"><span class="nav-number">3.1.2.</span> <span class="nav-text">2. 调用编码器进行编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%9B%BE-1"><span class="nav-number">3.2.</span> <span class="nav-text">动态图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%81%8D%E5%8E%86%E6%AF%8F%E5%B8%A7Bitmap%EF%BC%8C%E7%BC%96%E7%A0%81"><span class="nav-number">3.2.1.</span> <span class="nav-text">1. 遍历每帧Bitmap，编码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
