@@ -1,37 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Autolayout小技巧</title>
-    <url>//autolayoutxiao-ji-qiao</url>
-    <content><![CDATA[<p>iOS开发UI一直是一个问题，当年用代码画UI一度成为流行趋势，相信代码能万能解决问题，而且十分简单。</p>
-<p>然而，现在由于iOS设备的不断迭代，市场上常见的iPhone设备就会有：</p>
-<ol>
-<li><p> iPhone4/4S 960<em>640 (480</em>320 @2x)</p>
-</li>
-<li><p> iPhone5/5S 1136<em>640 (568</em>320 @2x)</p>
-</li>
-<li><p> iPhone6 1334*750(667*375 @2x)</p>
-</li>
-<li><p> iPhone6 Plus 1920*1080(736*414 @3x)-&gt;(2208*1242)</p>
-</li>
-</ol>
-<p>加上iPad以后，还会有一个1024<em>768(@1x) 和 2048</em>1536(@2x) 原来想要做一个自适应的，同时支持iPhone和iPad的应用，就算用代码来画UI，也是十分简单的。而现在，在这总共3类，5种，7状态的iOS设备面前，就会有点力不从心了，更别说以后想要做WatchOS的开发就会遇到很多问题，而Autolayout的解决方法的提出大大简化了这一过程</p>
-<blockquote>
-<p>Autolayout，就是通过一系列的约束条件来控制一个UIView在视图中的位置，同时还要配合Size Classes(兼容iOS8之后的设备)</p>
-</blockquote>
-<p>1、对于一个TableView，我们只需要设置它的Leading、Trailing、Top、Bottom临接到根View即可让它永远全屏显示，无论设备像素。而且，重要的一点，就是在Attribute Inspector中，要把这些距离设置为Standard（或者是0），这样才能在不同设备中获得推荐的显示效果（如果不是Standard或者0的话，就要小心了，这些就是所谓的魔法数字，很可能不同尺寸设备上显示效果会有所差别）</p>
-<p>2、对于有事想要使两个View沿着一条中线水平对齐在两侧，这个时候就需要一点点小技巧，比如说，你可以拿一个空的View放在中线上，设置Hidden，宽度为0，然后两边两个View跟这个空View对齐即可。同样的方法也很适合于想要调整两个View的比例，可以选中对应的约束条件，在multiplier中设置比例。</p>
-<p>3、有时候实在解决不了，就需要我们使用Size Classes来根据不同Size来设置了。默认的Size Classes是Any Any，对于iPhone来说，除了iPhone 6 Plus的横屏模式，其他情况下都是长宽紧凑的，所以很好设置，对iPhone 6 Plus如果想优化的话，就选择长正常宽紧凑的模式，然后单独设置。iPad由于都是长宽正常的，所以一般单独就做一个Size Classes就好。</p>
-<p>4、学会用Storyboard，传统的Xib固然很不错，但是Storyboard也可以作为很好的团队开发助力，不要把所有的视图放在一个Storyboard，可以一个Storyboard一两个视图，把逻辑相关的非常精简的视图放在一个Stoyboard中更能提供开发效率，而总是一个Xib一个Xib关联反而会很凌乱。</p>
-]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>2016年末总结和近期感想</title>
     <url>/2016/12/31/2016%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93%E5%92%8C%E8%BF%91%E6%9C%9F%E6%84%9F%E6%83%B3/</url>
     <content><![CDATA[<blockquote>
@@ -62,7 +31,7 @@
   </entry>
   <entry>
     <title>20岁的生日，或许应有些感想</title>
-    <url>//20sui-de-sheng-ri-huo-xu-ying-you-xie-gan-xiang</url>
+    <url>/2016/03/29/20%E5%B2%81%E7%9A%84%E7%94%9F%E6%97%A5%EF%BC%8C%E6%88%96%E8%AE%B8%E5%BA%94%E6%9C%89%E4%BA%9B%E6%84%9F%E6%83%B3/</url>
     <content><![CDATA[<p>首先，祝自己生日快乐，自己迎来了第20个春秋。</p>
 <p>20岁，意味着自己早已脱离了当年年少无知的懵懂，应该肩负起属于自己的责任，应当直面这纷杂世界的各式问题。在进入大学的一年里，感受最多的，便是人际关系的重要性、做事的担当性，并再一次认识到自己存在的关于个人性格方面的一些问题。</p>
 <p>我的性格第一次变化，是在初中的时候。小学的我比较单纯，认为学校同学就是一切，听老师的话（多么好的一个孩子呀……），个性也是羞涩而带点自卑。而到了初中，渐渐地开朗了起来，敢与老师争，能和同学扯。高中时期，或许更是如此吧，但是感觉经过高三（高考）的压榨之后，整个人开始多虑了起来，开始犹豫了起来，不再积极地去招呼他人，去帮助他人，遇到问题也总是自己处理。我现在也体会到了高考的一定负面影响。</p>
@@ -78,6 +47,37 @@
       </categories>
       <tags>
         <tag>感悟</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Autolayout小技巧</title>
+    <url>/2016/03/30/Autolayout%E5%B0%8F%E6%8A%80%E5%B7%A7/</url>
+    <content><![CDATA[<p>iOS开发UI一直是一个问题，当年用代码画UI一度成为流行趋势，相信代码能万能解决问题，而且十分简单。</p>
+<p>然而，现在由于iOS设备的不断迭代，市场上常见的iPhone设备就会有：</p>
+<ol>
+<li><p> iPhone4/4S 960<em>640 (480</em>320 @2x)</p>
+</li>
+<li><p> iPhone5/5S 1136<em>640 (568</em>320 @2x)</p>
+</li>
+<li><p> iPhone6 1334*750(667*375 @2x)</p>
+</li>
+<li><p> iPhone6 Plus 1920*1080(736*414 @3x)-&gt;(2208*1242)</p>
+</li>
+</ol>
+<p>加上iPad以后，还会有一个1024<em>768(@1x) 和 2048</em>1536(@2x) 原来想要做一个自适应的，同时支持iPhone和iPad的应用，就算用代码来画UI，也是十分简单的。而现在，在这总共3类，5种，7状态的iOS设备面前，就会有点力不从心了，更别说以后想要做WatchOS的开发就会遇到很多问题，而Autolayout的解决方法的提出大大简化了这一过程</p>
+<blockquote>
+<p>Autolayout，就是通过一系列的约束条件来控制一个UIView在视图中的位置，同时还要配合Size Classes(兼容iOS8之后的设备)</p>
+</blockquote>
+<p>1、对于一个TableView，我们只需要设置它的Leading、Trailing、Top、Bottom临接到根View即可让它永远全屏显示，无论设备像素。而且，重要的一点，就是在Attribute Inspector中，要把这些距离设置为Standard（或者是0），这样才能在不同设备中获得推荐的显示效果（如果不是Standard或者0的话，就要小心了，这些就是所谓的魔法数字，很可能不同尺寸设备上显示效果会有所差别）</p>
+<p>2、对于有事想要使两个View沿着一条中线水平对齐在两侧，这个时候就需要一点点小技巧，比如说，你可以拿一个空的View放在中线上，设置Hidden，宽度为0，然后两边两个View跟这个空View对齐即可。同样的方法也很适合于想要调整两个View的比例，可以选中对应的约束条件，在multiplier中设置比例。</p>
+<p>3、有时候实在解决不了，就需要我们使用Size Classes来根据不同Size来设置了。默认的Size Classes是Any Any，对于iPhone来说，除了iPhone 6 Plus的横屏模式，其他情况下都是长宽紧凑的，所以很好设置，对iPhone 6 Plus如果想优化的话，就选择长正常宽紧凑的模式，然后单独设置。iPad由于都是长宽正常的，所以一般单独就做一个Size Classes就好。</p>
+<p>4、学会用Storyboard，传统的Xib固然很不错，但是Storyboard也可以作为很好的团队开发助力，不要把所有的视图放在一个Storyboard，可以一个Storyboard一两个视图，把逻辑相关的非常精简的视图放在一个Stoyboard中更能提供开发效率，而总是一个Xib一个Xib关联反而会很凌乱。</p>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -149,7 +149,7 @@
   </entry>
   <entry>
     <title>Core Animation 3D仿射变换知识</title>
-    <url>//core-animation-3dfang-she-bian-huan-zhi-shi</url>
+    <url>/2016/11/01/Core-Animation-3D%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%9F%A5%E8%AF%86/</url>
     <content><![CDATA[<h1 id="Core-Animation-3D-仿射变换知识"><a href="#Core-Animation-3D-仿射变换知识" class="headerlink" title="Core Animation 3D 仿射变换知识"></a>Core Animation 3D 仿射变换知识</h1><blockquote>
 <p>之前写的Core Graphics是2D平面上的坐标变换，而iOS开发中，为了实现复杂的动画效果，视图切换效果，会用到很多3D变换，这就是Core Animation提供的CATransform3D，其中大部分API都和2D情况类似，但这里需要详细解释一下透视投影这个概念，和m34这个值的真实来源，一些博客抄来抄去却没有点到点子上，让人看不下去……</p>
 </blockquote>
@@ -232,7 +232,7 @@
   </entry>
   <entry>
     <title>Core Graphics仿射变换知识</title>
-    <url>//core-graphicsfang-she-bian-huan</url>
+    <url>/2016/09/27/Core-Graphics%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%9F%A5%E8%AF%86/</url>
     <content><![CDATA[<blockquote>
 <p>这是补充记录关于CG的几何变换的一些知识，涉及到简单的矩阵变换</p>
 </blockquote>
@@ -284,36 +284,6 @@
         <tag>iOS</tag>
         <tag>Objective-C</tag>
         <tag>CoreGraphics</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java之暴力实现Parser Generator（序言）</title>
-    <url>//javazhi-bao-li-shi-xian-parser-generator-xu-yan</url>
-    <content><![CDATA[<blockquote>
-<p>编译原理已经学了很多了吧？还有所迷茫？那么今天跟着我一起学习如何暴力写一个Parser Generator</p>
-</blockquote>
-<h1 id="Why-Java："><a href="#Why-Java：" class="headerlink" title="Why Java："></a>Why Java：</h1><p>因为Java有着丰富的对开发人员傻瓜式友好的内置数据结构，什么Map，Set，Stack，求交集求并集也就一句a.contains(b);a.addAll(b)的事情，并且不需要担心资源泄漏(?)的问题，对于我们的暴力实现非常有帮助。而且相比C++我也更为熟悉..</p>
-<h1 id="What-is-parser-generator"><a href="#What-is-parser-generator" class="headerlink" title="What is parser generator"></a>What is parser generator</h1><p>这里就指的是支持用户输入CFG（<a href="https://en.wikipedia.org/wiki/Context-free_grammar">Context-free grammar</a>），然后生成出一个Java代码，这个代码可以编译以后得到一个Parser用来Parse符合输入CFG定义的文法，类似于<a href="https://en.wikipedia.org/wiki/Yacc">Yacc</a></p>
-<p>迷糊了？举个例子，就是假如用户定义了这样一组CFG，用来匹配一个对于正整数的加法和乘法</p>
-<p>$ S \rightarrow TB \ B \rightarrow TB \mid \epsilon \ T \rightarrow FT^* \ T^* \rightarrow * FT^* \ F \rightarrow (S) \mid 0 \mid \dots \mid 9 $</p>
-<p>当然，数学符号肯定很好写，实际中输入大概是这样子的(\e表示epsilon)：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">S  -&gt; T B</span><br><span class="line">B -&gt; + T B | \e</span><br><span class="line">T  -&gt; F T&#123;*&#125;</span><br><span class="line">T&#123;*&#125; -&gt; * F T&#123;*&#125; | \e</span><br><span class="line">F  -&gt; (S) | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</span><br></pre></td></tr></table></figure>
-
-<p>这样的话，这个CFG输给我们的Parser Generator(我们叫做a.java)，运行后得到的代码，再次编译以后(我们叫做b.java)就可以用来匹配输入，对于3 + 5 * 7，我们能给出True的匹配。结果可能是这样子的</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LL(1) Parser start</span><br><span class="line"></span><br><span class="line">Currernt top: S input: 3</span><br><span class="line">Currernt top: T input: 3</span><br><span class="line">Currernt top: F input: 3</span><br><span class="line">Currernt top: 3 input: 3</span><br><span class="line">Currernt top: T&#123;*&#125; input: +</span><br><span class="line">Currernt top: B input: +</span><br><span class="line">Currernt top: + input: +</span><br><span class="line">Currernt top: T input: 5</span><br><span class="line">Currernt top: F input: 5</span><br><span class="line">Currernt top: 5 input: 5</span><br><span class="line">Currernt top: T&#123;*&#125; input: *</span><br><span class="line">Currernt top: * input: *</span><br><span class="line">Currernt top: F input: 7</span><br><span class="line">Currernt top: 7 input: 7</span><br><span class="line">Currernt top: T&#123;*&#125; input: #</span><br><span class="line">Currernt top: B input: #</span><br><span class="line"></span><br><span class="line">Parse result: true</span><br></pre></td></tr></table></figure>
-
-<p>当然，这个匹配用的是表驱动的，而且后续会生成AST（<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Abstract syntax tree</a>）</p>
-<h1 id="What-algorithm"><a href="#What-algorithm" class="headerlink" title="What algorithm"></a>What algorithm</h1><p>当然，核心在于学习编译，所以我们会分别使用<a href="https://en.wikipedia.org/wiki/LR_parser">LR(1)</a>和<a href="https://en.wikipedia.org/wiki/LL_parser">LL(1)</a>生成我们的Parser，里面会用到用到LR(1)的三种集合，LL(1)的Closure等知识……</p>
-<h1 id="How-about-efficiency"><a href="#How-about-efficiency" class="headerlink" title="How about efficiency"></a>How about efficiency</h1><p>看到我说的暴力……你就知道这是妥协了。虽然我们会考虑效率，但只考虑大O，不会在意具体new了多少个对象，是否重复，算法实现也尽量以清晰易懂，直接可以看作伪代码，而不会过多优化，所以，这主要是一个教学，没有过多的实际意义……</p>
-<h1 id="Talk-is-cheap"><a href="#Talk-is-cheap" class="headerlink" title="Talk is cheap"></a>Talk is cheap</h1><p>自己大概写了个非常简陋的版本……现在只能确保LR(1)文法能够Parse，LL(1)正在努力过测试 GitHub repo: <a href="https://github.com/lizhuoli1126/e-lexer">https://github.com/lizhuoli1126/e-lexer</a> （不要在意名字……开始想做的是lex却发现走到了类似yacc的路上去了……）</p>
-<h1 id="So-what’s-next"><a href="#So-what’s-next" class="headerlink" title="So what’s next"></a>So what’s next</h1><p>第一篇，我们只大概介绍一下框架，以及一个简单的Input Buffer的实现，还有我们定义的CFG的语法，状态机图，所以大家放轻松，让我们稍后再见</p>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>编译原理</tag>
       </tags>
   </entry>
   <entry>
@@ -373,7 +343,7 @@
   </entry>
   <entry>
     <title>Objective-C ARC下block表现和关键字影响</title>
-    <url>//objective-c-arcxia-blockbiao-xian-he-guan-jian-zi-ying-xiang</url>
+    <url>/2016/06/17/Objective-C-ARC%E4%B8%8Bblock%E8%A1%A8%E7%8E%B0%E5%92%8C%E5%85%B3%E9%94%AE%E5%AD%97%E5%BD%B1%E5%93%8D/</url>
     <content><![CDATA[<blockquote>
 <p>Objective-C中的block是一种特别的结构，block与普通的instance不同的地方，不止更在于它的语法，更在于它的不同表现以及内存分配。</p>
 </blockquote>
@@ -418,8 +388,38 @@
       </tags>
   </entry>
   <entry>
+    <title>Java之暴力实现Parser Generator（序言）</title>
+    <url>/2016/03/30/Java%E4%B9%8B%E6%9A%B4%E5%8A%9B%E5%AE%9E%E7%8E%B0Parser-Generator%EF%BC%88%E5%BA%8F%E8%A8%80%EF%BC%89/</url>
+    <content><![CDATA[<blockquote>
+<p>编译原理已经学了很多了吧？还有所迷茫？那么今天跟着我一起学习如何暴力写一个Parser Generator</p>
+</blockquote>
+<h1 id="Why-Java："><a href="#Why-Java：" class="headerlink" title="Why Java："></a>Why Java：</h1><p>因为Java有着丰富的对开发人员傻瓜式友好的内置数据结构，什么Map，Set，Stack，求交集求并集也就一句a.contains(b);a.addAll(b)的事情，并且不需要担心资源泄漏(?)的问题，对于我们的暴力实现非常有帮助。而且相比C++我也更为熟悉..</p>
+<h1 id="What-is-parser-generator"><a href="#What-is-parser-generator" class="headerlink" title="What is parser generator"></a>What is parser generator</h1><p>这里就指的是支持用户输入CFG（<a href="https://en.wikipedia.org/wiki/Context-free_grammar">Context-free grammar</a>），然后生成出一个Java代码，这个代码可以编译以后得到一个Parser用来Parse符合输入CFG定义的文法，类似于<a href="https://en.wikipedia.org/wiki/Yacc">Yacc</a></p>
+<p>迷糊了？举个例子，就是假如用户定义了这样一组CFG，用来匹配一个对于正整数的加法和乘法</p>
+<p>$ S \rightarrow TB \ B \rightarrow TB \mid \epsilon \ T \rightarrow FT^* \ T^* \rightarrow * FT^* \ F \rightarrow (S) \mid 0 \mid \dots \mid 9 $</p>
+<p>当然，数学符号肯定很好写，实际中输入大概是这样子的(\e表示epsilon)：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">S  -&gt; T B</span><br><span class="line">B -&gt; + T B | \e</span><br><span class="line">T  -&gt; F T&#123;*&#125;</span><br><span class="line">T&#123;*&#125; -&gt; * F T&#123;*&#125; | \e</span><br><span class="line">F  -&gt; (S) | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</span><br></pre></td></tr></table></figure>
+
+<p>这样的话，这个CFG输给我们的Parser Generator(我们叫做a.java)，运行后得到的代码，再次编译以后(我们叫做b.java)就可以用来匹配输入，对于3 + 5 * 7，我们能给出True的匹配。结果可能是这样子的</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LL(1) Parser start</span><br><span class="line"></span><br><span class="line">Currernt top: S input: 3</span><br><span class="line">Currernt top: T input: 3</span><br><span class="line">Currernt top: F input: 3</span><br><span class="line">Currernt top: 3 input: 3</span><br><span class="line">Currernt top: T&#123;*&#125; input: +</span><br><span class="line">Currernt top: B input: +</span><br><span class="line">Currernt top: + input: +</span><br><span class="line">Currernt top: T input: 5</span><br><span class="line">Currernt top: F input: 5</span><br><span class="line">Currernt top: 5 input: 5</span><br><span class="line">Currernt top: T&#123;*&#125; input: *</span><br><span class="line">Currernt top: * input: *</span><br><span class="line">Currernt top: F input: 7</span><br><span class="line">Currernt top: 7 input: 7</span><br><span class="line">Currernt top: T&#123;*&#125; input: #</span><br><span class="line">Currernt top: B input: #</span><br><span class="line"></span><br><span class="line">Parse result: true</span><br></pre></td></tr></table></figure>
+
+<p>当然，这个匹配用的是表驱动的，而且后续会生成AST（<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Abstract syntax tree</a>）</p>
+<h1 id="What-algorithm"><a href="#What-algorithm" class="headerlink" title="What algorithm"></a>What algorithm</h1><p>当然，核心在于学习编译，所以我们会分别使用<a href="https://en.wikipedia.org/wiki/LR_parser">LR(1)</a>和<a href="https://en.wikipedia.org/wiki/LL_parser">LL(1)</a>生成我们的Parser，里面会用到用到LR(1)的三种集合，LL(1)的Closure等知识……</p>
+<h1 id="How-about-efficiency"><a href="#How-about-efficiency" class="headerlink" title="How about efficiency"></a>How about efficiency</h1><p>看到我说的暴力……你就知道这是妥协了。虽然我们会考虑效率，但只考虑大O，不会在意具体new了多少个对象，是否重复，算法实现也尽量以清晰易懂，直接可以看作伪代码，而不会过多优化，所以，这主要是一个教学，没有过多的实际意义……</p>
+<h1 id="Talk-is-cheap"><a href="#Talk-is-cheap" class="headerlink" title="Talk is cheap"></a>Talk is cheap</h1><p>自己大概写了个非常简陋的版本……现在只能确保LR(1)文法能够Parse，LL(1)正在努力过测试 GitHub repo: <a href="https://github.com/lizhuoli1126/e-lexer">https://github.com/lizhuoli1126/e-lexer</a> （不要在意名字……开始想做的是lex却发现走到了类似yacc的路上去了……）</p>
+<h1 id="So-what’s-next"><a href="#So-what’s-next" class="headerlink" title="So what’s next"></a>So what’s next</h1><p>第一篇，我们只大概介绍一下框架，以及一个简单的Input Buffer的实现，还有我们定义的CFG的语法，状态机图，所以大家放轻松，让我们稍后再见</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>编译原理</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Promise大法好</title>
-    <url>//promiseda-fa-hao</url>
+    <url>/2016/03/30/Promise%E5%A4%A7%E6%B3%95%E5%A5%BD/</url>
     <content><![CDATA[<h1 id="Promise简介"><a href="#Promise简介" class="headerlink" title="Promise简介"></a>Promise简介</h1><p>Promise是一种解决异步回调问题而发展的编程语言特性，在各种语法中都有支持，比如在JavaScript（ECMAScript 6）／Java（8）／Node.js（0.12）都有原生的支持，而没有原生支持的语言更可以通过第三方框架来简单引入（比如大名鼎鼎的<a href="https://github.com/kriskowal/q">Q</a>）</p>
 <h2 id="为什么说异步回调不是好的解决方案"><a href="#为什么说异步回调不是好的解决方案" class="headerlink" title="为什么说异步回调不是好的解决方案"></a>为什么说异步回调不是好的解决方案</h2><p>1.Callback Hell</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">loadScript(<span class="string">&quot;a.js&quot;</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    loadScript(<span class="string">&quot;b.js&quot;</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        loadScript(<span class="string">&quot;c.js&quot;</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            loadScript(<span class="string">&quot;d.js&quot;</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">                loadScript(<span class="string">&quot;e.js&quot;</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">                    <span class="built_in">console</span>.log(<span class="string">&quot;Fuck to load async files&quot;</span>)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
@@ -470,76 +470,8 @@
       </tags>
   </entry>
   <entry>
-    <title>Random Binary Search Tree －Treap</title>
-    <url>//random-binary-search-tree-treap</url>
-    <content><![CDATA[<h2 id="BST插入顺序与平衡性"><a href="#BST插入顺序与平衡性" class="headerlink" title="BST插入顺序与平衡性"></a>BST插入顺序与平衡性</h2><p>众所周知，二查搜索树(BST)的搜索、插入、删除的复杂度等于树高，所以平衡度越高，越接近$ O(nlogn) $，越有序越退化为$ O(n) $</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/3/9f/4b2394fd756bcf2edcee109bb18ef.png" alt="线性BST"><br><img src="http://dreampiggy-image.test.upcdn.net/image/e/a2/3419e63d7126ece4996634b3f7dad.png" alt="随机BST"></p>
-<ul>
-<li>对于左侧的BST来说，只有唯一的构造序列：$ &lt;1,2,\dots,14&gt; $</li>
-<li>但对于右侧的BST，可以存在21964800种不同序列</li>
-</ul>
-<p>也就是说，随即插入序列到二叉树所形成的平衡度，将大于部分有序插入所形成的二叉树</p>
-<p>形式化证明可以得到（具体证明过程，参见<a href="http://opendatastructures.org/ods-java/7_1_Random_Binary_Search_Tr.html#fig:rbst-records">Open Data Structures</a>：</p>
-<p>对每个$ x \in{0,\ldots,{n}-1} $, x所需要的搜索长度（即深度）是 $ H_{x+1} + H_{n-x} - O(1) $</p>
-<p>对每个$ x \in(-1,n) $，x所需要的搜索长度是$ H_{\lceil x \rceil} H_{n-\lceil x \rceil} $</p>
-<h2 id="Treap-Random-BST实现"><a href="#Treap-Random-BST实现" class="headerlink" title="Treap - Random BST实现"></a>Treap - Random BST实现</h2><blockquote>
-<p><a href="https://en.wikipedia.org/wiki/Treap">Treap-wikipedia</a></p>
-</blockquote>
-<p>Treap，顾名思义，就是<code>Tree</code>和<code>Head</code>的结合体，除了要满足BST的要求外，还需要满足堆的要求，即</p>
-<ol>
-<li> <code>BST</code>: 对每个结点，左子女的值 &lt; 根的值 &lt; 右子女的值</li>
-<li> <code>Heap</code>: 对除了跟结点的每个结点，双亲结点的优先级要小于该结点的优先级</li>
-</ol>
-<p>所以Treap的每个结点除了包括BST结点的值value外，还需要包括一个唯一的优先级p</p>
-<p>比如这样就是一个典型的Treap，每个结点表示为(value,p) <img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1086.png" alt="Treap"></p>
-<p>并且可以证明，由Heap的约束，最小优先级将成为根结点，而BST又保证了小于根的值将在左子树上，大于根的值在右子树</p>
-<p>由于Heap的约束，我们可以认为Treap是按照优先级排序插入BST的，比如上述Treap可以由以下序列构造</p>
-<p>$ (3,1), (1,6), (0,9), (5,11), (4,14), (9,17), (7,22), (6,42), (8,49), (2,99) $</p>
-<h2 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h2><p>为了确保<code>Heap原则</code>，那么就需要对树进行旋转，在旋转中同时还要确保<code>BST原则</code>，比如这样的例子：</p>
-<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1102.png" alt="BST旋转"></p>
-<p>对w.value &lt; u.value，旋转将交换w和u的父子关系，同时将把原来的B放在新的儿子上。比如右旋，可以看作左旋和右旋是一个对称的操作</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateRight</span><span class="params">(Node *u)</span> </span>&#123;</span><br><span class="line">    Node* w = u-&gt;left;</span><br><span class="line">    w-&gt;parent = u-&gt;parent;  <span class="comment">//parent -&gt; w</span></span><br><span class="line">    <span class="keyword">if</span> (w-&gt;parent != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (w-&gt;parent-&gt;left == u) &#123; <span class="comment">//u is left or right</span></span><br><span class="line">            w-&gt;parent-&gt;left = w;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            w-&gt;parent-&gt;right = w;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;left = w-&gt;right; <span class="comment">//u.left = B</span></span><br><span class="line">    <span class="keyword">if</span> (u-&gt;left != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        u-&gt;left-&gt;parent = u;    <span class="comment">// B.parent = u</span></span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;parent = w;  <span class="comment">// w.right = u</span></span><br><span class="line">    w-&gt;right = u;</span><br><span class="line">    <span class="keyword">if</span> (u == root) &#123;   <span class="comment">//if u is root</span></span><br><span class="line">        root = w;</span><br><span class="line">        root-&gt;parent = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="添加-删除"><a href="#添加-删除" class="headerlink" title="添加/删除"></a>添加/删除</h2><ul>
-<li>  添加</li>
-</ul>
-<p>比如，对上述的Treap，加入一个值1.5，生成的优先级为4，即插入结点为(1.5,4)。首先使用BST的Add，插入在(2,99)的左子女上。为了满足<code>Heap规则</code>，依次进行以下旋转：</p>
-<p>99 &gt; 4 =&gt;右旋;<br>6 &gt; 4 =&gt; 左旋;<br>1 &lt; 4 =&gt; 停止;</p>
-<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1108.png" alt="Treap插入"></p>
-<p>由前面的引理，可以知道，旋转的次数为$ 2ln(n) + O(1) $，复杂度为$ O(logn) $</p>
-<ul>
-<li>  删除</li>
-</ul>
-<p>核心基本为添加的逆操作，对上述的Treap，删除一个结果(9)，那么将删除结点(9,17)。首先使用BST的Find，找到value为9的结点，然后将以(9,17)开始，向下不断旋转，直到最终为叶结点，然后把这个叶子剪去(Cut down)。</p>
-<p>旋转原则：</p>
-<ol>
-<li>left = NULL &amp; right = NULL ，不动</li>
-<li>left = NULL，左旋(right = NULL则右旋) <code>注:原文这里描述写反了</code></li>
-<li>left.p &lt; right.p，右旋(right.p &lt; left.p则左旋)</li>
-</ol>
-<p>依次进行以下旋转：</p>
-<p>right = NULL =&gt; 右旋;<br>right = NULL =&gt; 右旋;<br>叶结点 =&gt; 停止;</p>
-<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1114.png" alt="Treap删除"></p>
-<p>和添加相反，复杂度为$ O(logn) $</p>
-<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><p><code>构造</code>: $ O(logn) $ <code>查找</code>: $ O(logn) $ <code>添加</code>: $ O(logn) $ <code>删除</code>: $ O(logn) $</p>
-<p>虽说都是$ O(logn) $，但是对比另一种高级数据结构<a href="https://en.wikipedia.org/wiki/Skip_list">Skip List(跳表)</a>，查找复杂度在常数上有不同：</p>
-<p><code>Skip List</code>: $ elnn + O(1) \approx 1.884log(n) + O(1) $ <code>Treap</code>: $ 2ln(n) + O(1) \approx 1.386log(n) + O(1) $</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><blockquote>
-<p>完整版C++实现，这里面的随机优先级，直接使用了value当种子srand()然后rand()获取随机数……（先进行BST的Add，确保value不会重复），实际中可以采用其他随机数方式获得更好的期望复杂度 （吐槽……开始没注意这是Java版伪代码，以后一定用Java或者JavaScript写……指针地狱）</p>
-</blockquote>
-<p>代码链接：<a href="http://www.dreampiggy.com/source/413-2/">Treap</a></p>
-]]></content>
-      <categories>
-        <category>Code</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>React-Native -- 下一代UI编程思维</title>
-    <url>//react-native-xia-yi-dai-uibian-cheng-si-wei</url>
+    <url>/2016/03/30/React-Native-%E4%B8%8B%E4%B8%80%E4%BB%A3UI%E7%BC%96%E7%A8%8B%E6%80%9D%E7%BB%B4/</url>
     <content><![CDATA[<h1 id="React-Native-VS-Cocoa-Touch-–-下一代UI编程思维"><a href="#React-Native-VS-Cocoa-Touch-–-下一代UI编程思维" class="headerlink" title="React-Native VS Cocoa Touch – 下一代UI编程思维"></a>React-Native VS Cocoa Touch – 下一代UI编程思维</h1><h2 id="React-与状态"><a href="#React-与状态" class="headerlink" title="React 与状态"></a>React 与状态</h2><p><code>React.js</code>自从Facebook一推出，就受到Web前端工程师的强烈推崇。虽说曾经火过一时的<code>Angular.js</code>颠覆了前端的工程，但是<code>React</code>更多颠覆的，是下一代UI编程的思维。</p>
 <p>传统UI编程，基本很多地方都需要将数据来源，绑定到对应的UI对象，比如用户点击了一个操作，更改了名称，那么你需要更新执行一个回调函数来处理点击操作，并且把新的数据更新原有的UI对象的属性，比如大概就是这样的东西</p>
 <figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">onClick</span>(sender)</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> data <span class="operator">=</span> getData(sender);</span><br><span class="line">    <span class="keyword">self</span>.button.title <span class="operator">=</span> data.name;</span><br><span class="line">    <span class="keyword">self</span>.button.color <span class="operator">=</span> data.color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -572,7 +504,7 @@
   </entry>
   <entry>
     <title>React Native之Redux架构入门</title>
-    <url>//react-nativezhi-reduxjia-gou-ru-men</url>
+    <url>/2016/10/26/React-Native%E4%B9%8BRedux%E6%9E%B6%E6%9E%84%E5%85%A5%E9%97%A8/</url>
     <content><![CDATA[<blockquote>
 <p>如今也是入了移动iOS开发的坑，最近不仅学习了Core Animation的部分知识，还接触到React Native，这一Facebook出品的React for Native Platform框架，其中React本身入门是相对简单的，而Redux入门就相对困难了，因此在这里总结一下，最后有自己写的Slides可以参考</p>
 </blockquote>
@@ -701,8 +633,76 @@
       </tags>
   </entry>
   <entry>
+    <title>Random Binary Search Tree －Treap</title>
+    <url>/2016/03/30/Random-Binary-Search-Tree-%EF%BC%8DTreap/</url>
+    <content><![CDATA[<h2 id="BST插入顺序与平衡性"><a href="#BST插入顺序与平衡性" class="headerlink" title="BST插入顺序与平衡性"></a>BST插入顺序与平衡性</h2><p>众所周知，二查搜索树(BST)的搜索、插入、删除的复杂度等于树高，所以平衡度越高，越接近$ O(nlogn) $，越有序越退化为$ O(n) $</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/3/9f/4b2394fd756bcf2edcee109bb18ef.png" alt="线性BST"><br><img src="http://dreampiggy-image.test.upcdn.net/image/e/a2/3419e63d7126ece4996634b3f7dad.png" alt="随机BST"></p>
+<ul>
+<li>对于左侧的BST来说，只有唯一的构造序列：$ &lt;1,2,\dots,14&gt; $</li>
+<li>但对于右侧的BST，可以存在21964800种不同序列</li>
+</ul>
+<p>也就是说，随即插入序列到二叉树所形成的平衡度，将大于部分有序插入所形成的二叉树</p>
+<p>形式化证明可以得到（具体证明过程，参见<a href="http://opendatastructures.org/ods-java/7_1_Random_Binary_Search_Tr.html#fig:rbst-records">Open Data Structures</a>：</p>
+<p>对每个$ x \in{0,\ldots,{n}-1} $, x所需要的搜索长度（即深度）是 $ H_{x+1} + H_{n-x} - O(1) $</p>
+<p>对每个$ x \in(-1,n) $，x所需要的搜索长度是$ H_{\lceil x \rceil} H_{n-\lceil x \rceil} $</p>
+<h2 id="Treap-Random-BST实现"><a href="#Treap-Random-BST实现" class="headerlink" title="Treap - Random BST实现"></a>Treap - Random BST实现</h2><blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Treap">Treap-wikipedia</a></p>
+</blockquote>
+<p>Treap，顾名思义，就是<code>Tree</code>和<code>Head</code>的结合体，除了要满足BST的要求外，还需要满足堆的要求，即</p>
+<ol>
+<li> <code>BST</code>: 对每个结点，左子女的值 &lt; 根的值 &lt; 右子女的值</li>
+<li> <code>Heap</code>: 对除了跟结点的每个结点，双亲结点的优先级要小于该结点的优先级</li>
+</ol>
+<p>所以Treap的每个结点除了包括BST结点的值value外，还需要包括一个唯一的优先级p</p>
+<p>比如这样就是一个典型的Treap，每个结点表示为(value,p) <img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1086.png" alt="Treap"></p>
+<p>并且可以证明，由Heap的约束，最小优先级将成为根结点，而BST又保证了小于根的值将在左子树上，大于根的值在右子树</p>
+<p>由于Heap的约束，我们可以认为Treap是按照优先级排序插入BST的，比如上述Treap可以由以下序列构造</p>
+<p>$ (3,1), (1,6), (0,9), (5,11), (4,14), (9,17), (7,22), (6,42), (8,49), (2,99) $</p>
+<h2 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h2><p>为了确保<code>Heap原则</code>，那么就需要对树进行旋转，在旋转中同时还要确保<code>BST原则</code>，比如这样的例子：</p>
+<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1102.png" alt="BST旋转"></p>
+<p>对w.value &lt; u.value，旋转将交换w和u的父子关系，同时将把原来的B放在新的儿子上。比如右旋，可以看作左旋和右旋是一个对称的操作</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateRight</span><span class="params">(Node *u)</span> </span>&#123;</span><br><span class="line">    Node* w = u-&gt;left;</span><br><span class="line">    w-&gt;parent = u-&gt;parent;  <span class="comment">//parent -&gt; w</span></span><br><span class="line">    <span class="keyword">if</span> (w-&gt;parent != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (w-&gt;parent-&gt;left == u) &#123; <span class="comment">//u is left or right</span></span><br><span class="line">            w-&gt;parent-&gt;left = w;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            w-&gt;parent-&gt;right = w;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;left = w-&gt;right; <span class="comment">//u.left = B</span></span><br><span class="line">    <span class="keyword">if</span> (u-&gt;left != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        u-&gt;left-&gt;parent = u;    <span class="comment">// B.parent = u</span></span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;parent = w;  <span class="comment">// w.right = u</span></span><br><span class="line">    w-&gt;right = u;</span><br><span class="line">    <span class="keyword">if</span> (u == root) &#123;   <span class="comment">//if u is root</span></span><br><span class="line">        root = w;</span><br><span class="line">        root-&gt;parent = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加-删除"><a href="#添加-删除" class="headerlink" title="添加/删除"></a>添加/删除</h2><ul>
+<li>  添加</li>
+</ul>
+<p>比如，对上述的Treap，加入一个值1.5，生成的优先级为4，即插入结点为(1.5,4)。首先使用BST的Add，插入在(2,99)的左子女上。为了满足<code>Heap规则</code>，依次进行以下旋转：</p>
+<p>99 &gt; 4 =&gt;右旋;<br>6 &gt; 4 =&gt; 左旋;<br>1 &lt; 4 =&gt; 停止;</p>
+<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1108.png" alt="Treap插入"></p>
+<p>由前面的引理，可以知道，旋转的次数为$ 2ln(n) + O(1) $，复杂度为$ O(logn) $</p>
+<ul>
+<li>  删除</li>
+</ul>
+<p>核心基本为添加的逆操作，对上述的Treap，删除一个结果(9)，那么将删除结点(9,17)。首先使用BST的Find，找到value为9的结点，然后将以(9,17)开始，向下不断旋转，直到最终为叶结点，然后把这个叶子剪去(Cut down)。</p>
+<p>旋转原则：</p>
+<ol>
+<li>left = NULL &amp; right = NULL ，不动</li>
+<li>left = NULL，左旋(right = NULL则右旋) <code>注:原文这里描述写反了</code></li>
+<li>left.p &lt; right.p，右旋(right.p &lt; left.p则左旋)</li>
+</ol>
+<p>依次进行以下旋转：</p>
+<p>right = NULL =&gt; 右旋;<br>right = NULL =&gt; 右旋;<br>叶结点 =&gt; 停止;</p>
+<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1114.png" alt="Treap删除"></p>
+<p>和添加相反，复杂度为$ O(logn) $</p>
+<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><p><code>构造</code>: $ O(logn) $ <code>查找</code>: $ O(logn) $ <code>添加</code>: $ O(logn) $ <code>删除</code>: $ O(logn) $</p>
+<p>虽说都是$ O(logn) $，但是对比另一种高级数据结构<a href="https://en.wikipedia.org/wiki/Skip_list">Skip List(跳表)</a>，查找复杂度在常数上有不同：</p>
+<p><code>Skip List</code>: $ elnn + O(1) \approx 1.884log(n) + O(1) $ <code>Treap</code>: $ 2ln(n) + O(1) \approx 1.386log(n) + O(1) $</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><blockquote>
+<p>完整版C++实现，这里面的随机优先级，直接使用了value当种子srand()然后rand()获取随机数……（先进行BST的Add，确保value不会重复），实际中可以采用其他随机数方式获得更好的期望复杂度 （吐槽……开始没注意这是Java版伪代码，以后一定用Java或者JavaScript写……指针地狱）</p>
+</blockquote>
+<p>代码链接：<a href="http://www.dreampiggy.com/source/413-2/">Treap</a></p>
+]]></content>
+      <categories>
+        <category>Code</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Retroactive Data Structure</title>
-    <url>//retroactive-data-structure</url>
+    <url>/2016/03/30/Retroactive-Data-Structure/</url>
     <content><![CDATA[<blockquote>
 <p>MIT Open Course</p>
 </blockquote>
@@ -749,7 +749,7 @@
   </entry>
   <entry>
     <title>Swift之AnyClass与动态类型</title>
-    <url>//swiftzhi-anyclassyu-dong-tai-lei-xing</url>
+    <url>/2016/03/30/Swift%E4%B9%8BAnyClass%E4%B8%8E%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B/</url>
     <content><![CDATA[<blockquote>
 <p>这次写一下关于Swift中AnyClass的使用以及动态类型的实例化和使用场景</p>
 </blockquote>
@@ -803,7 +803,7 @@
   </entry>
   <entry>
     <title>Top Down --自顶向下的文法分析</title>
-    <url>//latexce-shi</url>
+    <url>/2016/03/29/Top-Down-%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E7%9A%84%E6%96%87%E6%B3%95%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<h1 id="Top-Down-–自顶向下的文法分析"><a href="#Top-Down-–自顶向下的文法分析" class="headerlink" title="Top Down –自顶向下的文法分析"></a>Top Down –自顶向下的文法分析</h1><p>读入：读取下一个待匹配字符进去stack，如果为#且栈顶也为＃，成功；如果此时栈顶不为#，失败<br>检查：如果栈顶为终结符，回到读入；<br>否则，随机选择一个规则（假如存在多个规则可以满足的话），使栈顶字符与左部（非终结符）匹配，匹配，用规则的右部（即终结符）替换，整个过程叫做规约(Derivation)<br>    如果找到匹配的规则，回到读入；<br>    否则，BackTracking，回溯到上一次的检查，换另一个规则</p>
 <figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="type">Stack</span> <span class="operator">==</span> <span class="type">None</span> <span class="type">Terminal</span> &#123;</span><br><span class="line">	choose rule <span class="keyword">do</span> divide &#123;</span><br><span class="line">		from right to left, push into stack</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">match &#123;</span><br><span class="line">	pointer move right to read</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> not match &#123;</span><br><span class="line">	backtrack</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -850,7 +850,7 @@
   </entry>
   <entry>
     <title>Web入门后端架构有感——Node.js</title>
-    <url>//webru-men-hou-duan-jia-gou-you-gan-node-js</url>
+    <url>/2016/03/30/Web%E5%85%A5%E9%97%A8%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%9C%89%E6%84%9F%E2%80%94%E2%80%94Node-js/</url>
     <content><![CDATA[<p>说来也是惭愧，从大一暑假接触到第一门Web后端语言——PHP之后，自己对Web应用程序的认识却一直没有多大改变，对整个Web服务器的运行也没有清晰的概念。不过，这个大二的寒假里面，由于需要架设一个Web多人协作编辑平台，我接触到了这个非常热门尽管国内应用不多的后端架设方式——<code>Node.js</code></p>
 <p>说到Node.js，其实很多人也都知道，一个JavaScript在本地的运行时，基于Google的V8引擎。很可惜，由于自己当时学习Web主要走的后端路线，自己对JavaScript的认识也就靠的是w3school的简单说明和了解以及简单的jQuery用法罢了。学Node.js对我印象最大的，就是事件驱动的回调函数。（其实还是与自己并未真正接触到函数式编程有关）</p>
 <p>举个例子，就是最简单的Hello World Web应用程序。 </p>
@@ -889,7 +889,7 @@
   </entry>
   <entry>
     <title>Web幻灯片利器（前端工程师福利）——NodePPT</title>
-    <url>//webhuan-deng-pian-li-qi-qian-duan-gong-cheng-shi-fu-li-nodeppt</url>
+    <url>/2016/03/30/Web%E5%B9%BB%E7%81%AF%E7%89%87%E5%88%A9%E5%99%A8%EF%BC%88%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%A6%8F%E5%88%A9%EF%BC%89%E2%80%94%E2%80%94NodePPT/</url>
     <content><![CDATA[<p>提到幻灯片，人人第一直觉就想到一个东西：PPT（Microsoft Office PowerPoint），也许还有人可能会小声说到 Keynote，或者Prezi，能提到reveal.js的基本少之又少……</p>
 <p>PowerPoint：<a href="http://products.office.com/zh-CN/powerpoint">http://products.office.com/zh-CN/powerpoint</a></p>
 <p>Keynote：<a href="http://www.apple.com/cn/mac/keynote">http://www.apple.com/cn/mac/keynote</a></p>
@@ -915,7 +915,7 @@
   </entry>
   <entry>
     <title>Web项目3-基于Node.js的多人协作编辑平台的设计实现</title>
-    <url>//webxiang-mu-3-ji-yu-node-jsde-duo-ren-xie-zuo-bian-ji-ping-tai-de-she-ji-shi-xian</url>
+    <url>/2016/03/30/Web%E9%A1%B9%E7%9B%AE3-%E5%9F%BA%E4%BA%8ENode-js%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E7%BC%96%E8%BE%91%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0/</url>
     <content><![CDATA[<p>终于，我参加的第三个Web项目基本已经完成了Beta版本的整体架构和实现。</p>
 <p>这次的Web项目要求，是制作一个基于Web（或者移动Web）的在线协作编辑平台，主要支持Markdown语法及同步预览，类似于<a title="Google Docs" href="https://docs.google.com/document" target="_blank">Google Docs</a>或者<a title="Office Online" href="https://office.live.com/start/default.aspx" target="_blank">Office Online</a>这样的东西（但是绝对不可能达到国际一流大厂的水平）</p>
 <p>由于只有我们4个人开发（其中2个还算专门前端开发），所以尽可能减少后端开发压力，经过初步的讨论，最终选择了使用Node.js作为后端开发语言。Node.js强力的非阻塞IO和异步事件非常适合我们这种IO密集型的应用。而对于协作的部分，我们选择使用<a title="socket.io" href="http://socket.io/" target="_blank">socket.io</a>来进行这种密集文本数据的通信和广播，也能很大的减少开发周期。</p>
@@ -952,7 +952,7 @@
   </entry>
   <entry>
     <title>Xcode自带的UI调试工具</title>
-    <url>//xcodezi-dai-de-uidiao-shi-gong-ju</url>
+    <url>/2016/05/30/Xcode%E8%87%AA%E5%B8%A6%E7%9A%84UI%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/</url>
     <content><![CDATA[<h2 id="Xcode-or-Reveal"><a href="#Xcode-or-Reveal" class="headerlink" title="Xcode or Reveal"></a>Xcode or Reveal</h2><p>在iOS开发中，UI调试总是一个大问题……原始的暴力调试（View强行着色然后看，或者在@Selector中直接把<code>viewForLastBaselineLayout</code>或者<code>viewForFirstBaselineLayout</code>）利用<code>Swizzle</code> Hook，然后Debug输出相应的内容（比如View的属性，描述符等等）。</p>
 <p>这是一个好方法……但是过于暴力，而且非常不直观。虽然iOS开发者都知道的<a href="http://revealapp.com/">Reveal</a>是好东西，然而价格并不是人人都买得起……（不过对iOS专业开发者确实是一个必备的工具）。其实Xcode 7自带了一套UI调试的工具，熟悉使用之后也是非常好用。</p>
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用方法很简单，首先自然得运行项目，然后Run(Command R)，然后切换到Debug栏(Command 6)，点击左边栏最右侧的图表，选择<code>View UI Hierarchy</code>即可。</p>
@@ -979,7 +979,7 @@
   </entry>
   <entry>
     <title>iOS开发中使用Swift来完成异步事件</title>
-    <url>//ioskai-fa-zhong-shi-yong-swiftlai-wan-cheng-yi-bu-shi-jian</url>
+    <url>/2016/03/30/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Swift%E6%9D%A5%E5%AE%8C%E6%88%90%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6/</url>
     <content><![CDATA[<p>异步事件编程，其实并不是什么新东西了，基本所有涉及到GUI的，网络请求的，数据库读写的，都会有它的身影。</p>
 <p>异步事件，就是说这一个代码或者代码块，并不会阻塞程序的运行，程序会立即执行下一条语句，而这条语句，会在相应的方法调用结束之后，执行它自身的回调函数发送一些信号，来表明这个异步事件完成。就像你约会提前1小时到见面地点，先去买点东西踩点什么的（……），等GF/BF到了之后短信通知你，你就立即回来。而不是一直在原地等到对方过来（……）</p>
 <p>最早使用异步开发，是在使用JavaScript来开发Web前端的时候，<strong>XMLHttpRequest</strong>或者<strong>jQuery</strong>的**$.ajax**中，都会用到回调函数，来指明成功或者失败之后的处理方法。当对应的网络请求得到响应之后，会调用响应的成功或者失败的回调函数，然后执行里面相应的方法，这大大提升了前端的效率，不会在网络请求时整个页面卡住，而且也不需要一次次轮询看是否有响应，简化了代码的复杂性。</p>
@@ -1011,7 +1011,7 @@
   </entry>
   <entry>
     <title>iOS开发学习-用继承，静态类封装方法</title>
-    <url>//ioskai-fa-xue-xi-yong-ji-cheng-jing-tai-lei-feng-zhuang-fang-fa</url>
+    <url>/2016/03/30/iOS%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0-%E7%94%A8%E7%BB%A7%E6%89%BF%EF%BC%8C%E9%9D%99%E6%80%81%E7%B1%BB%E5%B0%81%E8%A3%85%E6%96%B9%E6%B3%95/</url>
     <content><![CDATA[<p>iOS开发中，如果不进行适当的封装，使用协议或者继承类来进行开发，你就会遇到传说中的ViewController（以后简称VC） Hell的问题……</p>
 <p>比如说，我们先声网App中为了调用接口，做简单的判断，会有如下的垃圾代码（前辈遗留下来的）：</p>
 <figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> color <span class="operator">=</span> <span class="type">UIColor</span>(red: <span class="number">153</span><span class="operator">/</span><span class="number">255</span>, green: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, blue: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, alpha: <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">self</span>.navigationController<span class="operator">?</span>.navigationBar.barTintColor <span class="operator">=</span> color</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.httpController.delegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line"></span><br><span class="line">    <span class="type">Config</span>.shareInstance().isNetworkRunning <span class="operator">=</span> <span class="type">CheckNetwork</span>.doesExistenceNetwork()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="type">Config</span>.<span class="type">UUID</span> <span class="operator">==</span> <span class="literal">nil</span> <span class="operator">||</span> <span class="type">Config</span>.<span class="type">UUID</span>!.isEmpty</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Tool</span>.showErrorHUD(<span class="string">&quot;去信息门户登录一下吧:)&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> <span class="operator">!</span><span class="type">Config</span>.shareInstance().isNetworkRunning</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Tool</span>.showErrorHUD(<span class="string">&quot;貌似你没有联网哦&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Tool</span>.showProgressHUD(<span class="string">&quot;正在更新校园网信息&quot;</span>)</span><br><span class="line">        sendNicAPI()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Do any additional setup after loading the view.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sendNicAPI</span>()</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> nicURL <span class="operator">=</span> <span class="string">&quot;http://herald.seu.edu.cn/api/nic&quot;</span></span><br><span class="line">    <span class="keyword">let</span> parameter:<span class="type">NSDictionary</span> <span class="operator">=</span> [<span class="string">&quot;uuid&quot;</span>:<span class="type">Config</span>.<span class="type">UUID</span>!]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.httpController.postToURLAF(nicURL, parameter: parameter, tag: <span class="string">&quot;nic&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">didReceiveDicResults</span>(<span class="params">results</span>: <span class="type">NSDictionary</span>, <span class="params">tag</span>: <span class="type">String</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> content:<span class="type">NSDictionary</span> <span class="operator">=</span> results[<span class="string">&quot;content&quot;</span>] <span class="keyword">as?</span> <span class="type">NSDictionary</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> tag <span class="operator">==</span> <span class="string">&quot;nic&quot;</span>&#123;</span><br><span class="line">            firstSend <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">            <span class="type">Tool</span>.showSuccessHUD(<span class="string">&quot;获取信息成功&quot;</span>)</span><br><span class="line">            println(content.allKeys)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -1039,7 +1039,7 @@
   </entry>
   <entry>
     <title>iOS开发面试面试知识合集</title>
-    <url>//ioskai-fa-mian-shi-mian-shi-zhi-shi-he-ji</url>
+    <url>/2016/09/25/iOS%E5%BC%80%E5%8F%91%E9%9D%A2%E8%AF%95%E9%9D%A2%E8%AF%95%E7%9F%A5%E8%AF%86%E5%90%88%E9%9B%86/</url>
     <content><![CDATA[<blockquote>
 <p>最近一段时间到南京某公司实习之后，就一直没有更新博客，而校招季节到来，也是投了几家公司，之前不发面经是担心有泄题之类的风险，而且自己也需要调整一下心态。而现在，终于可以谈谈iOS开发的面试了</p>
 </blockquote>
@@ -1139,7 +1139,7 @@
   </entry>
   <entry>
     <title>iOS逆向&amp;iOS字体Fallback&amp;游戏汉化</title>
-    <url>//iosni-xiang-ioszi-ti-fallback-you-xi-yi-hua</url>
+    <url>/2016/06/05/iOS%E9%80%86%E5%90%91-iOS%E5%AD%97%E4%BD%93Fallback-%E6%B8%B8%E6%88%8F%E6%B1%89%E5%8C%96/</url>
     <content><![CDATA[<blockquote>
 <p>最近偶然间发现《命运石之门：线形拘束的表征图》(STEINS;GATE 线形拘束のフェノグラム)iOS版的汉化基本完成，只缺测试，于是加入帮忙汉化组……在这中间偶然间学到一些关于iOS逆向和字体相关内容</p>
 </blockquote>
@@ -1187,7 +1187,7 @@
   </entry>
   <entry>
     <title>个人笔记-《并发编程》</title>
-    <url>//ge-ren-bi-ji-bing-fa-bian-cheng</url>
+    <url>/2016/03/30/%E4%B8%AA%E4%BA%BA%E7%AC%94%E8%AE%B0-%E3%80%8A%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E3%80%8B/</url>
     <content><![CDATA[<ol>
 <li><p>线程和锁</p>
 <ul>
@@ -1352,7 +1352,7 @@
   </entry>
   <entry>
     <title>偶然发现的，关于C++指针的一点注意事项</title>
-    <url>//ou-ran-fa-xian-de-guan-yu-c-zhi-zhen-de-yi-dian-zhu-yi-shi-xiang</url>
+    <url>/2016/03/30/%E5%81%B6%E7%84%B6%E5%8F%91%E7%8E%B0%E7%9A%84%EF%BC%8C%E5%85%B3%E4%BA%8EC-%E6%8C%87%E9%92%88%E7%9A%84%E4%B8%80%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
     <content><![CDATA[<p>C++的指针是大一时期一直觉得头疼的一个东西。当年一直对指针敬而远之。一旦不小心，指针越界的后果就是程序崩溃……&gt; &lt;</p>
 <p>然而，偶然一次学妹问到关于动态数组的问题的时候……才偶然发现当年自己学指针似乎一直没有搞清楚这两者的关系：</p>
 <p><code>pointer</code>和<code>pointer[i]</code></p>
@@ -1379,7 +1379,7 @@
   </entry>
   <entry>
     <title>分享一下Java作业－Swing开发的计算器</title>
-    <url>//fen-xiang-yi-xia-javazuo-ye-swingkai-fa-de-ji-suan-qi</url>
+    <url>/2016/03/29/%E5%88%86%E4%BA%AB%E4%B8%80%E4%B8%8BJava%E4%BD%9C%E4%B8%9A%EF%BC%8DSwing%E5%BC%80%E5%8F%91%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/</url>
     <content><![CDATA[<p>上周我们Java课程老师要求我们用Swing来开发一个计算器。</p>
 <p>说起来图形化的开发，我最早用的应该就是MFC了，当时就只会拖一下控件，然后双击一下写函数……改改属性什么的……</p>
 <p>其次接触到了Qt，是在我们大二上实训的时候。那个时候要求我们做一个Qt跨平台的聊天工具，我们最后的效果差不多就是这样，代码放在了GitHub：</p>
@@ -1551,7 +1551,7 @@
   </entry>
   <entry>
     <title>发誓我不写Monad教程</title>
-    <url>//fa-shi-wo-bu-xie-monadjiao-cheng</url>
+    <url>/2016/03/30/%E5%8F%91%E8%AA%93%E6%88%91%E4%B8%8D%E5%86%99Monad%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<blockquote>
 <p>我保证，不再在网上又发布一篇Monad教程(By Erik Meijer)</p>
 </blockquote>
@@ -1568,8 +1568,25 @@
       </tags>
   </entry>
   <entry>
+    <title>圣诞节快乐</title>
+    <url>/2016/03/30/%E5%9C%A3%E8%AF%9E%E8%8A%82%E5%BF%AB%E4%B9%90/</url>
+    <content><![CDATA[<p>一年一度的圣诞节又到了……或许这又意味这一年的开始了。</p>
+<p>这一年中，有很多人给了我帮助，有欢乐之时，也有低落之时。曾经以为自己能够找到自己的目标，却发现自己还是原地踏步。希望来年之时，心中这份迷茫能够或许减少一分吧。</p>
+<p>感慨就到这里，希望在这个圣诞日子中，你我能够忘却烦恼，睁开眼睛发现属于自己的幸福，勇于追求自己的未来，不要被周遭而所困扰。</p>
+<p>最后，谨祝愿：</p>
+<p>自己能够追寻自己的梦想，看到这的你能够拥抱自己的幸福与喜悦。</p>
+<p>最后，献上我的圣诞贺卡～</p>
+<p>最近有点忙，所以就找别人做好的模版啦（顺便感觉WebGL好厉害……），以后有空可能自己做一个自己的贺卡～感谢大家</p>
+<p>贺卡链接：<a href="http://www.dreampiggy.com/wp-site/christmas/">http://www.dreampiggy.com/wp-site/christmas/</a></p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/35/a9f2b746ae91a4d2f985966e93de8.png"></p>
+]]></content>
+      <categories>
+        <category>Life</category>
+      </categories>
+  </entry>
+  <entry>
     <title>学期感想和总结</title>
-    <url>//xue-qi-gan-xiang-he-zong-jie</url>
+    <url>/2016/03/30/%E5%AD%A6%E6%9C%9F%E6%84%9F%E6%83%B3%E5%92%8C%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<blockquote>
 <p>又是一个学期过去了，我在软件工程这条路上又迈出一步，这只是写给自己的，对自己这一学期的总结罢了。</p>
 </blockquote>
@@ -1691,25 +1708,8 @@
       </tags>
   </entry>
   <entry>
-    <title>圣诞节快乐</title>
-    <url>//sheng-dan-jie-kuai-le</url>
-    <content><![CDATA[<p>一年一度的圣诞节又到了……或许这又意味这一年的开始了。</p>
-<p>这一年中，有很多人给了我帮助，有欢乐之时，也有低落之时。曾经以为自己能够找到自己的目标，却发现自己还是原地踏步。希望来年之时，心中这份迷茫能够或许减少一分吧。</p>
-<p>感慨就到这里，希望在这个圣诞日子中，你我能够忘却烦恼，睁开眼睛发现属于自己的幸福，勇于追求自己的未来，不要被周遭而所困扰。</p>
-<p>最后，谨祝愿：</p>
-<p>自己能够追寻自己的梦想，看到这的你能够拥抱自己的幸福与喜悦。</p>
-<p>最后，献上我的圣诞贺卡～</p>
-<p>最近有点忙，所以就找别人做好的模版啦（顺便感觉WebGL好厉害……），以后有空可能自己做一个自己的贺卡～感谢大家</p>
-<p>贺卡链接：<a href="http://www.dreampiggy.com/wp-site/christmas/">http://www.dreampiggy.com/wp-site/christmas/</a></p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/35/a9f2b746ae91a4d2f985966e93de8.png"></p>
-]]></content>
-      <categories>
-        <category>Life</category>
-      </categories>
-  </entry>
-  <entry>
     <title>开源者行-见识更大的世界</title>
-    <url>//kai-yuan-zhe-xing-jian-shi-geng-da-de-shi-jie</url>
+    <url>/2016/03/30/%E5%BC%80%E6%BA%90%E8%80%85%E8%A1%8C-%E8%A7%81%E8%AF%86%E6%9B%B4%E5%A4%A7%E7%9A%84%E4%B8%96%E7%95%8C/</url>
     <content><![CDATA[<blockquote>
 <p><a href="http://www.ubuntukylin.com/news/shownews.php?lang=cn&id=459">《开源者行》活动链接</a></p>
 </blockquote>
@@ -1747,7 +1747,7 @@
   </entry>
   <entry>
     <title>我的个人博客建成啦！^^</title>
-    <url>//wo-de-ge-ren-bo-ke-jian-cheng-la</url>
+    <url>/2016/03/29/%E6%88%91%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E5%BB%BA%E6%88%90%E5%95%A6%EF%BC%81/</url>
     <content><![CDATA[<p>首先，欢迎大家来到我的博客～</p>
 <p>本人想着，作为一个软件工程专业的学生，怎么也得有属于自己的一个网站或者博客吧？于是，趁着有空，抽出时间做出了这个博客。</p>
 <p>博客主要用于记录个人的生活感想，编程方面的知识，设计方面的想法以及其他杂谈，希望大家能够多多提出意见，与我进行交流，来者不拒。</p>
@@ -1760,7 +1760,7 @@
   </entry>
   <entry>
     <title>接上一话，在Swift中使用代理来中转请求和响应</title>
-    <url>//jie-shang-yi-hua-zai-swiftzhong-shi-yong-dai-li-lai-zhong-zhuan-qing-qiu-he-xiang-ying</url>
+    <url>/2016/03/30/%E6%8E%A5%E4%B8%8A%E4%B8%80%E8%AF%9D%EF%BC%8C%E5%9C%A8Swift%E4%B8%AD%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E6%9D%A5%E4%B8%AD%E8%BD%AC%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94/</url>
     <content><![CDATA[<blockquote>
 <p>这一次主要讲讲代理（Delegate）在iOS开发中的重要意义</p>
 </blockquote>
@@ -1806,7 +1806,7 @@
   </entry>
   <entry>
     <title>推荐一个Swift以及iOS开发的Git合集</title>
-    <url>//tui-jian-yi-ge-swiftyi-ji-ioskai-fa-de-githe-ji</url>
+    <url>/2016/03/30/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AASwift%E4%BB%A5%E5%8F%8AiOS%E5%BC%80%E5%8F%91%E7%9A%84Git%E5%90%88%E9%9B%86/</url>
     <content><![CDATA[<p style="text-align: left;">
   地址在此：
 </p>
@@ -1837,7 +1837,7 @@
   </entry>
   <entry>
     <title>朋友圈好友关系建模设计—动态评论设计</title>
-    <url>//peng-you-quan-hao-you-guan-xi-jian-mo-she-ji-dong-tai-ping-lun-she-ji</url>
+    <url>/2016/03/30/%E6%9C%8B%E5%8F%8B%E5%9C%88%E5%A5%BD%E5%8F%8B%E5%85%B3%E7%B3%BB%E5%BB%BA%E6%A8%A1%E8%AE%BE%E8%AE%A1%E2%80%94%E5%8A%A8%E6%80%81%E8%AF%84%E8%AE%BA%E8%AE%BE%E8%AE%A1/</url>
     <content><![CDATA[<p>接上一篇，我们有了好友关系之后，就又涉及到了怎么样处理“只能看到好友的动态，和好友在好友动态下的评论）</p>
 <p>其实关于获取好友状态，已经不成问题，从数据库中读取出来就行了，最后统一出一个好友列表，然后进行查询就行了。关键的地方在于这个好友动态的排序以及评论呈现。</p>
 <p><img src="http://dreampiggy-image.test.upcdn.net/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png"></p>
@@ -1862,7 +1862,7 @@
   </entry>
   <entry>
     <title>朋友圈好友关系建模设计—好友关系设计</title>
-    <url>//peng-you-quan-hao-you-guan-xi-jian-mo-she-ji-hao-you-guan-xi-she-ji</url>
+    <url>/2016/03/29/%E6%9C%8B%E5%8F%8B%E5%9C%88%E5%A5%BD%E5%8F%8B%E5%85%B3%E7%B3%BB%E5%BB%BA%E6%A8%A1%E8%AE%BE%E8%AE%A1%E2%80%94%E5%A5%BD%E5%8F%8B%E5%85%B3%E7%B3%BB%E8%AE%BE%E8%AE%A1/</url>
     <content><![CDATA[<p>上周学院举办了一个建模比赛中：<a href="http://www.ippclub.org/index.php/archives/33/">http://www.ippclub.org/index.php/archives/33/</a></p>
 <p><img src="http://dreampiggy-image.test.upcdn.net/image/3/96/05ea1626712a1db418daf7b65050c.png"></p>
 <p>最后成品放在了github上面：<a href="https://github.com/lizhuoli1126/FriendCircle">https://github.com/lizhuoli1126/FriendCircle</a></p>
@@ -1897,7 +1897,7 @@
   </entry>
   <entry>
     <title>第一次Hackathon之旅</title>
-    <url>//di-yi-ci-hackathonzhi-lu</url>
+    <url>/2016/03/30/%E7%AC%AC%E4%B8%80%E6%AC%A1Hackathon%E4%B9%8B%E6%97%85/</url>
     <content><![CDATA[<blockquote>
 <p><a href="http://hacks.hustunique.com/">Unique Hackday</a>之旅</p>
 </blockquote>
@@ -1935,7 +1935,7 @@
   </entry>
   <entry>
     <title>简单的FP中思想在实际小项目中的应用</title>
-    <url>//jian-dan-de-fpzhong-si-xiang-zai-shi-ji-xiao-xiang-mu-zhong-de-ying-yong</url>
+    <url>/2016/03/30/%E7%AE%80%E5%8D%95%E7%9A%84FP%E4%B8%AD%E6%80%9D%E6%83%B3%E5%9C%A8%E5%AE%9E%E9%99%85%E5%B0%8F%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/</url>
     <content><![CDATA[<p><a href="http://zh.wikipedia.org/w/index.php?title=%E5%87%BD%E6%95%B8%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80">函数式编程</a>，无论是谁，第一次听到都会感到好奇，疑惑以及畏惧。因为一提到函数式编程就会让人想到很多数学或者计算机科学理论研究的深奥原理，无论是<a href="http://zh.wikipedia.org/wiki/%CE%9B%E6%BC%94%E7%AE%97">Lamda演算</a>还是<a href="http://zh.wikipedia.org/wiki/%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0">高阶函数</a>，似乎都和平常自己所接触到的编程语言毫无关系。</p>
 <p>随着现代语言的发展，大多数传统面向对象语言已经支持了很多函数式编程中的语法，比如说：</p>
 <p><a href="http://zh.wikipedia.org/zh-cn/%E9%97%AD%E5%8C%85_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6)">闭包</a>：就是指一个函数块，把连同这个函数所需要的所有参数（全局的or局部的）放入一个闭包中，然后这个函数可以单独用来执行，不会因为外部变量被修改而产生额外影响。相当于这个函数的上下文全部被保留了下来。</p>
@@ -2059,7 +2059,7 @@
   </entry>
   <entry>
     <title>阿里前端工程师（Node.js）向实习生面试经验</title>
-    <url>//a-li-qian-duan-gong-cheng-shi-node-js-xiang-shi-xi-sheng-mian-shi-jing-yan</url>
+    <url>/2016/03/30/%E9%98%BF%E9%87%8C%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%88Node-js%EF%BC%89%E5%90%91%E5%AE%9E%E4%B9%A0%E7%94%9F%E9%9D%A2%E8%AF%95%E7%BB%8F%E9%AA%8C/</url>
     <content><![CDATA[<h2 id="前提说明："><a href="#前提说明：" class="headerlink" title="前提说明："></a>前提说明：</h2><p>自己是在北邮论坛中找的学长内推，当时与学长问了关于阿里前端中是否有偏向JavaScript开发（中间件，工具库）的方向，学长说只有杭州有类似岗位，最后把我内推到了淘宝UED的团队去了。</p>
 <p>简历说明中侧重讲了关于Node.js的经历，JavaScript轮子的介绍以及一些使用了Node.js技术栈的Web项目。这点对于前端实习也是一个加分项。</p>
 <h2 id="一面："><a href="#一面：" class="headerlink" title="一面："></a>一面：</h2><p>一面面试官问了大概有4年开发经验（包括了Java和JavaScript），上来除了标准的自我介绍以外，大概主要谈论了关于Node.js，JavaScript语法以及Web开发的领域，对简历中提到的项目稍微深入问了一下。</p>
@@ -3359,7 +3359,7 @@
   </entry>
   <entry>
     <title>个人笔记-《高级数据结构》</title>
-    <url>//ge-ren-bi-ji-gao-ji-shu-ju-jie-gou</url>
+    <url>/2016/03/30/%E4%B8%AA%E4%BA%BA%E7%AC%94%E8%AE%B0-%E3%80%8A%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%8B/</url>
     <content><![CDATA[<h1 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h1><ol>
 <li> Why and how O(log n) access time?</li>
 <li> Dynamic data structure and Analysis</li>

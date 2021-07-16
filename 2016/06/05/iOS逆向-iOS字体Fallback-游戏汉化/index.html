@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="最近偶然间发现《命运石之门：线形拘束的表征图》(STEINS;GATE 线形拘束のフェノグラム)iOS版的汉化基本完成，只缺测试，于是加入帮忙汉化组……在这中间偶然间学到一些关于iOS逆向和字体相关内容  字体问题游戏是基于iOS UIKit以及Cocos游戏引擎写的（动画效果是Cocos的，文本框是定制的UITextField，而Backlog就是个UIScrollView……）本身支持UTF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS逆向&amp;iOS字体Fallback&amp;游戏汉化">
+<meta property="og:url" content="http://dreampiggy.com/2016/06/05/iOS%E9%80%86%E5%90%91-iOS%E5%AD%97%E4%BD%93Fallback-%E6%B8%B8%E6%88%8F%E6%B1%89%E5%8C%96/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="最近偶然间发现《命运石之门：线形拘束的表征图》(STEINS;GATE 线形拘束のフェノグラム)iOS版的汉化基本完成，只缺测试，于是加入帮忙汉化组……在这中间偶然间学到一些关于iOS逆向和字体相关内容  字体问题游戏是基于iOS UIKit以及Cocos游戏引擎写的（动画效果是Cocos的，文本框是定制的UITextField，而Backlog就是个UIScrollView……）本身支持UTF">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/8/2e/d2b034dd2baab3fa03776f8ec9988.jpg">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/1/c5/a3c3555692a29541f2a45c8799323.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/d/a6/20b6c740e08b4ce50c7726931039d.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/f/b8/2fd8b75defcd753005347e05e3994.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/5/6b/ba2950239095f36f16e57cd593b21.jpg">
+<meta property="article:published_time" content="2016-06-05T12:33:54.000Z">
+<meta property="article:modified_time" content="2016-07-13T17:39:32.000Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="逆向">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/image/8/2e/d2b034dd2baab3fa03776f8ec9988.jpg">
+
+<link rel="canonical" href="http://dreampiggy.com/2016/06/05/iOS%E9%80%86%E5%90%91-iOS%E5%AD%97%E4%BD%93Fallback-%E6%B8%B8%E6%88%8F%E6%B1%89%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS逆向&iOS字体Fallback&游戏汉化 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/06/05/iOS%E9%80%86%E5%90%91-iOS%E5%AD%97%E4%BD%93Fallback-%E6%B8%B8%E6%88%8F%E6%B1%89%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS逆向&iOS字体Fallback&游戏汉化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-06-05 20:33:54" itemprop="dateCreated datePublished" datetime="2016-06-05T20:33:54+08:00">2016-06-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2016-07-14 01:39:32" itemprop="dateModified" datetime="2016-07-14T01:39:32+08:00">2016-07-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>最近偶然间发现《命运石之门：线形拘束的表征图》(STEINS;GATE 线形拘束のフェノグラム)iOS版的汉化基本完成，只缺测试，于是加入帮忙汉化组……在这中间偶然间学到一些关于iOS逆向和字体相关内容</p>
+</blockquote>
+<h1 id="字体问题"><a href="#字体问题" class="headerlink" title="字体问题"></a>字体问题</h1><p>游戏是基于iOS UIKit以及Cocos游戏引擎写的（动画效果是Cocos的，文本框是定制的UITextField，而Backlog就是个UIScrollView……）本身支持UTF-8，覆盖汉化脚本后运行，却发现字体渲染不正常，出现了两种字体渲染（看图，”喵”明显是黑体-简，即iOS9之前默认的简体中文字体），更会有很多汉字变为日文汉字（”变” -&gt; “変”，”归” -&gt; “帰”)</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/8/2e/d2b034dd2baab3fa03776f8ec9988.jpg"></p>
+<p>起初并没有理解问题，最后查资料才认识到这是iOS字体Fallback所导致的。在查阅资料时候也发现一个异常好用的iOS字体对比渲染网页：<a target="_blank" rel="noopener" href="http://iosfonts.com/">iosfonts</a>，直接输入文字，即可查看各种当前固件各种font family的效果（最好用Safari访问，OS X访问的话，相当于查看当前OS X的font family）</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/c5/a3c3555692a29541f2a45c8799323.png"></p>
+<p>经过对比以及反编译搜索，发现渲染正常的是HiraKakuProN-W6，而其它字体会被Fallback到STHeitiSC-Light(黑体-简,细体)，原因自然的，因为HiraKakuProN并不是中文字体，只是支持部分日文汉字的显示，剩下的中文汉字将被Fallback（这是iOS UIKit的自动处理，不会出现[?][?]这种空白字块的效果）（这一些列支持中文的字体也有，就是大名鼎鼎的冬青黑体(Hiragino Sans)，在iOS 9和OS X 10.10.6之后加入）</p>
+<p>同时，做过iOS国际化的也知道，在iOS Bundle的info.pilst里面，有一个键<code>CFBundleDevelopmentRegion</code>，这个键将决定所有文字默认字体，假如你设置为”en”，那么所有英文文字都将Fallback到Helvetica Light(iOS 9之后为San Francisco)，而不是黑体-简的英文字体（参考：<a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-130430">iOS Developer Library</a>）</p>
+<p>所以汉化的时候，我们最好确认该值设置为<code>zh_CN</code>（大部分日文游戏会是<code>ja_JP</code>），防止未手动设置的字体Fallback到日文字体</p>
+<p>这样的话，我们的目标就是逆向把字体设置为黑体-简了。</p>
+<h1 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h1><p>iOS逆向入门，大家可以参考<a target="_blank" rel="noopener" href="https://www.whitehack.com.au/reverse-engineering-ios-apps/">Reverse Engineering iOS Apps</a>，讲述了关于各种类型的逆向，命令行工具，Hopper Disassembler（最好的iOS(ARM)/OS X(x86)逆向工具，支持反编译Objective-C伪代码），同时，<a target="_blank" rel="noopener" href="https://github.com/iosre/iOSAppReverseEngineering">GitHub</a>上有个非常好的电子书，对逆向入门很有帮助。</p>
+<p>我们的目标，自然是想办法替换字体名，大家应该都知道，二进制的Hex值你可以替换部分为0x00来无效化，但绝不能随便中间添加插入。因为一旦加入或者删除Hex，后续所有的地址跳转都将挂掉……</p>
+<p>通过Hopper静态分析，能发现游戏将我们想要替换的字体名<code>HiraKakuProN-W6</code>写死到一个const NSString中去（实际上，Objective-C会编译为<code>_CFConstantStringClassReference</code>），遗憾的是，<code>STHeitiSC-Medium</code>是16个Byte，而前者只有15个Byte，意味着暴力Hex替换是不可能的。</p>
+<p>那么，就没有办法了吗？不是的，就以我不懂逆向来看，也知道至少有两种办法：</p>
+<h3 id="调用过程前插入指令"><a href="#调用过程前插入指令" class="headerlink" title="调用过程前插入指令"></a>调用过程前插入指令</h3><p>对所有引用这个常量地址的过程，手动插入ARM汇编指令，暴力将目标字符串放入寄存器。同时，在调用外过程的时候，把这个寄存器传进去，相当于动态创建了新的字符串并传参……</p>
+<p>对于ARM汇编来说，与8086汇编最大的差距就是ARM指令是三地址码(<code>mov r0,#0x00</code>)，而且旧版iOS SDK编译的的Mach-O文件更是包含了ARM32(32位指令)和ARM Thumb(16位指令)，需要单独区别。不过熟悉的pc寄存器还是在的，比如这就是进入和函数返回的指令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">push &#123; r4, r5, r6, r7, lr &#125;</span><br><span class="line">pop &#123; r4, r5, r6, r7, pc &#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然，真要做逆向工程师，需要学习大量ARM汇编知识，对我这种基本不懂的人，一般也不会采取这种方式。</p>
+<h3 id="修改常量段和地址引用"><a href="#修改常量段和地址引用" class="headerlink" title="修改常量段和地址引用"></a>修改常量段和地址引用</h3><p>想办法把常量段(__DATA)前面不需要的常量（一般是一些Log的字符串之类）字串缩减，同时对后续所有引用的地址全部修改(减去缩短的字节数)，这样就有了更多空间来修改目标字串。</p>
+<p>当然，对于我这种不懂的人，还是选择2方法更好……</p>
+<p>通过Hopper全局搜索，发现一个地址为0x002fc50的字串”Not interleaved!”，再通过地址引用，找到调用过程，用伪代码分析一看，是用来做Log的，没有意义，决定用它开刀。</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/d/a6/20b6c740e08b4ce50c7726931039d.png"></p>
+<p>既然我们目标是把16Byte替换15Byte，那么只需要删除一个Byte(也就选”!”)了，之后，把从该地址开始，到目标地址的所有地址配合Hex Editor，把所有字符串向前一个Byte，然后更新这些常量的被引用地址值（这步骤手工很麻烦，幸好Hopper支持脚本，大工程可以脚本跑）</p>
+<p>替换修改后的常量段：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/f/b8/2fd8b75defcd753005347e05e3994.png"></p>
+<p>检查没问题，导出可执行文件，测试，结果非常满意，全部被替换为黑体-简(粗体)，相关功能也不受影响（真要说影响，可能就是用户看不到的控制台的Log会输出少个”!”罢了2333）</p>
+<p>最终成果（漂亮的黑体-简)：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/5/6b/ba2950239095f36f16e57cd593b21.jpg"></p>
+<h1 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h1><p>从中，也可以看出iOS开发的时候，对于常量值，比如一些密码，Key之类的，任何静态分析工具都能轻易找到，并且替换。因此，对敏感的信息，一定要做好相应的安全反逆向。</p>
+<p>单纯的宏定义，虽然编译后会展开，但是还是会有一个随机分配标签的常量存在，也容易通过长度和相关函数签名（比如encrypt，key之类名称）的传入参数发现。简单处理，可以加密函数起名A_Function，通过宏定义<code>#define A_Function ENCRYPT_FUN</code>，这样将不会反编译后将不会知道标签，更进一步可以通过宏定义直接封装加密函数和解密函数，减少静态分析工具发现的可能性。</p>
+<p>不过对于动态分析工具以及Hook系统调用来说，这些都是没有用的……归根结底还是建议要确保iOS客户端，尽量少保留敏感信息，对服务端API设置Auth，SSL验证等手段，才能减少被逆向者获取信息的可能性。</p>
+<p>好了，也扯完了，愉快地去(tui)测(you)试(xi)《命运石之门：线形拘束的表征图》了……这作品是《命运石之门》的剧情补完和外传，而妄想科学ADV系列基本一直是我的最爱，大家有兴趣可以去<a target="_blank" rel="noopener" href="http://tieba.baidu.com/p/4260615784">贴吧</a>关注进度。</p>
+<p><em>El psy congroo</em></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/05/30/Xcode%E8%87%AA%E5%B8%A6%E7%9A%84UI%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/" rel="prev" title="Xcode自带的UI调试工具">
+      <i class="fa fa-chevron-left"></i> Xcode自带的UI调试工具
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/06/17/Objective-C-ARC%E4%B8%8Bblock%E8%A1%A8%E7%8E%B0%E5%92%8C%E5%85%B3%E9%94%AE%E5%AD%97%E5%BD%B1%E5%93%8D/" rel="next" title="Objective-C ARC下block表现和关键字影响">
+      Objective-C ARC下block表现和关键字影响 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E4%BD%93%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">字体问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%86%E5%90%91"><span class="nav-number">2.</span> <span class="nav-text">逆向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B%E5%89%8D%E6%8F%92%E5%85%A5%E6%8C%87%E4%BB%A4"><span class="nav-number">2.0.1.</span> <span class="nav-text">调用过程前插入指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%B8%B8%E9%87%8F%E6%AE%B5%E5%92%8C%E5%9C%B0%E5%9D%80%E5%BC%95%E7%94%A8"><span class="nav-number">2.0.2.</span> <span class="nav-text">修改常量段和地址引用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%84%9F%E6%83%B3"><span class="nav-number">3.</span> <span class="nav-text">感想</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

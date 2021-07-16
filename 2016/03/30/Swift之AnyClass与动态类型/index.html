@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这次写一下关于Swift中AnyClass的使用以及动态类型的实例化和使用场景  AnyClass与AnyObjectSwift中，任何自定义的对象都是AnyClass的子类，类似于Java的Object类（但注意，这和Objective-C的NSObject不同，后者在Swift中是专门的UIKit或者AppKit框架里面定义的类型，而非语言所规定的类型）  AnyClassThe proto">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift之AnyClass与动态类型">
+<meta property="og:url" content="http://dreampiggy.com/2016/03/30/Swift%E4%B9%8BAnyClass%E4%B8%8E%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="这次写一下关于Swift中AnyClass的使用以及动态类型的实例化和使用场景  AnyClass与AnyObjectSwift中，任何自定义的对象都是AnyClass的子类，类似于Java的Object类（但注意，这和Objective-C的NSObject不同，后者在Swift中是专门的UIKit或者AppKit框架里面定义的类型，而非语言所规定的类型）  AnyClassThe proto">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-03-29T18:38:56.000Z">
+<meta property="article:modified_time" content="2016-03-31T06:14:53.000Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="Swift">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://dreampiggy.com/2016/03/30/Swift%E4%B9%8BAnyClass%E4%B8%8E%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Swift之AnyClass与动态类型 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/Swift%E4%B9%8BAnyClass%E4%B8%8E%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Swift之AnyClass与动态类型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-03-30 02:38:56" itemprop="dateCreated datePublished" datetime="2016-03-30T02:38:56+08:00">2016-03-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2016-03-31 14:14:53" itemprop="dateModified" datetime="2016-03-31T14:14:53+08:00">2016-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>这次写一下关于Swift中AnyClass的使用以及动态类型的实例化和使用场景</p>
+</blockquote>
+<h1 id="AnyClass与AnyObject"><a href="#AnyClass与AnyObject" class="headerlink" title="AnyClass与AnyObject"></a>AnyClass与AnyObject</h1><p>Swift中，任何自定义的对象都是AnyClass的子类，类似于Java的Object类（但注意，这和Objective-C的NSObject不同，后者在Swift中是专门的UIKit或者AppKit框架里面定义的类型，而非语言所规定的类型）</p>
+<blockquote>
+<p>AnyClass<br>The protocol to which all class types implicitly conform.</p>
+</blockquote>
+<p>Declaration<br><code>typealias AnyClass = AnyObject.Type</code></p>
+<blockquote>
+<p>AnyObject</p>
+</blockquote>
+<p>protocol AnyObject { … }<br><code>The protocol to which all classes implicitly conform.</code></p>
+<p>但是注意，这个AnyObject.Type是一个毕竟是一个接口的Property，所以只能在函数的参数里面使用，如果想要直接获取某个类（而非实例）的类型，使用类名.self即可；如果想要获取一个实例的类的类型，使用.dynamicType；对了，如果对象是NSObject的实例（iOS开发中常用），用classForCoder也是一个选择</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span>(<span class="params">s</span>: <span class="type">AnyClass</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">print</span>(s)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> a <span class="operator">=</span> <span class="type">Test</span>.<span class="keyword">self</span></span><br><span class="line"><span class="keyword">let</span> b <span class="operator">=</span> <span class="type">Test</span>().dynamicType</span><br><span class="line"><span class="keyword">let</span> c:<span class="type">AnyClass</span> <span class="operator">=</span> <span class="string">&quot;test&quot;</span>.classForCoder <span class="comment">//注意此时加了classForCoder的方法调用，编译器会推导出&quot;&quot;是一个NSString的实例而不是String</span></span><br><span class="line">f(a) <span class="comment">//Test</span></span><br><span class="line">f(b) <span class="comment">//Test</span></span><br><span class="line">f(c) <span class="comment">//NSString</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="动态实例化"><a href="#动态实例化" class="headerlink" title="动态实例化"></a>动态实例化</h1><p>既然我们有了某个AnyObject的Type，这样我们就可以直接构造出一个类型的实例。使用AnyObject都有的.init方法即可，当然，AnyObject本身并没有init的构造方法……</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> d <span class="operator">=</span> a.<span class="keyword">init</span>() <span class="comment">// d is an instance of Test</span></span><br><span class="line"><span class="keyword">let</span> e <span class="operator">=</span> (c <span class="keyword">as!</span> <span class="type">NSString</span>.<span class="keyword">Type</span>).<span class="keyword">init</span>(stringLiteral: <span class="string">&quot;test&quot;</span>) <span class="comment">// e is &quot;test&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>当然，你也许肯定奇怪那个required的init是什么意思，其实这是为了避免出现你使用的这个Test.Type有继承的子类，然后子类的构造函数中使用了这个Type来构造父类这种边界情况出现（考虑的真细……）</p>
+<blockquote>
+<p>Use an initializer expression to construct an instance of a type from that type’s metatype value. For class instances, the initializer that’s called must be marked with the required keyword or the entire class marked with the final keyword.</p>
+</blockquote>
+<p>而且对于一个Protocol，可以用.Protocol来获取这个Protocol的类型（还是AnyClass），也可以用self来统一处理，因为实际上</p>
+<p><code>metatype-type(.self) -&gt; type.Type | type.Protocol</code></p>
+<p>这样的话，有了动态就可以开始干活了</p>
+<h1 id="Swift的反射"><a href="#Swift的反射" class="headerlink" title="Swift的反射"></a>Swift的反射</h1><p>或许你也想，既然我有了动态的类型实例，那么是不是能通过类似Java的反射，获取某个类型的所有Property，然后直接访问这个Property呢？答案也是有的，不过在Swift中很少用到，这里用到到了Mirror</p>
+<blockquote>
+<p>struct Mirror { … }<br>Representation of the sub-structure and optional “display style” of any arbitrary subject instance.</p>
+</blockquote>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> whatThisProperty:<span class="type">String</span></span><br><span class="line">    <span class="function"><span class="keyword">init</span>(<span class="params">name</span>:<span class="type">String</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.whatThisProperty <span class="operator">=</span> name</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> p <span class="operator">=</span> <span class="type">Person</span>(name: <span class="string">&quot;Bob&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> mirror <span class="operator">=</span> <span class="type">Mirror</span>(reflecting: p)</span><br><span class="line">mirror.children.forEach &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;<span class="subst">\(<span class="variable">$0</span>.label<span class="operator">!</span>)</span>: <span class="subst">\(<span class="variable">$0</span>.value)</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的children返回的是一个AnyForwardCollection，也是可以像数组一般用index来访问或者forEach遍历的，不过索引顺是序按照你的Property的声明顺序</p>
+<h1 id="最后的小应用"><a href="#最后的小应用" class="headerlink" title="最后的小应用"></a>最后的小应用</h1><p>由于我也不怎么会写iOS，有时候遇到这样一种情况：<br>我提供了一个3D Touch的按钮，四个按钮会对应四种ViewController，iOS提供的API可以获取到用户点击的那个按钮对应的设置的一个字符串值，那么，我可以这样来玩……</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 3D Touch 传入的字符串来判断返回某个ViewController</span></span><br><span class="line"><span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">shortcutToViewController</span>(<span class="params">type</span>:<span class="type">String</span>)</span> -&gt; <span class="type">UIViewController</span>.<span class="keyword">Type</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> type &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;pe&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">RunningViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;curriculum&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">CurriculumViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;card&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">SeuCardViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;nic&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">NicViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">default</span>: <span class="keyword">return</span> <span class="type">UIViewController</span>.<span class="keyword">self</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是用来判断字符串来产生对应的ViewController.Type的，然后，在真正需要实例化一个新的ViewController来显示一个View的时候，再实例化</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">pushToViewController</span>(<span class="params">vc</span>: <span class="type">UIViewController</span>.<span class="keyword">Type</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 确保要显示的ViewController不是顶层显示的ViewController</span></span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> duplication <span class="operator">=</span> navigationController<span class="operator">?</span>.topViewController<span class="operator">?</span>.isKindOfClass(vc) <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">    <span class="keyword">if</span> duplication &#123; <span class="comment">// 检查失败，重复的ViewController，不需要跳转</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> viewController <span class="operator">=</span> vc.<span class="keyword">init</span>(nibName: <span class="string">&quot;<span class="subst">\(vc.classForCoder())</span>&quot;</span>, bundle: <span class="literal">nil</span>) <span class="comment">// 初始化ViewController</span></span><br><span class="line">    navigationController<span class="operator">?</span>.pushViewController(viewController, animated: <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这也是一种比较奇怪的方式……不过如果不这样，就会导致在主类和上层里面引入过多的Switch Case或者导致代码中出现纯字符串定义的nibName，这对以后重构非常不利。</p>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>嗯，好久没写东西了……主要最近在学编译原理，之后会有几篇讲解通过Java实现一个简单的支持CFG的Yacc(误)的东西……顺便就当复习编译原理的Parser部分了。</p>
+<p>Swift如今开源了：<a target="_blank" rel="noopener" href="https://github.com/apple/swift">Swift</a>，不到几天Star就超过了2年出头的Rust(lol)……现如今Star也到了2W5的程度</p>
+<p>虽然UIKit和AppKit这种宝贵的财富Apple肯定不会开源，不过Swift标准库的实现也是越来越完善，而且也有Linux的版本，很多第三方的库开始加入了对Linux的支持（非面向iOS和OS X开发的，比如对SQLite，Redis的wrapper）</p>
+<p>Swift作为一个Rust的对手，一个完全抛弃了C的现代语言，之后在除客户端开发外，更可能的领域就是系统编程和服务端编程了吧。希望能够在在安全性，易用性，效率上达到一个更大的高度，让我们这种开发者也能用的爽，用的顺。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Swift/" rel="tag"># Swift</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/03/30/React-Native-%E4%B8%8B%E4%B8%80%E4%BB%A3UI%E7%BC%96%E7%A8%8B%E6%80%9D%E7%BB%B4/" rel="prev" title="React-Native -- 下一代UI编程思维">
+      <i class="fa fa-chevron-left"></i> React-Native -- 下一代UI编程思维
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/03/30/Java%E4%B9%8B%E6%9A%B4%E5%8A%9B%E5%AE%9E%E7%8E%B0Parser-Generator%EF%BC%88%E5%BA%8F%E8%A8%80%EF%BC%89/" rel="next" title="Java之暴力实现Parser Generator（序言）">
+      Java之暴力实现Parser Generator（序言） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AnyClass%E4%B8%8EAnyObject"><span class="nav-number">1.</span> <span class="nav-text">AnyClass与AnyObject</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%AE%9E%E4%BE%8B%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">动态实例化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Swift%E7%9A%84%E5%8F%8D%E5%B0%84"><span class="nav-number">3.</span> <span class="nav-text">Swift的反射</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E5%90%8E%E7%9A%84%E5%B0%8F%E5%BA%94%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">最后的小应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E6%9D%9F%E8%AF%AD"><span class="nav-number">5.</span> <span class="nav-text">结束语</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
