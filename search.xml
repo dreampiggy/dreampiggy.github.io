@@ -30,26 +30,6 @@
       </tags>
   </entry>
   <entry>
-    <title>20岁的生日，或许应有些感想</title>
-    <url>/2016/03/29/20%E5%B2%81%E7%9A%84%E7%94%9F%E6%97%A5%EF%BC%8C%E6%88%96%E8%AE%B8%E5%BA%94%E6%9C%89%E4%BA%9B%E6%84%9F%E6%83%B3/</url>
-    <content><![CDATA[<p>首先，祝自己生日快乐，自己迎来了第20个春秋。</p>
-<p>20岁，意味着自己早已脱离了当年年少无知的懵懂，应该肩负起属于自己的责任，应当直面这纷杂世界的各式问题。在进入大学的一年里，感受最多的，便是人际关系的重要性、做事的担当性，并再一次认识到自己存在的关于个人性格方面的一些问题。</p>
-<p>我的性格第一次变化，是在初中的时候。小学的我比较单纯，认为学校同学就是一切，听老师的话（多么好的一个孩子呀……），个性也是羞涩而带点自卑。而到了初中，渐渐地开朗了起来，敢与老师争，能和同学扯。高中时期，或许更是如此吧，但是感觉经过高三（高考）的压榨之后，整个人开始多虑了起来，开始犹豫了起来，不再积极地去招呼他人，去帮助他人，遇到问题也总是自己处理。我现在也体会到了高考的一定负面影响。</p>
-<p>回到正题，大学一年过去了，我从一个初入校门的新生，如今也成为了他人口中的学长。大学第一年的开头，我是满怀着希望和热情，想改变自己，想证明自己。大一一年中，我加入了各种社团，并且也努力地学好课程（虽然成绩不是非常优异:-P）。大一上学期，各种活跃，与学长们关系也是挺不错的。</p>
-<p>下学期到了，我却渐渐冷却下来了。一方面是感到了学业压力的真实性，更重要的一方面，是自己对自己未来的一种迷茫。曾经的我，一直想着大学完继续读研，以保研为第一目标。但是之后看到许多学长的表现。周围的人，有的全力走ACM，有的人专注于接项目自己开发，而学校的课程安排又确实让我总觉得自己当年是选错了专业。（真的，有时候会这样想）。于是，整个人就有些迷茫了。</p>
-<p>这份迷茫也许还将伴随着我，毕竟，截止到现在，我仍然没有放弃去读研的念头。毕竟，我觉得自己并没有真正成熟到能够直接进入工作的地步，或许再等我一学期，我就会有了最终的决定了吧。</p>
-<p>也许，总体上说自己确实成长了一些，能够毫不胆怯地向陌生人搭话，能够积极地站在他人面前，能够主动参与活动而不是以前被动接受……但是，反思自己还是没有真正有一名作为成年人的自觉，责任意识不够，更少了一份与他人打交道，圆滑的能力（现在觉得，这份能力真的是非常重要，不是世故，而是真正社会上交流所需要的），在这后半学期之中，或许，我将慢慢地去向着更为成熟的自己去努力吧。</p>
-<p>好了，感想先到这里，给自己以目标，让自己前进，20岁，我应当开始了。</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/e/6a/4314fc89c9ec5554d88cb9526a533.jpg"></p>
-]]></content>
-      <categories>
-        <category>Life</category>
-      </categories>
-      <tags>
-        <tag>感悟</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Autolayout小技巧</title>
     <url>/2016/03/30/Autolayout%E5%B0%8F%E6%8A%80%E5%B7%A7/</url>
     <content><![CDATA[<p>iOS开发UI一直是一个问题，当年用代码画UI一度成为流行趋势，相信代码能万能解决问题，而且十分简单。</p>
@@ -78,6 +58,26 @@
       </categories>
       <tags>
         <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>20岁的生日，或许应有些感想</title>
+    <url>/2016/03/29/20%E5%B2%81%E7%9A%84%E7%94%9F%E6%97%A5%EF%BC%8C%E6%88%96%E8%AE%B8%E5%BA%94%E6%9C%89%E4%BA%9B%E6%84%9F%E6%83%B3/</url>
+    <content><![CDATA[<p>首先，祝自己生日快乐，自己迎来了第20个春秋。</p>
+<p>20岁，意味着自己早已脱离了当年年少无知的懵懂，应该肩负起属于自己的责任，应当直面这纷杂世界的各式问题。在进入大学的一年里，感受最多的，便是人际关系的重要性、做事的担当性，并再一次认识到自己存在的关于个人性格方面的一些问题。</p>
+<p>我的性格第一次变化，是在初中的时候。小学的我比较单纯，认为学校同学就是一切，听老师的话（多么好的一个孩子呀……），个性也是羞涩而带点自卑。而到了初中，渐渐地开朗了起来，敢与老师争，能和同学扯。高中时期，或许更是如此吧，但是感觉经过高三（高考）的压榨之后，整个人开始多虑了起来，开始犹豫了起来，不再积极地去招呼他人，去帮助他人，遇到问题也总是自己处理。我现在也体会到了高考的一定负面影响。</p>
+<p>回到正题，大学一年过去了，我从一个初入校门的新生，如今也成为了他人口中的学长。大学第一年的开头，我是满怀着希望和热情，想改变自己，想证明自己。大一一年中，我加入了各种社团，并且也努力地学好课程（虽然成绩不是非常优异:-P）。大一上学期，各种活跃，与学长们关系也是挺不错的。</p>
+<p>下学期到了，我却渐渐冷却下来了。一方面是感到了学业压力的真实性，更重要的一方面，是自己对自己未来的一种迷茫。曾经的我，一直想着大学完继续读研，以保研为第一目标。但是之后看到许多学长的表现。周围的人，有的全力走ACM，有的人专注于接项目自己开发，而学校的课程安排又确实让我总觉得自己当年是选错了专业。（真的，有时候会这样想）。于是，整个人就有些迷茫了。</p>
+<p>这份迷茫也许还将伴随着我，毕竟，截止到现在，我仍然没有放弃去读研的念头。毕竟，我觉得自己并没有真正成熟到能够直接进入工作的地步，或许再等我一学期，我就会有了最终的决定了吧。</p>
+<p>也许，总体上说自己确实成长了一些，能够毫不胆怯地向陌生人搭话，能够积极地站在他人面前，能够主动参与活动而不是以前被动接受……但是，反思自己还是没有真正有一名作为成年人的自觉，责任意识不够，更少了一份与他人打交道，圆滑的能力（现在觉得，这份能力真的是非常重要，不是世故，而是真正社会上交流所需要的），在这后半学期之中，或许，我将慢慢地去向着更为成熟的自己去努力吧。</p>
+<p>好了，感想先到这里，给自己以目标，让自己前进，20岁，我应当开始了。</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/e/6a/4314fc89c9ec5554d88cb9526a533.jpg"></p>
+]]></content>
+      <categories>
+        <category>Life</category>
+      </categories>
+      <tags>
+        <tag>感悟</tag>
       </tags>
   </entry>
   <entry>
@@ -231,62 +231,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Core Graphics仿射变换知识</title>
-    <url>/2016/09/27/Core-Graphics%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<blockquote>
-<p>这是补充记录关于CG的几何变换的一些知识，涉及到简单的矩阵变换</p>
-</blockquote>
-<h1 id="变换矩阵"><a href="#变换矩阵" class="headerlink" title="变换矩阵"></a>变换矩阵</h1><p>在Core Graphics进行图层缩放、旋转、平移的时候，本质的操作就是使用<code>CGAffineTransform</code>这个3x2矩阵对象，与我们的<code>CGPoint</code>这个1x2的矩阵（其实就是对应就是[x,y]这个向量）进行矩阵相乘操作，得到的新矩阵就是变换后的新向量。一般通过CALayer得到的图层都是矢量，因此可以把整个图层进行相应的缩放、旋转、平移。</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="built_in">CGAffineTransform</span> &#123; </span><br><span class="line">  <span class="built_in">CGFloat</span> a; </span><br><span class="line">  <span class="built_in">CGFloat</span> b; </span><br><span class="line">  <span class="built_in">CGFloat</span> c; </span><br><span class="line">  <span class="built_in">CGFloat</span> d; </span><br><span class="line">  <span class="built_in">CGFloat</span> tx; </span><br><span class="line">  <span class="built_in">CGFloat</span> ty; </span><br><span class="line">&#125; <span class="built_in">CGAffineTransform</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这个结构体对应的矩阵如下（看不到LaTeX公式的请看<a href="https://developer.apple.com/reference/coregraphics/1455865-cgaffinetransformmake">Apple Developer Document</a>）：</p>
-<p>$ \begin{bmatrix} a &amp; b &amp; 0 \\ c &amp; d &amp; 0 \\ t_{x} &amp; t_{y} &amp; 1 \end{bmatrix} $</p>
-<p>Apple采用了用[1]补齐1x3的向量，和用[0,0,1]的转置补齐的3x3的变换矩阵相乘来做仿射变换。虽然可能觉理论上可以直接用2x3变换矩阵和3x1的向量([x,y,1]的转置)运算，得到一个2x1的向量，省3个<code>CGFloat</code>的空间。但是由于这种变换操作叠加次数特别多，与其每次得到的向量结果再补齐[1]，还不如一次性就用一个1x3和3x3运算，用空间换取时间，这也许是QuartzCore的实现者的考虑吧。</p>
-<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} a &amp; b &amp; 0 \\ c &amp; d &amp; 0 \\ t_{x} &amp; t_{y} &amp; 1 \end{bmatrix} = \begin{bmatrix} ax+cy+t_{x} &amp; bx+dy+t_{y} &amp; 1 \end{bmatrix} $</p>
-<p>注意：iOS上坐标原点从屏幕左上方起，x轴指向右方，y轴指向下方。macOS的原点在屏幕左下方，x轴指向右方，y轴指向上方，要注意区别</p>
-<h1 id="平移"><a href="#平移" class="headerlink" title="平移"></a>平移</h1><p>变换矩阵第三行的t_x和t_y对应的就是x、y的平移量，因此矩阵变换很简单，比如将[x,y]向量平移到[x+a,y+b]：</p>
-<p>平移矩阵：<br>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ a &amp; b &amp; 1 \end{bmatrix} = \begin{bmatrix} x+a &amp; y+b &amp; 1 \end{bmatrix} $</p>
-<p>对应API：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeTranslation</span>(<span class="built_in">CGFloat</span> tx, <span class="built_in">CGFloat</span> ty);</span><br></pre></td></tr></table></figure>
-
-<h1 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h1><p>缩放的本质，就是对向量[x,y]通过同时乘以相同的系数a，得到[ax,ay]，那么矩阵很简单，只需要一个对角矩阵，系数都为a就行</p>
-<p>缩放矩阵：</p>
-<p>$\begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} a &amp; 0 &amp; 0 \\ 0 &amp; a &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} ax &amp; by &amp; 1 \end{bmatrix} $</p>
-<p>这个可以使用CA的API来简单构造（也可以直接自己初始化）：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeScale</span>(<span class="built_in">CGFloat</span> sx, <span class="built_in">CGFloat</span> sy);</span><br></pre></td></tr></table></figure>
-
-<h1 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h1><p>旋转的变换矩阵初看上去好像难以理解（各种cos、sin），其实就是一个简单的解方程的出来的结果，注意这里需要的是弧度，而且iOS上旋转的正弧度代表顺时针（macOS上就是正弧度是顺时针），需要注意</p>
-<p>旋转矩阵：</p>
-<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} \cos \theta &amp; \sin \theta &amp; 0 \\ - \sin \theta &amp; \cos \theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} x \cos \theta - y \sin \theta &amp; x \sin \theta + y \cos \theta &amp; 1 \end{bmatrix} $</p>
-<p>推导过程：</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/4/ef/04946d0b15517c28f52f8aaf7a850.png"></p>
-<p>$ P = (x,y) = (r\cos A , r\sin A) \\ P^{‘} = (r \cos B, r \sin B) = (r\cos(A + \theta), r\sin(A + \theta)) \\ r\cos(A + \theta) = r\cos A \cos \theta - r\sin A \sin \theta = x \cos \theta - y \sin \theta \\ r\sin(A + \theta) = r\sin A \cos \theta + r\cos A \sin \theta = y \cos \theta + x \sin \theta \\ \therefore M = \begin{bmatrix} \cos \theta &amp; \sin \theta &amp; 0 \\ - \sin \theta &amp; \cos \theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} $</p>
-<p>对应API：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeRotation</span>(<span class="built_in">CGFloat</span> angle);</span><br></pre></td></tr></table></figure>
-
-<p>弧度可以用自带的定义，比如<code>M_PI_4</code>这些，也可以手动转换，比如用弧度、角度转换的宏：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RADIANS_TO_DEGREES(x) ((x)/M_PI*180.0) </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEGREES_TO_RADIANS(x) ((x)/180.0*M_PI)</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="错切"><a href="#错切" class="headerlink" title="错切"></a>错切</h1><p>错切，就是一种特殊的线性变换（不平移），指的是某一个坐标轴依赖不变，另一个轴线性变换，参考Wiki上的图片：<br><img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Eigen.jpg"></p>
-<p>错切矩阵：</p>
-<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ m &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} x+my &amp; y &amp; 1 \end{bmatrix} $</p>
-<p>这种变换没有提供专用的API，我们自己可以用<code>CGAffineTransformIdentity</code>创建一个矩阵，然后赋值矩阵中c或者b的值就行</p>
-<h1 id="叠加"><a href="#叠加" class="headerlink" title="叠加"></a>叠加</h1><p>既然了解了这些图层操作的矩阵变换，我们也可以自己定义矩阵，比如非线性变换(得到的向量不平行）、也可以把几个连续的变换串起来，这时候就要注意矩阵的运算顺序，比如先缩放50%，再旋转<code>M_PI_4</code>，再平移到[x+100,y]，那么等价于沿着45度平移50的距离（对应结果坐标就成了[x*sqrt(2)/4, y*sqrt(2)/4]）</p>
-<p>对应API：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformConcat</span>(<span class="built_in">CGAffineTransform</span> t1, <span class="built_in">CGAffineTransform</span> t2); <span class="comment">// 最通用</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformScale</span>(<span class="built_in">CGAffineTransform</span> t, <span class="built_in">CGFloat</span> sx, <span class="built_in">CGFloat</span> sy);</span><br><span class="line"><span class="comment">// 缩放</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeRotation</span>(<span class="built_in">CGFloat</span> angle); <span class="comment">//旋转</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformTranslate</span>(<span class="built_in">CGAffineTransform</span> t, <span class="built_in">CGFloat</span> tx, <span class="built_in">CGFloat</span> ty); <span class="comment">// 平移</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://github.com/AttackOnDobby/iOS-Core-Animation-Advanced-Techniques/blob/master/5-%E5%8F%98%E6%8D%A2/%E5%8F%98%E6%8D%A2.md">iOS Core Animation Advanced Techniques</a></p>
-]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
-        <tag>Objective-C</tag>
-        <tag>CoreGraphics</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>FRP简介—论GUI程序架构发展</title>
     <url>/2016/11/16/FRP%E7%AE%80%E4%BB%8B%E2%80%94%E8%AE%BAGUI%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84%E5%8F%91%E5%B1%95/</url>
     <content><![CDATA[<blockquote>
@@ -369,6 +313,62 @@
       <tags>
         <tag>Java</tag>
         <tag>编译原理</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Core Graphics仿射变换知识</title>
+    <url>/2016/09/27/Core-Graphics%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<blockquote>
+<p>这是补充记录关于CG的几何变换的一些知识，涉及到简单的矩阵变换</p>
+</blockquote>
+<h1 id="变换矩阵"><a href="#变换矩阵" class="headerlink" title="变换矩阵"></a>变换矩阵</h1><p>在Core Graphics进行图层缩放、旋转、平移的时候，本质的操作就是使用<code>CGAffineTransform</code>这个3x2矩阵对象，与我们的<code>CGPoint</code>这个1x2的矩阵（其实就是对应就是[x,y]这个向量）进行矩阵相乘操作，得到的新矩阵就是变换后的新向量。一般通过CALayer得到的图层都是矢量，因此可以把整个图层进行相应的缩放、旋转、平移。</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="built_in">CGAffineTransform</span> &#123; </span><br><span class="line">  <span class="built_in">CGFloat</span> a; </span><br><span class="line">  <span class="built_in">CGFloat</span> b; </span><br><span class="line">  <span class="built_in">CGFloat</span> c; </span><br><span class="line">  <span class="built_in">CGFloat</span> d; </span><br><span class="line">  <span class="built_in">CGFloat</span> tx; </span><br><span class="line">  <span class="built_in">CGFloat</span> ty; </span><br><span class="line">&#125; <span class="built_in">CGAffineTransform</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个结构体对应的矩阵如下（看不到LaTeX公式的请看<a href="https://developer.apple.com/reference/coregraphics/1455865-cgaffinetransformmake">Apple Developer Document</a>）：</p>
+<p>$ \begin{bmatrix} a &amp; b &amp; 0 \\ c &amp; d &amp; 0 \\ t_{x} &amp; t_{y} &amp; 1 \end{bmatrix} $</p>
+<p>Apple采用了用[1]补齐1x3的向量，和用[0,0,1]的转置补齐的3x3的变换矩阵相乘来做仿射变换。虽然可能觉理论上可以直接用2x3变换矩阵和3x1的向量([x,y,1]的转置)运算，得到一个2x1的向量，省3个<code>CGFloat</code>的空间。但是由于这种变换操作叠加次数特别多，与其每次得到的向量结果再补齐[1]，还不如一次性就用一个1x3和3x3运算，用空间换取时间，这也许是QuartzCore的实现者的考虑吧。</p>
+<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} a &amp; b &amp; 0 \\ c &amp; d &amp; 0 \\ t_{x} &amp; t_{y} &amp; 1 \end{bmatrix} = \begin{bmatrix} ax+cy+t_{x} &amp; bx+dy+t_{y} &amp; 1 \end{bmatrix} $</p>
+<p>注意：iOS上坐标原点从屏幕左上方起，x轴指向右方，y轴指向下方。macOS的原点在屏幕左下方，x轴指向右方，y轴指向上方，要注意区别</p>
+<h1 id="平移"><a href="#平移" class="headerlink" title="平移"></a>平移</h1><p>变换矩阵第三行的t_x和t_y对应的就是x、y的平移量，因此矩阵变换很简单，比如将[x,y]向量平移到[x+a,y+b]：</p>
+<p>平移矩阵：<br>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ a &amp; b &amp; 1 \end{bmatrix} = \begin{bmatrix} x+a &amp; y+b &amp; 1 \end{bmatrix} $</p>
+<p>对应API：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeTranslation</span>(<span class="built_in">CGFloat</span> tx, <span class="built_in">CGFloat</span> ty);</span><br></pre></td></tr></table></figure>
+
+<h1 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h1><p>缩放的本质，就是对向量[x,y]通过同时乘以相同的系数a，得到[ax,ay]，那么矩阵很简单，只需要一个对角矩阵，系数都为a就行</p>
+<p>缩放矩阵：</p>
+<p>$\begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} a &amp; 0 &amp; 0 \\ 0 &amp; a &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} ax &amp; by &amp; 1 \end{bmatrix} $</p>
+<p>这个可以使用CA的API来简单构造（也可以直接自己初始化）：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeScale</span>(<span class="built_in">CGFloat</span> sx, <span class="built_in">CGFloat</span> sy);</span><br></pre></td></tr></table></figure>
+
+<h1 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h1><p>旋转的变换矩阵初看上去好像难以理解（各种cos、sin），其实就是一个简单的解方程的出来的结果，注意这里需要的是弧度，而且iOS上旋转的正弧度代表顺时针（macOS上就是正弧度是顺时针），需要注意</p>
+<p>旋转矩阵：</p>
+<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} \cos \theta &amp; \sin \theta &amp; 0 \\ - \sin \theta &amp; \cos \theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} x \cos \theta - y \sin \theta &amp; x \sin \theta + y \cos \theta &amp; 1 \end{bmatrix} $</p>
+<p>推导过程：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/4/ef/04946d0b15517c28f52f8aaf7a850.png"></p>
+<p>$ P = (x,y) = (r\cos A , r\sin A) \\ P^{‘} = (r \cos B, r \sin B) = (r\cos(A + \theta), r\sin(A + \theta)) \\ r\cos(A + \theta) = r\cos A \cos \theta - r\sin A \sin \theta = x \cos \theta - y \sin \theta \\ r\sin(A + \theta) = r\sin A \cos \theta + r\cos A \sin \theta = y \cos \theta + x \sin \theta \\ \therefore M = \begin{bmatrix} \cos \theta &amp; \sin \theta &amp; 0 \\ - \sin \theta &amp; \cos \theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} $</p>
+<p>对应API：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeRotation</span>(<span class="built_in">CGFloat</span> angle);</span><br></pre></td></tr></table></figure>
+
+<p>弧度可以用自带的定义，比如<code>M_PI_4</code>这些，也可以手动转换，比如用弧度、角度转换的宏：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RADIANS_TO_DEGREES(x) ((x)/M_PI*180.0) </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEGREES_TO_RADIANS(x) ((x)/180.0*M_PI)</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="错切"><a href="#错切" class="headerlink" title="错切"></a>错切</h1><p>错切，就是一种特殊的线性变换（不平移），指的是某一个坐标轴依赖不变，另一个轴线性变换，参考Wiki上的图片：<br><img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Eigen.jpg"></p>
+<p>错切矩阵：</p>
+<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ m &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} x+my &amp; y &amp; 1 \end{bmatrix} $</p>
+<p>这种变换没有提供专用的API，我们自己可以用<code>CGAffineTransformIdentity</code>创建一个矩阵，然后赋值矩阵中c或者b的值就行</p>
+<h1 id="叠加"><a href="#叠加" class="headerlink" title="叠加"></a>叠加</h1><p>既然了解了这些图层操作的矩阵变换，我们也可以自己定义矩阵，比如非线性变换(得到的向量不平行）、也可以把几个连续的变换串起来，这时候就要注意矩阵的运算顺序，比如先缩放50%，再旋转<code>M_PI_4</code>，再平移到[x+100,y]，那么等价于沿着45度平移50的距离（对应结果坐标就成了[x*sqrt(2)/4, y*sqrt(2)/4]）</p>
+<p>对应API：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformConcat</span>(<span class="built_in">CGAffineTransform</span> t1, <span class="built_in">CGAffineTransform</span> t2); <span class="comment">// 最通用</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformScale</span>(<span class="built_in">CGAffineTransform</span> t, <span class="built_in">CGFloat</span> sx, <span class="built_in">CGFloat</span> sy);</span><br><span class="line"><span class="comment">// 缩放</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeRotation</span>(<span class="built_in">CGFloat</span> angle); <span class="comment">//旋转</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformTranslate</span>(<span class="built_in">CGAffineTransform</span> t, <span class="built_in">CGFloat</span> tx, <span class="built_in">CGFloat</span> ty); <span class="comment">// 平移</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://github.com/AttackOnDobby/iOS-Core-Animation-Advanced-Techniques/blob/master/5-%E5%8F%98%E6%8D%A2/%E5%8F%98%E6%8D%A2.md">iOS Core Animation Advanced Techniques</a></p>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
+        <tag>Objective-C</tag>
+        <tag>CoreGraphics</tag>
       </tags>
   </entry>
   <entry>
@@ -470,6 +470,53 @@
       </tags>
   </entry>
   <entry>
+    <title>Retroactive Data Structure</title>
+    <url>/2016/03/30/Retroactive-Data-Structure/</url>
+    <content><![CDATA[<blockquote>
+<p>MIT Open Course</p>
+</blockquote>
+<p><a href="http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-851-advanced-data-structures-spring-2012/lecture-videos/session-2-retroactive-data-structures/">MIT-retroactive-data-structure</a></p>
+<h1 id="Time-line"><a href="#Time-line" class="headerlink" title="Time line"></a>Time line</h1><p>Insert(time, ops); Delete(time, ops); Query(time, query);</p>
+<p>How to insert ops into two times? -&gt; BST || linked list</p>
+<p>How to deal with side effect? -&gt; save all the ops except <code>delete</code></p>
+<p><code>Partial Retroactive</code></p>
+<p>Query always done at present =&gt; time = $ \infty $</p>
+<p><code>Full Retroactive</code></p>
+<p>Query can done at whatever time</p>
+<h1 id="What-about-formal-defination-of-partial-amp-full"><a href="#What-about-formal-defination-of-partial-amp-full" class="headerlink" title="What about formal defination of partial &amp; full"></a>What about formal defination of partial &amp; full</h1><p>$ query(t,A \cup B) \equiv f(query(t,A),query(t,B)) , f \ is \ O(1)$</p>
+<h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><p><code>segment tree</code> : BST on time</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Segment_tree_instance.gif" alt="title"></p>
+<p><code>Commutative updates</code> =&gt; 可交换updates</p>
+<p>$ x.y = y.x $</p>
+<p><code>Invertible updates</code> =&gt; 可逆updates</p>
+<p>$ x.x^{-1} = \emptyset $</p>
+<p>Delete(time, ops) === Insert(now, ops^{-1})</p>
+<h1 id="Practice"><a href="#Practice" class="headerlink" title="Practice"></a>Practice</h1><p>Dynamic hashing</p>
+<p>Priority queue</p>
+<ul>
+<li>  query will cost $ O(lgn) $</li>
+<li>  store in BBST (balanced binary search tree)</li>
+<li>  leaves : insert =&gt; store by time not value</li>
+</ul>
+<p>General Transformation</p>
+<ul>
+<li><p>  rollback: change r time in the past will cost $ O(r) $</p>
+</li>
+<li><p>  lower bound: $ \Omega(r) $</p>
+</li>
+</ul>
+<h1 id="More-complicated-Non-oblivious-Retroactive"><a href="#More-complicated-Non-oblivious-Retroactive" class="headerlink" title="More complicated - Non-oblivious Retroactive"></a>More complicated - Non-oblivious Retroactive</h1><p>which means after one insert or delete ,you can get <code>the query that change</code></p>
+<h1 id="Just-a-little-bit-code"><a href="#Just-a-little-bit-code" class="headerlink" title="Just a little bit code"></a>Just a little bit code</h1><p><code>retroactive queue</code>: <a href="https://github.com/lizhuoli1126/Functional.js#retroactivedata-structure">GitHub-Functional.js</a></p>
+<p>Reference: <a href="http://erikdemaine.org/papers/Retroactive/_TALG/paper.pdf">Retroactive Data Structures - ERIK D. DEMAINE, JOHN IACONO, STEFAN LANGERMAN</a></p>
+]]></content>
+      <categories>
+        <category>Code</category>
+      </categories>
+      <tags>
+        <tag>数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Random Binary Search Tree －Treap</title>
     <url>/2016/03/30/Random-Binary-Search-Tree-%EF%BC%8DTreap/</url>
     <content><![CDATA[<h2 id="BST插入顺序与平衡性"><a href="#BST插入顺序与平衡性" class="headerlink" title="BST插入顺序与平衡性"></a>BST插入顺序与平衡性</h2><p>众所周知，二查搜索树(BST)的搜索、插入、删除的复杂度等于树高，所以平衡度越高，越接近$ O(nlogn) $，越有序越退化为$ O(n) $</p>
@@ -533,8 +580,8 @@
         <category>Code</category>
       </categories>
       <tags>
-        <tag>C++</tag>
         <tag>数据结构</tag>
+        <tag>C++</tag>
       </tags>
   </entry>
   <entry>
@@ -568,6 +615,60 @@
         <tag>JavaScript</tag>
         <tag>Swift</tag>
         <tag>ReactJS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Swift之AnyClass与动态类型</title>
+    <url>/2016/03/30/Swift%E4%B9%8BAnyClass%E4%B8%8E%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B/</url>
+    <content><![CDATA[<blockquote>
+<p>这次写一下关于Swift中AnyClass的使用以及动态类型的实例化和使用场景</p>
+</blockquote>
+<h1 id="AnyClass与AnyObject"><a href="#AnyClass与AnyObject" class="headerlink" title="AnyClass与AnyObject"></a>AnyClass与AnyObject</h1><p>Swift中，任何自定义的对象都是AnyClass的子类，类似于Java的Object类（但注意，这和Objective-C的NSObject不同，后者在Swift中是专门的UIKit或者AppKit框架里面定义的类型，而非语言所规定的类型）</p>
+<blockquote>
+<p>AnyClass<br>The protocol to which all class types implicitly conform.</p>
+</blockquote>
+<p>Declaration<br><code>typealias AnyClass = AnyObject.Type</code></p>
+<blockquote>
+<p>AnyObject</p>
+</blockquote>
+<p>protocol AnyObject { … }<br><code>The protocol to which all classes implicitly conform.</code></p>
+<p>但是注意，这个AnyObject.Type是一个毕竟是一个接口的Property，所以只能在函数的参数里面使用，如果想要直接获取某个类（而非实例）的类型，使用类名.self即可；如果想要获取一个实例的类的类型，使用.dynamicType；对了，如果对象是NSObject的实例（iOS开发中常用），用classForCoder也是一个选择</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span>(<span class="params">s</span>: <span class="type">AnyClass</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">print</span>(s)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> a <span class="operator">=</span> <span class="type">Test</span>.<span class="keyword">self</span></span><br><span class="line"><span class="keyword">let</span> b <span class="operator">=</span> <span class="type">Test</span>().dynamicType</span><br><span class="line"><span class="keyword">let</span> c:<span class="type">AnyClass</span> <span class="operator">=</span> <span class="string">&quot;test&quot;</span>.classForCoder <span class="comment">//注意此时加了classForCoder的方法调用，编译器会推导出&quot;&quot;是一个NSString的实例而不是String</span></span><br><span class="line">f(a) <span class="comment">//Test</span></span><br><span class="line">f(b) <span class="comment">//Test</span></span><br><span class="line">f(c) <span class="comment">//NSString</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="动态实例化"><a href="#动态实例化" class="headerlink" title="动态实例化"></a>动态实例化</h1><p>既然我们有了某个AnyObject的Type，这样我们就可以直接构造出一个类型的实例。使用AnyObject都有的.init方法即可，当然，AnyObject本身并没有init的构造方法……</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> d <span class="operator">=</span> a.<span class="keyword">init</span>() <span class="comment">// d is an instance of Test</span></span><br><span class="line"><span class="keyword">let</span> e <span class="operator">=</span> (c <span class="keyword">as!</span> <span class="type">NSString</span>.<span class="keyword">Type</span>).<span class="keyword">init</span>(stringLiteral: <span class="string">&quot;test&quot;</span>) <span class="comment">// e is &quot;test&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>当然，你也许肯定奇怪那个required的init是什么意思，其实这是为了避免出现你使用的这个Test.Type有继承的子类，然后子类的构造函数中使用了这个Type来构造父类这种边界情况出现（考虑的真细……）</p>
+<blockquote>
+<p>Use an initializer expression to construct an instance of a type from that type’s metatype value. For class instances, the initializer that’s called must be marked with the required keyword or the entire class marked with the final keyword.</p>
+</blockquote>
+<p>而且对于一个Protocol，可以用.Protocol来获取这个Protocol的类型（还是AnyClass），也可以用self来统一处理，因为实际上</p>
+<p><code>metatype-type(.self) -&gt; type.Type | type.Protocol</code></p>
+<p>这样的话，有了动态就可以开始干活了</p>
+<h1 id="Swift的反射"><a href="#Swift的反射" class="headerlink" title="Swift的反射"></a>Swift的反射</h1><p>或许你也想，既然我有了动态的类型实例，那么是不是能通过类似Java的反射，获取某个类型的所有Property，然后直接访问这个Property呢？答案也是有的，不过在Swift中很少用到，这里用到到了Mirror</p>
+<blockquote>
+<p>struct Mirror { … }<br>Representation of the sub-structure and optional “display style” of any arbitrary subject instance.</p>
+</blockquote>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> whatThisProperty:<span class="type">String</span></span><br><span class="line">    <span class="function"><span class="keyword">init</span>(<span class="params">name</span>:<span class="type">String</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.whatThisProperty <span class="operator">=</span> name</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> p <span class="operator">=</span> <span class="type">Person</span>(name: <span class="string">&quot;Bob&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> mirror <span class="operator">=</span> <span class="type">Mirror</span>(reflecting: p)</span><br><span class="line">mirror.children.forEach &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;<span class="subst">\(<span class="variable">$0</span>.label<span class="operator">!</span>)</span>: <span class="subst">\(<span class="variable">$0</span>.value)</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的children返回的是一个AnyForwardCollection，也是可以像数组一般用index来访问或者forEach遍历的，不过索引顺是序按照你的Property的声明顺序</p>
+<h1 id="最后的小应用"><a href="#最后的小应用" class="headerlink" title="最后的小应用"></a>最后的小应用</h1><p>由于我也不怎么会写iOS，有时候遇到这样一种情况：<br>我提供了一个3D Touch的按钮，四个按钮会对应四种ViewController，iOS提供的API可以获取到用户点击的那个按钮对应的设置的一个字符串值，那么，我可以这样来玩……</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 3D Touch 传入的字符串来判断返回某个ViewController</span></span><br><span class="line"><span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">shortcutToViewController</span>(<span class="params">type</span>:<span class="type">String</span>)</span> -&gt; <span class="type">UIViewController</span>.<span class="keyword">Type</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> type &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;pe&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">RunningViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;curriculum&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">CurriculumViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;card&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">SeuCardViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;nic&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">NicViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">default</span>: <span class="keyword">return</span> <span class="type">UIViewController</span>.<span class="keyword">self</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是用来判断字符串来产生对应的ViewController.Type的，然后，在真正需要实例化一个新的ViewController来显示一个View的时候，再实例化</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">pushToViewController</span>(<span class="params">vc</span>: <span class="type">UIViewController</span>.<span class="keyword">Type</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 确保要显示的ViewController不是顶层显示的ViewController</span></span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> duplication <span class="operator">=</span> navigationController<span class="operator">?</span>.topViewController<span class="operator">?</span>.isKindOfClass(vc) <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">    <span class="keyword">if</span> duplication &#123; <span class="comment">// 检查失败，重复的ViewController，不需要跳转</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> viewController <span class="operator">=</span> vc.<span class="keyword">init</span>(nibName: <span class="string">&quot;<span class="subst">\(vc.classForCoder())</span>&quot;</span>, bundle: <span class="literal">nil</span>) <span class="comment">// 初始化ViewController</span></span><br><span class="line">    navigationController<span class="operator">?</span>.pushViewController(viewController, animated: <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这也是一种比较奇怪的方式……不过如果不这样，就会导致在主类和上层里面引入过多的Switch Case或者导致代码中出现纯字符串定义的nibName，这对以后重构非常不利。</p>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>嗯，好久没写东西了……主要最近在学编译原理，之后会有几篇讲解通过Java实现一个简单的支持CFG的Yacc(误)的东西……顺便就当复习编译原理的Parser部分了。</p>
+<p>Swift如今开源了：<a href="https://github.com/apple/swift">Swift</a>，不到几天Star就超过了2年出头的Rust(lol)……现如今Star也到了2W5的程度</p>
+<p>虽然UIKit和AppKit这种宝贵的财富Apple肯定不会开源，不过Swift标准库的实现也是越来越完善，而且也有Linux的版本，很多第三方的库开始加入了对Linux的支持（非面向iOS和OS X开发的，比如对SQLite，Redis的wrapper）</p>
+<p>Swift作为一个Rust的对手，一个完全抛弃了C的现代语言，之后在除客户端开发外，更可能的领域就是系统编程和服务端编程了吧。希望能够在在安全性，易用性，效率上达到一个更大的高度，让我们这种开发者也能用的爽，用的顺。</p>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+      <tags>
+        <tag>Swift</tag>
       </tags>
   </entry>
   <entry>
@@ -698,107 +799,6 @@
         <tag>iOS</tag>
         <tag>React Native</tag>
         <tag>Redux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Retroactive Data Structure</title>
-    <url>/2016/03/30/Retroactive-Data-Structure/</url>
-    <content><![CDATA[<blockquote>
-<p>MIT Open Course</p>
-</blockquote>
-<p><a href="http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-851-advanced-data-structures-spring-2012/lecture-videos/session-2-retroactive-data-structures/">MIT-retroactive-data-structure</a></p>
-<h1 id="Time-line"><a href="#Time-line" class="headerlink" title="Time line"></a>Time line</h1><p>Insert(time, ops); Delete(time, ops); Query(time, query);</p>
-<p>How to insert ops into two times? -&gt; BST || linked list</p>
-<p>How to deal with side effect? -&gt; save all the ops except <code>delete</code></p>
-<p><code>Partial Retroactive</code></p>
-<p>Query always done at present =&gt; time = $ \infty $</p>
-<p><code>Full Retroactive</code></p>
-<p>Query can done at whatever time</p>
-<h1 id="What-about-formal-defination-of-partial-amp-full"><a href="#What-about-formal-defination-of-partial-amp-full" class="headerlink" title="What about formal defination of partial &amp; full"></a>What about formal defination of partial &amp; full</h1><p>$ query(t,A \cup B) \equiv f(query(t,A),query(t,B)) , f \ is \ O(1)$</p>
-<h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><p><code>segment tree</code> : BST on time</p>
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Segment_tree_instance.gif" alt="title"></p>
-<p><code>Commutative updates</code> =&gt; 可交换updates</p>
-<p>$ x.y = y.x $</p>
-<p><code>Invertible updates</code> =&gt; 可逆updates</p>
-<p>$ x.x^{-1} = \emptyset $</p>
-<p>Delete(time, ops) === Insert(now, ops^{-1})</p>
-<h1 id="Practice"><a href="#Practice" class="headerlink" title="Practice"></a>Practice</h1><p>Dynamic hashing</p>
-<p>Priority queue</p>
-<ul>
-<li>  query will cost $ O(lgn) $</li>
-<li>  store in BBST (balanced binary search tree)</li>
-<li>  leaves : insert =&gt; store by time not value</li>
-</ul>
-<p>General Transformation</p>
-<ul>
-<li><p>  rollback: change r time in the past will cost $ O(r) $</p>
-</li>
-<li><p>  lower bound: $ \Omega(r) $</p>
-</li>
-</ul>
-<h1 id="More-complicated-Non-oblivious-Retroactive"><a href="#More-complicated-Non-oblivious-Retroactive" class="headerlink" title="More complicated - Non-oblivious Retroactive"></a>More complicated - Non-oblivious Retroactive</h1><p>which means after one insert or delete ,you can get <code>the query that change</code></p>
-<h1 id="Just-a-little-bit-code"><a href="#Just-a-little-bit-code" class="headerlink" title="Just a little bit code"></a>Just a little bit code</h1><p><code>retroactive queue</code>: <a href="https://github.com/lizhuoli1126/Functional.js#retroactivedata-structure">GitHub-Functional.js</a></p>
-<p>Reference: <a href="http://erikdemaine.org/papers/Retroactive/_TALG/paper.pdf">Retroactive Data Structures - ERIK D. DEMAINE, JOHN IACONO, STEFAN LANGERMAN</a></p>
-]]></content>
-      <categories>
-        <category>Code</category>
-      </categories>
-      <tags>
-        <tag>数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Swift之AnyClass与动态类型</title>
-    <url>/2016/03/30/Swift%E4%B9%8BAnyClass%E4%B8%8E%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B/</url>
-    <content><![CDATA[<blockquote>
-<p>这次写一下关于Swift中AnyClass的使用以及动态类型的实例化和使用场景</p>
-</blockquote>
-<h1 id="AnyClass与AnyObject"><a href="#AnyClass与AnyObject" class="headerlink" title="AnyClass与AnyObject"></a>AnyClass与AnyObject</h1><p>Swift中，任何自定义的对象都是AnyClass的子类，类似于Java的Object类（但注意，这和Objective-C的NSObject不同，后者在Swift中是专门的UIKit或者AppKit框架里面定义的类型，而非语言所规定的类型）</p>
-<blockquote>
-<p>AnyClass<br>The protocol to which all class types implicitly conform.</p>
-</blockquote>
-<p>Declaration<br><code>typealias AnyClass = AnyObject.Type</code></p>
-<blockquote>
-<p>AnyObject</p>
-</blockquote>
-<p>protocol AnyObject { … }<br><code>The protocol to which all classes implicitly conform.</code></p>
-<p>但是注意，这个AnyObject.Type是一个毕竟是一个接口的Property，所以只能在函数的参数里面使用，如果想要直接获取某个类（而非实例）的类型，使用类名.self即可；如果想要获取一个实例的类的类型，使用.dynamicType；对了，如果对象是NSObject的实例（iOS开发中常用），用classForCoder也是一个选择</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span>(<span class="params">s</span>: <span class="type">AnyClass</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">print</span>(s)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> a <span class="operator">=</span> <span class="type">Test</span>.<span class="keyword">self</span></span><br><span class="line"><span class="keyword">let</span> b <span class="operator">=</span> <span class="type">Test</span>().dynamicType</span><br><span class="line"><span class="keyword">let</span> c:<span class="type">AnyClass</span> <span class="operator">=</span> <span class="string">&quot;test&quot;</span>.classForCoder <span class="comment">//注意此时加了classForCoder的方法调用，编译器会推导出&quot;&quot;是一个NSString的实例而不是String</span></span><br><span class="line">f(a) <span class="comment">//Test</span></span><br><span class="line">f(b) <span class="comment">//Test</span></span><br><span class="line">f(c) <span class="comment">//NSString</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="动态实例化"><a href="#动态实例化" class="headerlink" title="动态实例化"></a>动态实例化</h1><p>既然我们有了某个AnyObject的Type，这样我们就可以直接构造出一个类型的实例。使用AnyObject都有的.init方法即可，当然，AnyObject本身并没有init的构造方法……</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> d <span class="operator">=</span> a.<span class="keyword">init</span>() <span class="comment">// d is an instance of Test</span></span><br><span class="line"><span class="keyword">let</span> e <span class="operator">=</span> (c <span class="keyword">as!</span> <span class="type">NSString</span>.<span class="keyword">Type</span>).<span class="keyword">init</span>(stringLiteral: <span class="string">&quot;test&quot;</span>) <span class="comment">// e is &quot;test&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>当然，你也许肯定奇怪那个required的init是什么意思，其实这是为了避免出现你使用的这个Test.Type有继承的子类，然后子类的构造函数中使用了这个Type来构造父类这种边界情况出现（考虑的真细……）</p>
-<blockquote>
-<p>Use an initializer expression to construct an instance of a type from that type’s metatype value. For class instances, the initializer that’s called must be marked with the required keyword or the entire class marked with the final keyword.</p>
-</blockquote>
-<p>而且对于一个Protocol，可以用.Protocol来获取这个Protocol的类型（还是AnyClass），也可以用self来统一处理，因为实际上</p>
-<p><code>metatype-type(.self) -&gt; type.Type | type.Protocol</code></p>
-<p>这样的话，有了动态就可以开始干活了</p>
-<h1 id="Swift的反射"><a href="#Swift的反射" class="headerlink" title="Swift的反射"></a>Swift的反射</h1><p>或许你也想，既然我有了动态的类型实例，那么是不是能通过类似Java的反射，获取某个类型的所有Property，然后直接访问这个Property呢？答案也是有的，不过在Swift中很少用到，这里用到到了Mirror</p>
-<blockquote>
-<p>struct Mirror { … }<br>Representation of the sub-structure and optional “display style” of any arbitrary subject instance.</p>
-</blockquote>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> whatThisProperty:<span class="type">String</span></span><br><span class="line">    <span class="function"><span class="keyword">init</span>(<span class="params">name</span>:<span class="type">String</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.whatThisProperty <span class="operator">=</span> name</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> p <span class="operator">=</span> <span class="type">Person</span>(name: <span class="string">&quot;Bob&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> mirror <span class="operator">=</span> <span class="type">Mirror</span>(reflecting: p)</span><br><span class="line">mirror.children.forEach &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;<span class="subst">\(<span class="variable">$0</span>.label<span class="operator">!</span>)</span>: <span class="subst">\(<span class="variable">$0</span>.value)</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里的children返回的是一个AnyForwardCollection，也是可以像数组一般用index来访问或者forEach遍历的，不过索引顺是序按照你的Property的声明顺序</p>
-<h1 id="最后的小应用"><a href="#最后的小应用" class="headerlink" title="最后的小应用"></a>最后的小应用</h1><p>由于我也不怎么会写iOS，有时候遇到这样一种情况：<br>我提供了一个3D Touch的按钮，四个按钮会对应四种ViewController，iOS提供的API可以获取到用户点击的那个按钮对应的设置的一个字符串值，那么，我可以这样来玩……</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 3D Touch 传入的字符串来判断返回某个ViewController</span></span><br><span class="line"><span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">shortcutToViewController</span>(<span class="params">type</span>:<span class="type">String</span>)</span> -&gt; <span class="type">UIViewController</span>.<span class="keyword">Type</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> type &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;pe&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">RunningViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;curriculum&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">CurriculumViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;card&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">SeuCardViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">&quot;nic&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="type">NicViewController</span>.<span class="keyword">self</span></span><br><span class="line">    <span class="keyword">default</span>: <span class="keyword">return</span> <span class="type">UIViewController</span>.<span class="keyword">self</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这是用来判断字符串来产生对应的ViewController.Type的，然后，在真正需要实例化一个新的ViewController来显示一个View的时候，再实例化</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">pushToViewController</span>(<span class="params">vc</span>: <span class="type">UIViewController</span>.<span class="keyword">Type</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 确保要显示的ViewController不是顶层显示的ViewController</span></span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> duplication <span class="operator">=</span> navigationController<span class="operator">?</span>.topViewController<span class="operator">?</span>.isKindOfClass(vc) <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">    <span class="keyword">if</span> duplication &#123; <span class="comment">// 检查失败，重复的ViewController，不需要跳转</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> viewController <span class="operator">=</span> vc.<span class="keyword">init</span>(nibName: <span class="string">&quot;<span class="subst">\(vc.classForCoder())</span>&quot;</span>, bundle: <span class="literal">nil</span>) <span class="comment">// 初始化ViewController</span></span><br><span class="line">    navigationController<span class="operator">?</span>.pushViewController(viewController, animated: <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这也是一种比较奇怪的方式……不过如果不这样，就会导致在主类和上层里面引入过多的Switch Case或者导致代码中出现纯字符串定义的nibName，这对以后重构非常不利。</p>
-<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>嗯，好久没写东西了……主要最近在学编译原理，之后会有几篇讲解通过Java实现一个简单的支持CFG的Yacc(误)的东西……顺便就当复习编译原理的Parser部分了。</p>
-<p>Swift如今开源了：<a href="https://github.com/apple/swift">Swift</a>，不到几天Star就超过了2年出头的Rust(lol)……现如今Star也到了2W5的程度</p>
-<p>虽然UIKit和AppKit这种宝贵的财富Apple肯定不会开源，不过Swift标准库的实现也是越来越完善，而且也有Linux的版本，很多第三方的库开始加入了对Linux的支持（非面向iOS和OS X开发的，比如对SQLite，Redis的wrapper）</p>
-<p>Swift作为一个Rust的对手，一个完全抛弃了C的现代语言，之后在除客户端开发外，更可能的领域就是系统编程和服务端编程了吧。希望能够在在安全性，易用性，效率上达到一个更大的高度，让我们这种开发者也能用的爽，用的顺。</p>
-]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-      <tags>
-        <tag>Swift</tag>
       </tags>
   </entry>
   <entry>
@@ -1246,6 +1246,33 @@
       </tags>
   </entry>
   <entry>
+    <title>偶然发现的，关于C++指针的一点注意事项</title>
+    <url>/2016/03/30/%E5%81%B6%E7%84%B6%E5%8F%91%E7%8E%B0%E7%9A%84%EF%BC%8C%E5%85%B3%E4%BA%8EC-%E6%8C%87%E9%92%88%E7%9A%84%E4%B8%80%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
+    <content><![CDATA[<p>C++的指针是大一时期一直觉得头疼的一个东西。当年一直对指针敬而远之。一旦不小心，指针越界的后果就是程序崩溃……&gt; &lt;</p>
+<p>然而，偶然一次学妹问到关于动态数组的问题的时候……才偶然发现当年自己学指针似乎一直没有搞清楚这两者的关系：</p>
+<p><code>pointer</code>和<code>pointer[i]</code></p>
+<p>比如实现一个简单的动态数组，举例就是看如下代码：</p>
+<p>第一种方法：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> arrayInput;</span><br><span class="line">	<span class="keyword">int</span> arraySize = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>* arrayPointer;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;依次输入数字到这个数组中，输入EOF（Windows下为Ctrl＋Z，Unix/Linux下为Ctrl+D）来停止输入&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">while</span>(cin&gt;&gt;arrayInput)&#123;</span><br><span class="line">		arrayPointer[arraySize] = arrayInput;</span><br><span class="line">		arraySize++;</span><br><span class="line">	&#125;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;现在输出数组中元素&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">		cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;arrayPointer[i]&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二种方法：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> arrayInput;</span><br><span class="line">	<span class="keyword">int</span> arraySize = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>* arrayPointer;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;依次输入数字到这个数组中，输入EOF（Windows下为Ctrl＋Z，Unix/Linux下为Ctrl+D）来停止输入&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">while</span>(cin&gt;&gt;arrayInput)&#123;</span><br><span class="line">		*(arrayPointer+arraySize) = arrayInput;</span><br><span class="line">		arraySize++;</span><br><span class="line">	&#125;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;现在输出数组中元素&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">		cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;*(arrayPointer+i)&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>直到写完了，才发现自己其实一直没有搞懂，这种arrayPointer[i]表示什么。于是做了一个测试～</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cout&lt;&lt;<span class="string">&quot;现在输出数组中元素\n第一种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;arrayPointer[i]&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">cout&lt;&lt;<span class="string">&quot;\n第二种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;*(arrayPointer + i)&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png"></p>
+<p>试验了一下，才发现，其实arrayPointer[i] 和*(arrayPointer + i) 是等价的，前者是代表从arrayPointer的首地址开始计数，而arrayPointer[0]代表就是arrayPointer指向的地址所对应的值。这一点应该注意一下（其实以前觉得数组和指针挺像的，但是从这一点就知道数组绝对是指针的一小部分子集）。</p>
+<p>给自己提个醒吧－ －顺便怀念一下远去的C++。</p>
+]]></content>
+      <categories>
+        <category>C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>主流图片加载库所使用的预解码究竟干了什么</title>
     <url>/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88/</url>
     <content><![CDATA[<h1 id="主流图片加载库所使用的预解码究竟干了什么"><a href="#主流图片加载库所使用的预解码究竟干了什么" class="headerlink" title="主流图片加载库所使用的预解码究竟干了什么"></a>主流图片加载库所使用的预解码究竟干了什么</h1><blockquote>
@@ -1348,33 +1375,6 @@
       <tags>
         <tag>iOS</tag>
         <tag>Image</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>偶然发现的，关于C++指针的一点注意事项</title>
-    <url>/2016/03/30/%E5%81%B6%E7%84%B6%E5%8F%91%E7%8E%B0%E7%9A%84%EF%BC%8C%E5%85%B3%E4%BA%8EC-%E6%8C%87%E9%92%88%E7%9A%84%E4%B8%80%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
-    <content><![CDATA[<p>C++的指针是大一时期一直觉得头疼的一个东西。当年一直对指针敬而远之。一旦不小心，指针越界的后果就是程序崩溃……&gt; &lt;</p>
-<p>然而，偶然一次学妹问到关于动态数组的问题的时候……才偶然发现当年自己学指针似乎一直没有搞清楚这两者的关系：</p>
-<p><code>pointer</code>和<code>pointer[i]</code></p>
-<p>比如实现一个简单的动态数组，举例就是看如下代码：</p>
-<p>第一种方法：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> arrayInput;</span><br><span class="line">	<span class="keyword">int</span> arraySize = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>* arrayPointer;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;依次输入数字到这个数组中，输入EOF（Windows下为Ctrl＋Z，Unix/Linux下为Ctrl+D）来停止输入&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">while</span>(cin&gt;&gt;arrayInput)&#123;</span><br><span class="line">		arrayPointer[arraySize] = arrayInput;</span><br><span class="line">		arraySize++;</span><br><span class="line">	&#125;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;现在输出数组中元素&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">		cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;arrayPointer[i]&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>第二种方法：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> arrayInput;</span><br><span class="line">	<span class="keyword">int</span> arraySize = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>* arrayPointer;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;依次输入数字到这个数组中，输入EOF（Windows下为Ctrl＋Z，Unix/Linux下为Ctrl+D）来停止输入&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">while</span>(cin&gt;&gt;arrayInput)&#123;</span><br><span class="line">		*(arrayPointer+arraySize) = arrayInput;</span><br><span class="line">		arraySize++;</span><br><span class="line">	&#125;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;现在输出数组中元素&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">		cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;*(arrayPointer+i)&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>直到写完了，才发现自己其实一直没有搞懂，这种arrayPointer[i]表示什么。于是做了一个测试～</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cout&lt;&lt;<span class="string">&quot;现在输出数组中元素\n第一种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;arrayPointer[i]&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">cout&lt;&lt;<span class="string">&quot;\n第二种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;*(arrayPointer + i)&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png"></p>
-<p>试验了一下，才发现，其实arrayPointer[i] 和*(arrayPointer + i) 是等价的，前者是代表从arrayPointer的首地址开始计数，而arrayPointer[0]代表就是arrayPointer指向的地址所对应的值。这一点应该注意一下（其实以前觉得数组和指针挺像的，但是从这一点就知道数组绝对是指针的一小部分子集）。</p>
-<p>给自己提个醒吧－ －顺便怀念一下远去的C++。</p>
-]]></content>
-      <categories>
-        <category>C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
       </tags>
   </entry>
   <entry>
@@ -1568,23 +1568,6 @@
       </tags>
   </entry>
   <entry>
-    <title>圣诞节快乐</title>
-    <url>/2016/03/30/%E5%9C%A3%E8%AF%9E%E8%8A%82%E5%BF%AB%E4%B9%90/</url>
-    <content><![CDATA[<p>一年一度的圣诞节又到了……或许这又意味这一年的开始了。</p>
-<p>这一年中，有很多人给了我帮助，有欢乐之时，也有低落之时。曾经以为自己能够找到自己的目标，却发现自己还是原地踏步。希望来年之时，心中这份迷茫能够或许减少一分吧。</p>
-<p>感慨就到这里，希望在这个圣诞日子中，你我能够忘却烦恼，睁开眼睛发现属于自己的幸福，勇于追求自己的未来，不要被周遭而所困扰。</p>
-<p>最后，谨祝愿：</p>
-<p>自己能够追寻自己的梦想，看到这的你能够拥抱自己的幸福与喜悦。</p>
-<p>最后，献上我的圣诞贺卡～</p>
-<p>最近有点忙，所以就找别人做好的模版啦（顺便感觉WebGL好厉害……），以后有空可能自己做一个自己的贺卡～感谢大家</p>
-<p>贺卡链接：<a href="http://www.dreampiggy.com/wp-site/christmas/">http://www.dreampiggy.com/wp-site/christmas/</a></p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/35/a9f2b746ae91a4d2f985966e93de8.png"></p>
-]]></content>
-      <categories>
-        <category>Life</category>
-      </categories>
-  </entry>
-  <entry>
     <title>学期感想和总结</title>
     <url>/2016/03/30/%E5%AD%A6%E6%9C%9F%E6%84%9F%E6%83%B3%E5%92%8C%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<blockquote>
@@ -1708,6 +1691,23 @@
       </tags>
   </entry>
   <entry>
+    <title>圣诞节快乐</title>
+    <url>/2016/03/30/%E5%9C%A3%E8%AF%9E%E8%8A%82%E5%BF%AB%E4%B9%90/</url>
+    <content><![CDATA[<p>一年一度的圣诞节又到了……或许这又意味这一年的开始了。</p>
+<p>这一年中，有很多人给了我帮助，有欢乐之时，也有低落之时。曾经以为自己能够找到自己的目标，却发现自己还是原地踏步。希望来年之时，心中这份迷茫能够或许减少一分吧。</p>
+<p>感慨就到这里，希望在这个圣诞日子中，你我能够忘却烦恼，睁开眼睛发现属于自己的幸福，勇于追求自己的未来，不要被周遭而所困扰。</p>
+<p>最后，谨祝愿：</p>
+<p>自己能够追寻自己的梦想，看到这的你能够拥抱自己的幸福与喜悦。</p>
+<p>最后，献上我的圣诞贺卡～</p>
+<p>最近有点忙，所以就找别人做好的模版啦（顺便感觉WebGL好厉害……），以后有空可能自己做一个自己的贺卡～感谢大家</p>
+<p>贺卡链接：<a href="http://www.dreampiggy.com/wp-site/christmas/">http://www.dreampiggy.com/wp-site/christmas/</a></p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/35/a9f2b746ae91a4d2f985966e93de8.png"></p>
+]]></content>
+      <categories>
+        <category>Life</category>
+      </categories>
+  </entry>
+  <entry>
     <title>开源者行-见识更大的世界</title>
     <url>/2016/03/30/%E5%BC%80%E6%BA%90%E8%80%85%E8%A1%8C-%E8%A7%81%E8%AF%86%E6%9B%B4%E5%A4%A7%E7%9A%84%E4%B8%96%E7%95%8C/</url>
     <content><![CDATA[<blockquote>
@@ -1759,6 +1759,37 @@
 ]]></content>
   </entry>
   <entry>
+    <title>推荐一个Swift以及iOS开发的Git合集</title>
+    <url>/2016/03/30/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AASwift%E4%BB%A5%E5%8F%8AiOS%E5%BC%80%E5%8F%91%E7%9A%84Git%E5%90%88%E9%9B%86/</url>
+    <content><![CDATA[<p style="text-align: left;">
+  地址在此：
+</p>
+
+<p style="text-align: left;">
+</p>
+
+<p><a title="SwiftGuide" href="https://github.com/ipader/SwiftGuide" target="_blank"><strong>https://github.com/ipader/SwiftGuide</strong></a></p>
+<p>里面包括但不限于这些内容：</p>
+<ol>
+<li> <span style="font-size: 13px;">Swift语法</span></li>
+<li> Swift和Objective-C合作</li>
+<li> <span style="font-size: 13px;">iOS开发</span></li>
+<li> <span style="font-size: 13px;">Cocoa框架</span></li>
+<li> 设计模式</li>
+<li> 函数式编程思想</li>
+<li> 常用UI控件、库</li>
+<li> 实际Swift项目</li>
+</ol>
+<p>喜欢的赶紧过去看看点个Star……重要的事情我只说一遍    </p>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>接上一话，在Swift中使用代理来中转请求和响应</title>
     <url>/2016/03/30/%E6%8E%A5%E4%B8%8A%E4%B8%80%E8%AF%9D%EF%BC%8C%E5%9C%A8Swift%E4%B8%AD%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E6%9D%A5%E4%B8%AD%E8%BD%AC%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94/</url>
     <content><![CDATA[<blockquote>
@@ -1802,37 +1833,6 @@
       <tags>
         <tag>iOS</tag>
         <tag>Swift</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>推荐一个Swift以及iOS开发的Git合集</title>
-    <url>/2016/03/30/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AASwift%E4%BB%A5%E5%8F%8AiOS%E5%BC%80%E5%8F%91%E7%9A%84Git%E5%90%88%E9%9B%86/</url>
-    <content><![CDATA[<p style="text-align: left;">
-  地址在此：
-</p>
-
-<p style="text-align: left;">
-</p>
-
-<p><a title="SwiftGuide" href="https://github.com/ipader/SwiftGuide" target="_blank"><strong>https://github.com/ipader/SwiftGuide</strong></a></p>
-<p>里面包括但不限于这些内容：</p>
-<ol>
-<li> <span style="font-size: 13px;">Swift语法</span></li>
-<li> Swift和Objective-C合作</li>
-<li> <span style="font-size: 13px;">iOS开发</span></li>
-<li> <span style="font-size: 13px;">Cocoa框架</span></li>
-<li> 设计模式</li>
-<li> 函数式编程思想</li>
-<li> 常用UI控件、库</li>
-<li> 实际Swift项目</li>
-</ol>
-<p>喜欢的赶紧过去看看点个Star……重要的事情我只说一遍    </p>
-]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
