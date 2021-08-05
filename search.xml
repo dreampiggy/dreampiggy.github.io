@@ -342,6 +342,36 @@
       </tags>
   </entry>
   <entry>
+    <title>Java之暴力实现Parser Generator（序言）</title>
+    <url>/2016/03/30/Java%E4%B9%8B%E6%9A%B4%E5%8A%9B%E5%AE%9E%E7%8E%B0Parser-Generator%EF%BC%88%E5%BA%8F%E8%A8%80%EF%BC%89/</url>
+    <content><![CDATA[<blockquote>
+<p>编译原理已经学了很多了吧？还有所迷茫？那么今天跟着我一起学习如何暴力写一个Parser Generator</p>
+</blockquote>
+<h1 id="Why-Java："><a href="#Why-Java：" class="headerlink" title="Why Java："></a>Why Java：</h1><p>因为Java有着丰富的对开发人员傻瓜式友好的内置数据结构，什么Map，Set，Stack，求交集求并集也就一句a.contains(b);a.addAll(b)的事情，并且不需要担心资源泄漏(?)的问题，对于我们的暴力实现非常有帮助。而且相比C++我也更为熟悉..</p>
+<h1 id="What-is-parser-generator"><a href="#What-is-parser-generator" class="headerlink" title="What is parser generator"></a>What is parser generator</h1><p>这里就指的是支持用户输入CFG（<a href="https://en.wikipedia.org/wiki/Context-free_grammar">Context-free grammar</a>），然后生成出一个Java代码，这个代码可以编译以后得到一个Parser用来Parse符合输入CFG定义的文法，类似于<a href="https://en.wikipedia.org/wiki/Yacc">Yacc</a></p>
+<p>迷糊了？举个例子，就是假如用户定义了这样一组CFG，用来匹配一个对于正整数的加法和乘法</p>
+<p>$ S \rightarrow TB \ B \rightarrow TB \mid \epsilon \ T \rightarrow FT^* \ T^* \rightarrow * FT^* \ F \rightarrow (S) \mid 0 \mid \dots \mid 9 $</p>
+<p>当然，数学符号肯定很好写，实际中输入大概是这样子的(\e表示epsilon)：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">S  -&gt; T B</span><br><span class="line">B -&gt; + T B | \e</span><br><span class="line">T  -&gt; F T&#123;*&#125;</span><br><span class="line">T&#123;*&#125; -&gt; * F T&#123;*&#125; | \e</span><br><span class="line">F  -&gt; (S) | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</span><br></pre></td></tr></table></figure>
+
+<p>这样的话，这个CFG输给我们的Parser Generator(我们叫做a.java)，运行后得到的代码，再次编译以后(我们叫做b.java)就可以用来匹配输入，对于3 + 5 * 7，我们能给出True的匹配。结果可能是这样子的</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LL(1) Parser start</span><br><span class="line"></span><br><span class="line">Currernt top: S input: 3</span><br><span class="line">Currernt top: T input: 3</span><br><span class="line">Currernt top: F input: 3</span><br><span class="line">Currernt top: 3 input: 3</span><br><span class="line">Currernt top: T&#123;*&#125; input: +</span><br><span class="line">Currernt top: B input: +</span><br><span class="line">Currernt top: + input: +</span><br><span class="line">Currernt top: T input: 5</span><br><span class="line">Currernt top: F input: 5</span><br><span class="line">Currernt top: 5 input: 5</span><br><span class="line">Currernt top: T&#123;*&#125; input: *</span><br><span class="line">Currernt top: * input: *</span><br><span class="line">Currernt top: F input: 7</span><br><span class="line">Currernt top: 7 input: 7</span><br><span class="line">Currernt top: T&#123;*&#125; input: #</span><br><span class="line">Currernt top: B input: #</span><br><span class="line"></span><br><span class="line">Parse result: true</span><br></pre></td></tr></table></figure>
+
+<p>当然，这个匹配用的是表驱动的，而且后续会生成AST（<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Abstract syntax tree</a>）</p>
+<h1 id="What-algorithm"><a href="#What-algorithm" class="headerlink" title="What algorithm"></a>What algorithm</h1><p>当然，核心在于学习编译，所以我们会分别使用<a href="https://en.wikipedia.org/wiki/LR_parser">LR(1)</a>和<a href="https://en.wikipedia.org/wiki/LL_parser">LL(1)</a>生成我们的Parser，里面会用到用到LR(1)的三种集合，LL(1)的Closure等知识……</p>
+<h1 id="How-about-efficiency"><a href="#How-about-efficiency" class="headerlink" title="How about efficiency"></a>How about efficiency</h1><p>看到我说的暴力……你就知道这是妥协了。虽然我们会考虑效率，但只考虑大O，不会在意具体new了多少个对象，是否重复，算法实现也尽量以清晰易懂，直接可以看作伪代码，而不会过多优化，所以，这主要是一个教学，没有过多的实际意义……</p>
+<h1 id="Talk-is-cheap"><a href="#Talk-is-cheap" class="headerlink" title="Talk is cheap"></a>Talk is cheap</h1><p>自己大概写了个非常简陋的版本……现在只能确保LR(1)文法能够Parse，LL(1)正在努力过测试 GitHub repo: <a href="https://github.com/lizhuoli1126/e-lexer">https://github.com/lizhuoli1126/e-lexer</a> （不要在意名字……开始想做的是lex却发现走到了类似yacc的路上去了……）</p>
+<h1 id="So-what’s-next"><a href="#So-what’s-next" class="headerlink" title="So what’s next"></a>So what’s next</h1><p>第一篇，我们只大概介绍一下框架，以及一个简单的Input Buffer的实现，还有我们定义的CFG的语法，状态机图，所以大家放轻松，让我们稍后再见</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>编译原理</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Objective-C ARC下block表现和关键字影响</title>
     <url>/2016/06/17/Objective-C-ARC%E4%B8%8Bblock%E8%A1%A8%E7%8E%B0%E5%92%8C%E5%85%B3%E9%94%AE%E5%AD%97%E5%BD%B1%E5%93%8D/</url>
     <content><![CDATA[<blockquote>
@@ -385,36 +415,6 @@
       <tags>
         <tag>iOS</tag>
         <tag>Objective-C</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java之暴力实现Parser Generator（序言）</title>
-    <url>/2016/03/30/Java%E4%B9%8B%E6%9A%B4%E5%8A%9B%E5%AE%9E%E7%8E%B0Parser-Generator%EF%BC%88%E5%BA%8F%E8%A8%80%EF%BC%89/</url>
-    <content><![CDATA[<blockquote>
-<p>编译原理已经学了很多了吧？还有所迷茫？那么今天跟着我一起学习如何暴力写一个Parser Generator</p>
-</blockquote>
-<h1 id="Why-Java："><a href="#Why-Java：" class="headerlink" title="Why Java："></a>Why Java：</h1><p>因为Java有着丰富的对开发人员傻瓜式友好的内置数据结构，什么Map，Set，Stack，求交集求并集也就一句a.contains(b);a.addAll(b)的事情，并且不需要担心资源泄漏(?)的问题，对于我们的暴力实现非常有帮助。而且相比C++我也更为熟悉..</p>
-<h1 id="What-is-parser-generator"><a href="#What-is-parser-generator" class="headerlink" title="What is parser generator"></a>What is parser generator</h1><p>这里就指的是支持用户输入CFG（<a href="https://en.wikipedia.org/wiki/Context-free_grammar">Context-free grammar</a>），然后生成出一个Java代码，这个代码可以编译以后得到一个Parser用来Parse符合输入CFG定义的文法，类似于<a href="https://en.wikipedia.org/wiki/Yacc">Yacc</a></p>
-<p>迷糊了？举个例子，就是假如用户定义了这样一组CFG，用来匹配一个对于正整数的加法和乘法</p>
-<p>$ S \rightarrow TB \ B \rightarrow TB \mid \epsilon \ T \rightarrow FT^* \ T^* \rightarrow * FT^* \ F \rightarrow (S) \mid 0 \mid \dots \mid 9 $</p>
-<p>当然，数学符号肯定很好写，实际中输入大概是这样子的(\e表示epsilon)：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">S  -&gt; T B</span><br><span class="line">B -&gt; + T B | \e</span><br><span class="line">T  -&gt; F T&#123;*&#125;</span><br><span class="line">T&#123;*&#125; -&gt; * F T&#123;*&#125; | \e</span><br><span class="line">F  -&gt; (S) | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</span><br></pre></td></tr></table></figure>
-
-<p>这样的话，这个CFG输给我们的Parser Generator(我们叫做a.java)，运行后得到的代码，再次编译以后(我们叫做b.java)就可以用来匹配输入，对于3 + 5 * 7，我们能给出True的匹配。结果可能是这样子的</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LL(1) Parser start</span><br><span class="line"></span><br><span class="line">Currernt top: S input: 3</span><br><span class="line">Currernt top: T input: 3</span><br><span class="line">Currernt top: F input: 3</span><br><span class="line">Currernt top: 3 input: 3</span><br><span class="line">Currernt top: T&#123;*&#125; input: +</span><br><span class="line">Currernt top: B input: +</span><br><span class="line">Currernt top: + input: +</span><br><span class="line">Currernt top: T input: 5</span><br><span class="line">Currernt top: F input: 5</span><br><span class="line">Currernt top: 5 input: 5</span><br><span class="line">Currernt top: T&#123;*&#125; input: *</span><br><span class="line">Currernt top: * input: *</span><br><span class="line">Currernt top: F input: 7</span><br><span class="line">Currernt top: 7 input: 7</span><br><span class="line">Currernt top: T&#123;*&#125; input: #</span><br><span class="line">Currernt top: B input: #</span><br><span class="line"></span><br><span class="line">Parse result: true</span><br></pre></td></tr></table></figure>
-
-<p>当然，这个匹配用的是表驱动的，而且后续会生成AST（<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Abstract syntax tree</a>）</p>
-<h1 id="What-algorithm"><a href="#What-algorithm" class="headerlink" title="What algorithm"></a>What algorithm</h1><p>当然，核心在于学习编译，所以我们会分别使用<a href="https://en.wikipedia.org/wiki/LR_parser">LR(1)</a>和<a href="https://en.wikipedia.org/wiki/LL_parser">LL(1)</a>生成我们的Parser，里面会用到用到LR(1)的三种集合，LL(1)的Closure等知识……</p>
-<h1 id="How-about-efficiency"><a href="#How-about-efficiency" class="headerlink" title="How about efficiency"></a>How about efficiency</h1><p>看到我说的暴力……你就知道这是妥协了。虽然我们会考虑效率，但只考虑大O，不会在意具体new了多少个对象，是否重复，算法实现也尽量以清晰易懂，直接可以看作伪代码，而不会过多优化，所以，这主要是一个教学，没有过多的实际意义……</p>
-<h1 id="Talk-is-cheap"><a href="#Talk-is-cheap" class="headerlink" title="Talk is cheap"></a>Talk is cheap</h1><p>自己大概写了个非常简陋的版本……现在只能确保LR(1)文法能够Parse，LL(1)正在努力过测试 GitHub repo: <a href="https://github.com/lizhuoli1126/e-lexer">https://github.com/lizhuoli1126/e-lexer</a> （不要在意名字……开始想做的是lex却发现走到了类似yacc的路上去了……）</p>
-<h1 id="So-what’s-next"><a href="#So-what’s-next" class="headerlink" title="So what’s next"></a>So what’s next</h1><p>第一篇，我们只大概介绍一下框架，以及一个简单的Input Buffer的实现，还有我们定义的CFG的语法，状态机图，所以大家放轻松，让我们稍后再见</p>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>编译原理</tag>
       </tags>
   </entry>
   <entry>
@@ -467,6 +467,74 @@
       <tags>
         <tag>JavaScript</tag>
         <tag>异步</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Random Binary Search Tree －Treap</title>
+    <url>/2016/03/30/Random-Binary-Search-Tree-%EF%BC%8DTreap/</url>
+    <content><![CDATA[<h2 id="BST插入顺序与平衡性"><a href="#BST插入顺序与平衡性" class="headerlink" title="BST插入顺序与平衡性"></a>BST插入顺序与平衡性</h2><p>众所周知，二查搜索树(BST)的搜索、插入、删除的复杂度等于树高，所以平衡度越高，越接近$ O(nlogn) $，越有序越退化为$ O(n) $</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/3/9f/4b2394fd756bcf2edcee109bb18ef.png" alt="线性BST"><br><img src="http://dreampiggy-image.test.upcdn.net/image/e/a2/3419e63d7126ece4996634b3f7dad.png" alt="随机BST"></p>
+<ul>
+<li>对于左侧的BST来说，只有唯一的构造序列：$ &lt;1,2,\dots,14&gt; $</li>
+<li>但对于右侧的BST，可以存在21964800种不同序列</li>
+</ul>
+<p>也就是说，随即插入序列到二叉树所形成的平衡度，将大于部分有序插入所形成的二叉树</p>
+<p>形式化证明可以得到（具体证明过程，参见<a href="http://opendatastructures.org/ods-java/7_1_Random_Binary_Search_Tr.html#fig:rbst-records">Open Data Structures</a>：</p>
+<p>对每个$ x \in{0,\ldots,{n}-1} $, x所需要的搜索长度（即深度）是 $ H_{x+1} + H_{n-x} - O(1) $</p>
+<p>对每个$ x \in(-1,n) $，x所需要的搜索长度是$ H_{\lceil x \rceil} H_{n-\lceil x \rceil} $</p>
+<h2 id="Treap-Random-BST实现"><a href="#Treap-Random-BST实现" class="headerlink" title="Treap - Random BST实现"></a>Treap - Random BST实现</h2><blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Treap">Treap-wikipedia</a></p>
+</blockquote>
+<p>Treap，顾名思义，就是<code>Tree</code>和<code>Head</code>的结合体，除了要满足BST的要求外，还需要满足堆的要求，即</p>
+<ol>
+<li> <code>BST</code>: 对每个结点，左子女的值 &lt; 根的值 &lt; 右子女的值</li>
+<li> <code>Heap</code>: 对除了跟结点的每个结点，双亲结点的优先级要小于该结点的优先级</li>
+</ol>
+<p>所以Treap的每个结点除了包括BST结点的值value外，还需要包括一个唯一的优先级p</p>
+<p>比如这样就是一个典型的Treap，每个结点表示为(value,p) <img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1086.png" alt="Treap"></p>
+<p>并且可以证明，由Heap的约束，最小优先级将成为根结点，而BST又保证了小于根的值将在左子树上，大于根的值在右子树</p>
+<p>由于Heap的约束，我们可以认为Treap是按照优先级排序插入BST的，比如上述Treap可以由以下序列构造</p>
+<p>$ (3,1), (1,6), (0,9), (5,11), (4,14), (9,17), (7,22), (6,42), (8,49), (2,99) $</p>
+<h2 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h2><p>为了确保<code>Heap原则</code>，那么就需要对树进行旋转，在旋转中同时还要确保<code>BST原则</code>，比如这样的例子：</p>
+<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1102.png" alt="BST旋转"></p>
+<p>对w.value &lt; u.value，旋转将交换w和u的父子关系，同时将把原来的B放在新的儿子上。比如右旋，可以看作左旋和右旋是一个对称的操作</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateRight</span><span class="params">(Node *u)</span> </span>&#123;</span><br><span class="line">    Node* w = u-&gt;left;</span><br><span class="line">    w-&gt;parent = u-&gt;parent;  <span class="comment">//parent -&gt; w</span></span><br><span class="line">    <span class="keyword">if</span> (w-&gt;parent != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (w-&gt;parent-&gt;left == u) &#123; <span class="comment">//u is left or right</span></span><br><span class="line">            w-&gt;parent-&gt;left = w;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            w-&gt;parent-&gt;right = w;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;left = w-&gt;right; <span class="comment">//u.left = B</span></span><br><span class="line">    <span class="keyword">if</span> (u-&gt;left != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        u-&gt;left-&gt;parent = u;    <span class="comment">// B.parent = u</span></span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;parent = w;  <span class="comment">// w.right = u</span></span><br><span class="line">    w-&gt;right = u;</span><br><span class="line">    <span class="keyword">if</span> (u == root) &#123;   <span class="comment">//if u is root</span></span><br><span class="line">        root = w;</span><br><span class="line">        root-&gt;parent = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加-删除"><a href="#添加-删除" class="headerlink" title="添加/删除"></a>添加/删除</h2><ul>
+<li>  添加</li>
+</ul>
+<p>比如，对上述的Treap，加入一个值1.5，生成的优先级为4，即插入结点为(1.5,4)。首先使用BST的Add，插入在(2,99)的左子女上。为了满足<code>Heap规则</code>，依次进行以下旋转：</p>
+<p>99 &gt; 4 =&gt;右旋;<br>6 &gt; 4 =&gt; 左旋;<br>1 &lt; 4 =&gt; 停止;</p>
+<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1108.png" alt="Treap插入"></p>
+<p>由前面的引理，可以知道，旋转的次数为$ 2ln(n) + O(1) $，复杂度为$ O(logn) $</p>
+<ul>
+<li>  删除</li>
+</ul>
+<p>核心基本为添加的逆操作，对上述的Treap，删除一个结果(9)，那么将删除结点(9,17)。首先使用BST的Find，找到value为9的结点，然后将以(9,17)开始，向下不断旋转，直到最终为叶结点，然后把这个叶子剪去(Cut down)。</p>
+<p>旋转原则：</p>
+<ol>
+<li>left = NULL &amp; right = NULL ，不动</li>
+<li>left = NULL，左旋(right = NULL则右旋) <code>注:原文这里描述写反了</code></li>
+<li>left.p &lt; right.p，右旋(right.p &lt; left.p则左旋)</li>
+</ol>
+<p>依次进行以下旋转：</p>
+<p>right = NULL =&gt; 右旋;<br>right = NULL =&gt; 右旋;<br>叶结点 =&gt; 停止;</p>
+<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1114.png" alt="Treap删除"></p>
+<p>和添加相反，复杂度为$ O(logn) $</p>
+<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><p><code>构造</code>: $ O(logn) $ <code>查找</code>: $ O(logn) $ <code>添加</code>: $ O(logn) $ <code>删除</code>: $ O(logn) $</p>
+<p>虽说都是$ O(logn) $，但是对比另一种高级数据结构<a href="https://en.wikipedia.org/wiki/Skip_list">Skip List(跳表)</a>，查找复杂度在常数上有不同：</p>
+<p><code>Skip List</code>: $ elnn + O(1) \approx 1.884log(n) + O(1) $ <code>Treap</code>: $ 2ln(n) + O(1) \approx 1.386log(n) + O(1) $</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><blockquote>
+<p>完整版C++实现，这里面的随机优先级，直接使用了value当种子srand()然后rand()获取随机数……（先进行BST的Add，确保value不会重复），实际中可以采用其他随机数方式获得更好的期望复杂度 （吐槽……开始没注意这是Java版伪代码，以后一定用Java或者JavaScript写……指针地狱）</p>
+</blockquote>
+<p>代码链接：<a href="http://www.dreampiggy.com/source/413-2/">Treap</a></p>
+]]></content>
+      <categories>
+        <category>Code</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>数据结构</tag>
       </tags>
   </entry>
   <entry>
@@ -630,74 +698,6 @@
         <tag>iOS</tag>
         <tag>React Native</tag>
         <tag>Redux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Random Binary Search Tree －Treap</title>
-    <url>/2016/03/30/Random-Binary-Search-Tree-%EF%BC%8DTreap/</url>
-    <content><![CDATA[<h2 id="BST插入顺序与平衡性"><a href="#BST插入顺序与平衡性" class="headerlink" title="BST插入顺序与平衡性"></a>BST插入顺序与平衡性</h2><p>众所周知，二查搜索树(BST)的搜索、插入、删除的复杂度等于树高，所以平衡度越高，越接近$ O(nlogn) $，越有序越退化为$ O(n) $</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/3/9f/4b2394fd756bcf2edcee109bb18ef.png" alt="线性BST"><br><img src="http://dreampiggy-image.test.upcdn.net/image/e/a2/3419e63d7126ece4996634b3f7dad.png" alt="随机BST"></p>
-<ul>
-<li>对于左侧的BST来说，只有唯一的构造序列：$ &lt;1,2,\dots,14&gt; $</li>
-<li>但对于右侧的BST，可以存在21964800种不同序列</li>
-</ul>
-<p>也就是说，随即插入序列到二叉树所形成的平衡度，将大于部分有序插入所形成的二叉树</p>
-<p>形式化证明可以得到（具体证明过程，参见<a href="http://opendatastructures.org/ods-java/7_1_Random_Binary_Search_Tr.html#fig:rbst-records">Open Data Structures</a>：</p>
-<p>对每个$ x \in{0,\ldots,{n}-1} $, x所需要的搜索长度（即深度）是 $ H_{x+1} + H_{n-x} - O(1) $</p>
-<p>对每个$ x \in(-1,n) $，x所需要的搜索长度是$ H_{\lceil x \rceil} H_{n-\lceil x \rceil} $</p>
-<h2 id="Treap-Random-BST实现"><a href="#Treap-Random-BST实现" class="headerlink" title="Treap - Random BST实现"></a>Treap - Random BST实现</h2><blockquote>
-<p><a href="https://en.wikipedia.org/wiki/Treap">Treap-wikipedia</a></p>
-</blockquote>
-<p>Treap，顾名思义，就是<code>Tree</code>和<code>Head</code>的结合体，除了要满足BST的要求外，还需要满足堆的要求，即</p>
-<ol>
-<li> <code>BST</code>: 对每个结点，左子女的值 &lt; 根的值 &lt; 右子女的值</li>
-<li> <code>Heap</code>: 对除了跟结点的每个结点，双亲结点的优先级要小于该结点的优先级</li>
-</ol>
-<p>所以Treap的每个结点除了包括BST结点的值value外，还需要包括一个唯一的优先级p</p>
-<p>比如这样就是一个典型的Treap，每个结点表示为(value,p) <img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1086.png" alt="Treap"></p>
-<p>并且可以证明，由Heap的约束，最小优先级将成为根结点，而BST又保证了小于根的值将在左子树上，大于根的值在右子树</p>
-<p>由于Heap的约束，我们可以认为Treap是按照优先级排序插入BST的，比如上述Treap可以由以下序列构造</p>
-<p>$ (3,1), (1,6), (0,9), (5,11), (4,14), (9,17), (7,22), (6,42), (8,49), (2,99) $</p>
-<h2 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h2><p>为了确保<code>Heap原则</code>，那么就需要对树进行旋转，在旋转中同时还要确保<code>BST原则</code>，比如这样的例子：</p>
-<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1102.png" alt="BST旋转"></p>
-<p>对w.value &lt; u.value，旋转将交换w和u的父子关系，同时将把原来的B放在新的儿子上。比如右旋，可以看作左旋和右旋是一个对称的操作</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateRight</span><span class="params">(Node *u)</span> </span>&#123;</span><br><span class="line">    Node* w = u-&gt;left;</span><br><span class="line">    w-&gt;parent = u-&gt;parent;  <span class="comment">//parent -&gt; w</span></span><br><span class="line">    <span class="keyword">if</span> (w-&gt;parent != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (w-&gt;parent-&gt;left == u) &#123; <span class="comment">//u is left or right</span></span><br><span class="line">            w-&gt;parent-&gt;left = w;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            w-&gt;parent-&gt;right = w;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;left = w-&gt;right; <span class="comment">//u.left = B</span></span><br><span class="line">    <span class="keyword">if</span> (u-&gt;left != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        u-&gt;left-&gt;parent = u;    <span class="comment">// B.parent = u</span></span><br><span class="line">    &#125;</span><br><span class="line">    u-&gt;parent = w;  <span class="comment">// w.right = u</span></span><br><span class="line">    w-&gt;right = u;</span><br><span class="line">    <span class="keyword">if</span> (u == root) &#123;   <span class="comment">//if u is root</span></span><br><span class="line">        root = w;</span><br><span class="line">        root-&gt;parent = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="添加-删除"><a href="#添加-删除" class="headerlink" title="添加/删除"></a>添加/删除</h2><ul>
-<li>  添加</li>
-</ul>
-<p>比如，对上述的Treap，加入一个值1.5，生成的优先级为4，即插入结点为(1.5,4)。首先使用BST的Add，插入在(2,99)的左子女上。为了满足<code>Heap规则</code>，依次进行以下旋转：</p>
-<p>99 &gt; 4 =&gt;右旋;<br>6 &gt; 4 =&gt; 左旋;<br>1 &lt; 4 =&gt; 停止;</p>
-<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1108.png" alt="Treap插入"></p>
-<p>由前面的引理，可以知道，旋转的次数为$ 2ln(n) + O(1) $，复杂度为$ O(logn) $</p>
-<ul>
-<li>  删除</li>
-</ul>
-<p>核心基本为添加的逆操作，对上述的Treap，删除一个结果(9)，那么将删除结点(9,17)。首先使用BST的Find，找到value为9的结点，然后将以(9,17)开始，向下不断旋转，直到最终为叶结点，然后把这个叶子剪去(Cut down)。</p>
-<p>旋转原则：</p>
-<ol>
-<li>left = NULL &amp; right = NULL ，不动</li>
-<li>left = NULL，左旋(right = NULL则右旋) <code>注:原文这里描述写反了</code></li>
-<li>left.p &lt; right.p，右旋(right.p &lt; left.p则左旋)</li>
-</ol>
-<p>依次进行以下旋转：</p>
-<p>right = NULL =&gt; 右旋;<br>right = NULL =&gt; 右旋;<br>叶结点 =&gt; 停止;</p>
-<p><img src="http://opendatastructures.org/versions/edition-0.1e/ods-java/img1114.png" alt="Treap删除"></p>
-<p>和添加相反，复杂度为$ O(logn) $</p>
-<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><p><code>构造</code>: $ O(logn) $ <code>查找</code>: $ O(logn) $ <code>添加</code>: $ O(logn) $ <code>删除</code>: $ O(logn) $</p>
-<p>虽说都是$ O(logn) $，但是对比另一种高级数据结构<a href="https://en.wikipedia.org/wiki/Skip_list">Skip List(跳表)</a>，查找复杂度在常数上有不同：</p>
-<p><code>Skip List</code>: $ elnn + O(1) \approx 1.884log(n) + O(1) $ <code>Treap</code>: $ 2ln(n) + O(1) \approx 1.386log(n) + O(1) $</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><blockquote>
-<p>完整版C++实现，这里面的随机优先级，直接使用了value当种子srand()然后rand()获取随机数……（先进行BST的Add，确保value不会重复），实际中可以采用其他随机数方式获得更好的期望复杂度 （吐槽……开始没注意这是Java版伪代码，以后一定用Java或者JavaScript写……指针地狱）</p>
-</blockquote>
-<p>代码链接：<a href="http://www.dreampiggy.com/source/413-2/">Treap</a></p>
-]]></content>
-      <categories>
-        <category>Code</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>数据结构</tag>
       </tags>
   </entry>
   <entry>
