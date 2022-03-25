@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="因为众所周知的原因，苹果的Xcode版本会不断提高自己的最低安装版本，在Xcode 13.0-13.2.1上，这个最低安装版本是macOS 11 而随着Xcode 13.3正式版放出，这个最低部署版本在最后关头被提升到了macOS 12  Why？一般来说，各位开发者或者众多基建，总有各种各样的原因需要暂时留在老版本的macOS系统上，但是又希望使用新Xcode版本自带的Toolchain进行一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一段简单逆向之旅-绕开Xcode 13.3最低macOS 12.0限制">
+<meta property="og:url" content="http://dreampiggy.com/2022/03/25/%E4%B8%80%E6%AE%B5%E7%AE%80%E5%8D%95%E9%80%86%E5%90%91%E4%B9%8B%E6%97%85-%E7%BB%95%E5%BC%80Xcode-13-3%E6%9C%80%E4%BD%8EmacOS-12-0%E9%99%90%E5%88%B6/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="因为众所周知的原因，苹果的Xcode版本会不断提高自己的最低安装版本，在Xcode 13.0-13.2.1上，这个最低安装版本是macOS 11 而随着Xcode 13.3正式版放出，这个最低部署版本在最后关头被提升到了macOS 12  Why？一般来说，各位开发者或者众多基建，总有各种各样的原因需要暂时留在老版本的macOS系统上，但是又希望使用新Xcode版本自带的Toolchain进行一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752406_af87e2021743b9639d35f86714f127c7.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752770_b314e1b23bdd01fe803ede1383e29491.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752322_3d4e9ae78eaab94de9cfc7d1f8eaecf0.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752844_f21e111a081ff5dfc61dab7137109a39.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752266_e83287242af496cbbec7817b4b60f9f0.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752227_fd8cd9f89407475fe62c0489dc61a232.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752133_02c1257232efb1e2adebcb51ea25ceb0.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752247_62087827de34d7b56eea1e48208b261e.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752222_811d0d800592f601f309e48b732f1194.png">
+<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752374_0a5d6ef92b0e270d6164a05153565572.png">
+<meta property="article:published_time" content="2022-03-25T12:47:50.000Z">
+<meta property="article:modified_time" content="2022-03-25T13:08:28.564Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="Xcode">
+<meta property="article:tag" content="逆向">
+<meta property="article:tag" content="macOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752406_af87e2021743b9639d35f86714f127c7.png">
+
+<link rel="canonical" href="http://dreampiggy.com/2022/03/25/%E4%B8%80%E6%AE%B5%E7%AE%80%E5%8D%95%E9%80%86%E5%90%91%E4%B9%8B%E6%97%85-%E7%BB%95%E5%BC%80Xcode-13-3%E6%9C%80%E4%BD%8EmacOS-12-0%E9%99%90%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>一段简单逆向之旅-绕开Xcode 13.3最低macOS 12.0限制 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2022/03/25/%E4%B8%80%E6%AE%B5%E7%AE%80%E5%8D%95%E9%80%86%E5%90%91%E4%B9%8B%E6%97%85-%E7%BB%95%E5%BC%80Xcode-13-3%E6%9C%80%E4%BD%8EmacOS-12-0%E9%99%90%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一段简单逆向之旅-绕开Xcode 13.3最低macOS 12.0限制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-25 20:47:50 / 修改时间：21:08:28" itemprop="dateCreated datePublished" datetime="2022-03-25T20:47:50+08:00">2022-03-25</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>因为众所周知的原因，苹果的Xcode版本会不断提高自己的最低安装版本，在Xcode 13.0-13.2.1上，这个最低安装版本是macOS 11</p>
+<p>而随着Xcode 13.3正式版放出，这个最低部署版本在最后关头被提升到了macOS 12</p>
+</blockquote>
+<h1 id="Why？"><a href="#Why？" class="headerlink" title="Why？"></a>Why？</h1><p>一般来说，各位开发者或者众多基建，总有各种各样的原因需要暂时留在老版本的macOS系统上，但是又希望使用新Xcode版本自带的Toolchain进行一些工作开发调试，有些是主观问题，有些是客观限制：</p>
+<p>举例子：</p>
+<ol>
+<li>macOS 12禁止了<code>sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off</code>绕过GUI配置，导致一些公司采取Apple Device Management管理的电脑，无法正常关闭TCP拦截，会导致一些服务异常</li>
+<li>macOS 12加强了Kernel Extension的安全性，导致GitHub Action和Circle CI截止2022年3月底，迟迟无法更新他们的虚拟化集群到macOS 12，只有11.6的最新版本</li>
+</ol>
+<p>这些都是闲聊，进入正题。那么有没有办法能够绕开，或者从原理上来讲，是否这个系统绑定的最低部署版本限制是必要的？</p>
+<h1 id="先放结论"><a href="#先放结论" class="headerlink" title="先放结论"></a>先放结论</h1><ol>
+<li>可以绕过这个macOS 12的最低安装版本限制运行</li>
+<li>这个限制是非必要的，绕过以后所有功能正常可用（构建，独立工具集，调试，连接iPhone）</li>
+</ol>
+<p>下面来说明具体的逆向流程，和进行绕过的简单Step-by-step手法</p>
+<h1 id="安装Xcode"><a href="#安装Xcode" class="headerlink" title="安装Xcode"></a>安装Xcode</h1><p>先说明测试机器Mac环境和Xcode环境：</p>
+<ol>
+<li>macOS 11.4 (20F71)</li>
+<li>Xcode Version 13.2 (13C90)：需要保留一份以防万一</li>
+<li>Xcode Version 13.3 (13E113)：目标安装的版本</li>
+</ol>
+<p>首先，作为iOS/macOS开发者，我们肯定会使用dmg的格式，或者使用<a target="_blank" rel="noopener" href="https://github.com/RobotsAndPencils/xcodes">Xcodes.app</a>来安装我们的Xcode 13.3了（App Store安装Xcode曾经出的坑：<a target="_blank" rel="noopener" href="https://appleinsider.com/articles/21/12/14/app-store-version-of-xcode-132-causing-problems-for-developers">App Store version of Xcode 13.2 causing problems for developers</a>，我是不会再用了）</p>
+<p>安装完毕后，我们在Finder中看到的Xcode.app是一个画着❎的样子，直接打开会提示如下：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752406_af87e2021743b9639d35f86714f127c7.png" alt="1648210752406_af87e2021743b9639d35f86714f127c7"></p>
+<h1 id="绕过GUI部分的限制"><a href="#绕过GUI部分的限制" class="headerlink" title="绕过GUI部分的限制"></a>绕过GUI部分的限制</h1><h2 id="修改LSMinimumSystemVersion"><a href="#修改LSMinimumSystemVersion" class="headerlink" title="修改LSMinimumSystemVersion"></a>修改<code>LSMinimumSystemVersion</code></h2><p>作为iOS/macOS开发者，我们第一想到的就是，是否是Xcode.app对应的Info.plist中，设置了和最低部署版本相关的字段导致拒绝载入呢？</p>
+<p>我们用另一个Xcode（或者plistutil）打开<code>Xcode.app/Contents/Info.plist</code>，果然发现了对应的字段：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752770_b314e1b23bdd01fe803ede1383e29491.png" alt="1648210752770_b314e1b23bdd01fe803ede1383e29491"></p>
+<p>这个<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/bundleresources/information_property_list/lsminimumsystemversion">LSMinimumSystemVersion</a>是Mac应用标准的声明最低部署版本的方式，修改为你的机器当前OS版本之后保存，执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch /Applications/Xcode-13.3.0.app</span><br><span class="line">killall Finder</span><br></pre></td></tr></table></figure>
+
+<p>重新尝试双击。不错，这次我们打开了，初看起来不错（直到我们正式开始编译）！</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752322_3d4e9ae78eaab94de9cfc7d1f8eaecf0.png" alt="1648210752322_3d4e9ae78eaab94de9cfc7d1f8eaecf0"></p>
+<h1 id="绕过CLI部分的限制"><a href="#绕过CLI部分的限制" class="headerlink" title="绕过CLI部分的限制"></a>绕过CLI部分的限制</h1><h2 id="神奇的xcrun"><a href="#神奇的xcrun" class="headerlink" title="神奇的xcrun"></a>神奇的xcrun</h2><p>但是只要创建一下工程并执行编译，就会发现，各种命令行工具的调用是有问题的，比如我们先通过xcode-select设置为当前的Xcode 13.2，尝试执行：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752844_f21e111a081ff5dfc61dab7137109a39.png" alt="1648210752844_f21e111a081ff5dfc61dab7137109a39"><br><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752266_e83287242af496cbbec7817b4b60f9f0.png" alt="1648210752266_e83287242af496cbbec7817b4b60f9f0"></p>
+<p>但是我们如果直接找到，执行对应绝对路径的clang，是可以执行的</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752227_fd8cd9f89407475fe62c0489dc61a232.png" alt="1648210752227_fd8cd9f89407475fe62c0489dc61a232"></p>
+<p>并且，我们可以直接检查clang这个二进制，是否链接时设置了target，这部分可以使用otool -l读取machO Header查看到：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752133_02c1257232efb1e2adebcb51ea25ceb0.png" alt="1648210752133_02c1257232efb1e2adebcb51ea25ceb0"></p>
+<p>好，最低部署版本是macOS 10.14.6；那现在我们有充分的证据说明，一定可以在我当前的电脑运行clang，而上述提示应该是xcrun这个调度器，添加了额外的判断。</p>
+<p>通过搜索关键词，可以在Xcode的strings输出中找到这句“Executable requires at least”的关键字：参考仓库：<a target="_blank" rel="noopener" href="https://github.com/keith/Xcode.app-strings/blob/11e15fd3cd8446f2a966746caefcef5beebc8929/Xcode.app/Contents/Frameworks/libxcodebuildLoader.dylib">Xcode.app-strings</a></p>
+<h2 id="反编译libxcodebuildLoader"><a href="#反编译libxcodebuildLoader" class="headerlink" title="反编译libxcodebuildLoader"></a>反编译<code>libxcodebuildLoader</code></h2><p>我们定位到这个<code>libxcodebuildLoader.dylib</code>，拖进Hopper尝试反编译理解他检查的原理，伪代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> _checkMinimumOSVersion(<span class="keyword">int</span> arg0) &#123;</span><br><span class="line">    var_2C = <span class="number">0x0</span>;</span><br><span class="line">    rbx = <span class="number">0x0</span>;</span><br><span class="line">    rax = _NSGetExecutablePath(<span class="number">0x0</span>, &amp;var_2C);</span><br><span class="line">    rdi = var_2C;</span><br><span class="line">    <span class="keyword">if</span> (rdi != <span class="number">0x0</span>) &#123;</span><br><span class="line">            rbx = <span class="built_in">malloc</span>(rdi);</span><br><span class="line">    &#125;</span><br><span class="line">    rax = _NSGetExecutablePath(rbx, &amp;var_2C);</span><br><span class="line">    <span class="keyword">if</span> (rax != <span class="number">0x0</span>) <span class="keyword">goto</span> loc_282c;</span><br><span class="line"></span><br><span class="line">loc_26fc:</span><br><span class="line">    rax = [NSString stringWithUTF8String:rbx];</span><br><span class="line">    rax = [rax retain];</span><br><span class="line">    r14 = rax;</span><br><span class="line">    r15 = [[NSURL fileURLWithPath:rax] retain];</span><br><span class="line">    <span class="keyword">if</span> (rbx != <span class="number">0x0</span>) &#123;</span><br><span class="line">            <span class="built_in">free</span>(rbx);</span><br><span class="line">    &#125;</span><br><span class="line">    rbx = CFBundleCopyInfoDictionaryForURL(r15);</span><br><span class="line">    CFRelease(r15);</span><br><span class="line">    <span class="keyword">if</span> (rbx == <span class="number">0x0</span>) <span class="keyword">goto</span> loc_2867;</span><br><span class="line"></span><br><span class="line">loc_276a:</span><br><span class="line">    r13 = [CFDictionaryGetValue(rbx, @ DVTMinimumSystemVersion ) retain];</span><br><span class="line">    CFRelease(rbx);</span><br><span class="line">    <span class="keyword">if</span> ((r13 == <span class="number">0x0</span>) || ([r13 length] == <span class="number">0x0</span>)) <span class="keyword">goto</span> loc_280c;</span><br><span class="line"></span><br><span class="line">loc_27a6:</span><br><span class="line">    r12 = *_objc_msgSend;</span><br><span class="line">    r15 = [[DVTVersion versionWithStringValue:r13] retain];</span><br><span class="line">    rax = [DVTVersion currentSystemVersion];</span><br><span class="line">    rax = [rax retain];</span><br><span class="line">    rbx = r12;</span><br><span class="line">    r12 = rax;</span><br><span class="line">    rdx = r15;</span><br><span class="line">    <span class="keyword">if</span> ([rax isEqualToOrNewerThanVersion:rdx] == <span class="number">0x0</span>) <span class="keyword">goto</span> loc_288c;</span><br><span class="line"></span><br><span class="line">loc_27fb:</span><br><span class="line">    [r12 release];</span><br><span class="line">    [r15 release];</span><br><span class="line">    <span class="keyword">goto</span> loc_280c;</span><br><span class="line"></span><br><span class="line">loc_280c:</span><br><span class="line">    [r13 release];</span><br><span class="line">    [r14 release];</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">loc_288c:</span><br><span class="line">    r15 = [(rbx)(r15, @selector(stringValue), rdx) retain];</span><br><span class="line">    rax = (rbx)(r12, @selector(stringValue), rdx);</span><br><span class="line">    rax = [rax retain];</span><br><span class="line">    r14 = [(rbx)(@class(NSString), @selector(stringWithFormat:), @ Executable <span class="keyword">requires</span> at least macOS %@, but is being run on macOS %@, <span class="keyword">and</span> so is exiting. , r15, rax) retain];</span><br><span class="line">    [rax release];</span><br><span class="line">    [r15 release];</span><br><span class="line">    <span class="built_in">fprintf</span>(**___stderrp,  %s\n , (rbx)(objc_retainAutorelease(r14), @selector(UTF8String), @ Executable <span class="keyword">requires</span> at least macOS %@, but is being run on macOS %@, <span class="keyword">and</span> so is exiting. ));</span><br><span class="line">    <span class="keyword">goto</span> loc_292b;</span><br><span class="line"></span><br><span class="line">loc_292b:</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0x1</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">loc_2867:</span><br><span class="line">    fwrite( Unable to open executable info dictionary; xcodebuild may be corrupt <span class="keyword">and</span> should be reinstalled.\n , <span class="number">0x60</span>, <span class="number">0x1</span>, **___stderrp);</span><br><span class="line">    <span class="keyword">goto</span> loc_292b;</span><br><span class="line"></span><br><span class="line">loc_282c:</span><br><span class="line">    _DVTAssertionFailureHandler(*_self, *__cmd,  <span class="keyword">void</span> checkMinimumOSVersion() ,  /Library/Caches/com.apple.xbs/Sources/IDETools/IDETools<span class="number">-20008</span>/xcodebuildLoader/xcodebuildLoader.m , <span class="number">0x69</span>, @ <span class="number">0</span> , @ Couldn<span class="number">&#x27;</span>t get executable path to self! );</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好，阅读伪代码以及查阅资料可知：</p>
+<p><code>xcrun</code>会先一步调用到<code>xcodebuild</code>，检查<code>DVTMinimumSystemVersion</code>这个变量的值是否和当前OS版本匹配。</p>
+<p>而这个变量，竟然是通过<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/corefoundation/1537134-cfbundlecopyinfodictionaryforurl">CFBundleCopyInfoDictionaryForURL</a>打开的。</p>
+<p>参考苹果的函数说明，它除了常规的打开一个.bundle的文件夹，解析为NSBundle.infoDictionary以外，竟然能打开存在于二进制<code>__TEXT,__info_plist</code>中的数据来解析为一个字典。所以我们接下来去找<code>xcodebuild</code>的二进制看看。</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752247_62087827de34d7b56eea1e48208b261e.png" alt="1648210752247_62087827de34d7b56eea1e48208b261e"></p>
+<p>参考：</p>
+<ol>
+<li> <code>_NSGetExecutablePath</code>：<a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/dyld.3.html">函数说明</a>，大概理解获取当前程序的可执行路径</li>
+</ol>
+<h2 id="反编译xcodebuild"><a href="#反编译xcodebuild" class="headerlink" title="反编译xcodebuild"></a>反编译<code>xcodebuild</code></h2><p>同时，出于好奇，我们可以再把<code>xcodebuild</code>拖进Hopper去尝试理解，发现它整个程序竟然只有一个main函数，逻辑其实都在<code>libxcodebuildLoader.dylib</code>中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> _main(<span class="keyword">int</span> arg0, <span class="keyword">int</span> arg1) &#123;</span><br><span class="line">    r14 = arg1;</span><br><span class="line">    rbx = arg0;</span><br><span class="line">    rax = dlopen( @rpath/libxcodebuildLoader.dylib , <span class="number">0x1</span>);</span><br><span class="line">    <span class="keyword">if</span> (rax == <span class="number">0x0</span>) <span class="keyword">goto</span> loc_100002b7f;</span><br><span class="line"></span><br><span class="line">loc_100002b5c:</span><br><span class="line">    rax = dlsym(rax,  XcodeBuildMain );</span><br><span class="line">    <span class="keyword">if</span> (rax == <span class="number">0x0</span>) <span class="keyword">goto</span> loc_100002bd8;</span><br><span class="line"></span><br><span class="line">loc_100002b70:</span><br><span class="line">    (rax)(rbx, r14);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">loc_100002bd8:</span><br><span class="line">    rax = dlerror();</span><br><span class="line">    rax = [NSString stringWithUTF8String:rax];</span><br><span class="line">    rax = [rax retain];</span><br><span class="line">    rax = objc_retainAutorelease(rax);</span><br><span class="line">    r15 = rax;</span><br><span class="line">    rax = [rax UTF8String];</span><br><span class="line">    rsi =  Error loading symbol: %s\n ;</span><br><span class="line">    <span class="keyword">goto</span> loc_100002c2f;</span><br><span class="line"></span><br><span class="line">loc_100002c2f:</span><br><span class="line">    <span class="built_in">fprintf</span>(**___stderrp, rsi);</span><br><span class="line">    rbx = [_prunedErrorMessage() retain];</span><br><span class="line">    [r15 release];</span><br><span class="line">    <span class="keyword">if</span> (rbx != <span class="number">0x0</span>) &#123;</span><br><span class="line">            _main.cold<span class="number">.1</span>(rbx, @selector(UTF8String));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">loc_100002b7f:</span><br><span class="line">    rax = dlerror();</span><br><span class="line">    rax = [NSString stringWithUTF8String:rax];</span><br><span class="line">    rax = [rax retain];</span><br><span class="line">    rax = objc_retainAutorelease(rax);</span><br><span class="line">    r15 = rax;</span><br><span class="line">    rax = [rax UTF8String];</span><br><span class="line">    rsi =  Error loading required libraries. If there is an ongoing installation please wait <span class="keyword">for</span> it to complete. Otherwise reinstall. (%s)\n ;</span><br><span class="line">    <span class="keyword">goto</span> loc_100002c2f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改DVTMinimumSystemVersion"><a href="#修改DVTMinimumSystemVersion" class="headerlink" title="修改DVTMinimumSystemVersion"></a>修改<code>DVTMinimumSystemVersion</code></h2><p>其实大家也发现了，<code>xcodebuild</code>二进制本身竟然内嵌了一段XML！我使用<code>llvm-objdump</code>把它直接提取了出来：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">plist</span> <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//Apple//DTD PLIST 1.0//EN&quot;</span> <span class="meta-string">&quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">&quot;1.0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>BuildMachineOSBuild<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>21E160<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>CFBundleDevelopmentRegion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>English<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>CFBundleDisplayName<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>xcodebuild<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>CFBundleIdentifier<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>com.apple.dt.xcodebuild<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>CFBundleInfoDictionaryVersion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>6.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>CFBundleName<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>xcodebuild<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>CFBundleShortVersionString<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>13.3<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>CFBundleSupportedPlatforms<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>MacOSX<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>CFBundleVersion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>20008<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>DTCompiler<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>com.apple.compilers.llvm.clang.1_0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>DTPlatformBuild<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>21E185d<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>DTPlatformName<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>macosx<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>DTPlatformVersion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>12.3<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>DTSDKBuild<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>21E185d<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>DTSDKName<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>macosx12.3.internal<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>DTXcode<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>1330<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>DTXcodeBuild<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>13E112a<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>DVTMinimumSystemVersion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>12.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>LSMinimumSystemVersion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span>&gt;</span>11.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plist</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>看到我们关心的<code>DVTMinimumSystemVersion</code>和<code>LSMinimumSystemVersion</code>都在里面。其实也侧面证明了，真正的最低部署版本是macOS 11.0，而不是macOS 12.0（12.0只是苹果为了间接Push Developer去频繁更新macOS的阴谋罢了😂）</p>
+<p>那下一步，要做的事情就是用魔改<code>xcodebuild</code>并重新codesign。修改的方式多种多样，你暴力使用Hex Editor也是最简单。但是我更好奇的是这个<code>__TEXT,__info_plist</code>的machO段和节的相关寿命。</p>
+<p>在网上搜索了一下相关资料，很容易就找到了感兴趣的资料：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://redsweater.com/blog/2083/the-power-of-plist">The Power Of Plist</a>：解释Info.plist可以内嵌在二进制中</li>
+<li><a target="_blank" rel="noopener" href="https://reverse.put.as/2013/05/28/gimmedebugah-how-to-embedded-a-info-plist-into-arbitrary-binaries">Gimmedebugah: how to embedded a Info.plist into arbitrary binaries</a>：对任意已有二进制注入Info.plist</li>
+<li><a target="_blank" rel="noopener" href="https://llvm.org/docs/CommandGuide/llvm-objcopy.html">llvm-objcopy</a>：拷贝修改machO结构到新machO</li>
+</ol>
+<p>基本解释得很明确清晰，如果你有源码，可以直接利用ld64的参数<code> --sectcreate __TEXT,__info_plist path_to/Info.plist</code>来注入你的Info.plist信息。没有源码可以手动修改machO结构并签名即可。</p>
+<p>对于我此次跑Xcode 13.3来说，我选择最傻瓜最直观的Hex Editor修改（我用的是开源小工具<a target="_blank" rel="noopener" href="https://github.com/HexFiend/HexFiend">HexFiend</a>），只需要把<code>12.0</code>修改为<code>11.0</code>即可满足我的需要，并重新codesign一波。</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752222_811d0d800592f601f309e48b732f1194.png" alt="1648210752222_811d0d800592f601f309e48b732f1194"></p>
+<p>codesign：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">codesign --remove-signature /Applications/Xcode-13.3.0.app/Contents/Developer/usr/bin/xcodebuild</span><br><span class="line">sudo /Applications/Xcode-13.3.0.app/Contents/Developer/usr/bin/xcodebuild -license</span><br></pre></td></tr></table></figure>
+
+<p>测试一下CLI，很正常</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752374_0a5d6ef92b0e270d6164a05153565572.png" alt="1648210752374_0a5d6ef92b0e270d6164a05153565572"></p>
+<h1 id="最终替换步骤"><a href="#最终替换步骤" class="headerlink" title="最终替换步骤"></a>最终替换步骤</h1><ol>
+<li>修改<code>Xcode-13.3.0.app/Contents/Info.plist</code>中的<code>LSMinimumSystemVersion</code>的值为<code>11.0</code></li>
+<li>替换<code>Xcode-13.3.0.app/Contents/Developer/usr/bin/xcodebuild</code>中的<code>DVTMinimumSystemVersion</code>的二进制为<code>11.0</code>，或者使用我这个已经替换好的（建议还是手动参考上面步骤[修改DVTMinimumSystemVersion]替换，授人以渔而不是授人以鱼）</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Xcode/" rel="tag"># Xcode</a>
+              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
+              <a href="/tags/macOS/" rel="tag"># macOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/" rel="prev" title="CocoaPods资源管理—Data Asset最低部署版本的坑">
+      <i class="fa fa-chevron-left"></i> CocoaPods资源管理—Data Asset最低部署版本的坑
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Why%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">Why？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%88%E6%94%BE%E7%BB%93%E8%AE%BA"><span class="nav-number">2.</span> <span class="nav-text">先放结论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Xcode"><span class="nav-number">3.</span> <span class="nav-text">安装Xcode</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%95%E8%BF%87GUI%E9%83%A8%E5%88%86%E7%9A%84%E9%99%90%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">绕过GUI部分的限制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9LSMinimumSystemVersion"><span class="nav-number">4.1.</span> <span class="nav-text">修改LSMinimumSystemVersion</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%95%E8%BF%87CLI%E9%83%A8%E5%88%86%E7%9A%84%E9%99%90%E5%88%B6"><span class="nav-number">5.</span> <span class="nav-text">绕过CLI部分的限制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E5%A5%87%E7%9A%84xcrun"><span class="nav-number">5.1.</span> <span class="nav-text">神奇的xcrun</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91libxcodebuildLoader"><span class="nav-number">5.2.</span> <span class="nav-text">反编译libxcodebuildLoader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91xcodebuild"><span class="nav-number">5.3.</span> <span class="nav-text">反编译xcodebuild</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9DVTMinimumSystemVersion"><span class="nav-number">5.4.</span> <span class="nav-text">修改DVTMinimumSystemVersion</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E6%9B%BF%E6%8D%A2%E6%AD%A5%E9%AA%A4"><span class="nav-number">6.</span> <span class="nav-text">最终替换步骤</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
