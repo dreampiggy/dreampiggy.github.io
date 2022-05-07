@@ -148,6 +148,62 @@
       </tags>
   </entry>
   <entry>
+    <title>Core Graphics仿射变换知识</title>
+    <url>/2016/09/27/Core-Graphics%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<blockquote>
+<p>这是补充记录关于CG的几何变换的一些知识，涉及到简单的矩阵变换</p>
+</blockquote>
+<h1 id="变换矩阵"><a href="#变换矩阵" class="headerlink" title="变换矩阵"></a>变换矩阵</h1><p>在Core Graphics进行图层缩放、旋转、平移的时候，本质的操作就是使用<code>CGAffineTransform</code>这个3x2矩阵对象，与我们的<code>CGPoint</code>这个1x2的矩阵（其实就是对应就是[x,y]这个向量）进行矩阵相乘操作，得到的新矩阵就是变换后的新向量。一般通过CALayer得到的图层都是矢量，因此可以把整个图层进行相应的缩放、旋转、平移。</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="built_in">CGAffineTransform</span> &#123; </span><br><span class="line">  <span class="built_in">CGFloat</span> a; </span><br><span class="line">  <span class="built_in">CGFloat</span> b; </span><br><span class="line">  <span class="built_in">CGFloat</span> c; </span><br><span class="line">  <span class="built_in">CGFloat</span> d; </span><br><span class="line">  <span class="built_in">CGFloat</span> tx; </span><br><span class="line">  <span class="built_in">CGFloat</span> ty; </span><br><span class="line">&#125; <span class="built_in">CGAffineTransform</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个结构体对应的矩阵如下（看不到LaTeX公式的请看<a href="https://developer.apple.com/reference/coregraphics/1455865-cgaffinetransformmake">Apple Developer Document</a>）：</p>
+<p>$ \begin{bmatrix} a &amp; b &amp; 0 \\ c &amp; d &amp; 0 \\ t_{x} &amp; t_{y} &amp; 1 \end{bmatrix} $</p>
+<p>Apple采用了用[1]补齐1x3的向量，和用[0,0,1]的转置补齐的3x3的变换矩阵相乘来做仿射变换。虽然可能觉理论上可以直接用2x3变换矩阵和3x1的向量([x,y,1]的转置)运算，得到一个2x1的向量，省3个<code>CGFloat</code>的空间。但是由于这种变换操作叠加次数特别多，与其每次得到的向量结果再补齐[1]，还不如一次性就用一个1x3和3x3运算，用空间换取时间，这也许是QuartzCore的实现者的考虑吧。</p>
+<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} a &amp; b &amp; 0 \\ c &amp; d &amp; 0 \\ t_{x} &amp; t_{y} &amp; 1 \end{bmatrix} = \begin{bmatrix} ax+cy+t_{x} &amp; bx+dy+t_{y} &amp; 1 \end{bmatrix} $</p>
+<p>注意：iOS上坐标原点从屏幕左上方起，x轴指向右方，y轴指向下方。macOS的原点在屏幕左下方，x轴指向右方，y轴指向上方，要注意区别</p>
+<h1 id="平移"><a href="#平移" class="headerlink" title="平移"></a>平移</h1><p>变换矩阵第三行的t_x和t_y对应的就是x、y的平移量，因此矩阵变换很简单，比如将[x,y]向量平移到[x+a,y+b]：</p>
+<p>平移矩阵：<br>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ a &amp; b &amp; 1 \end{bmatrix} = \begin{bmatrix} x+a &amp; y+b &amp; 1 \end{bmatrix} $</p>
+<p>对应API：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeTranslation</span>(<span class="built_in">CGFloat</span> tx, <span class="built_in">CGFloat</span> ty);</span><br></pre></td></tr></table></figure>
+
+<h1 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h1><p>缩放的本质，就是对向量[x,y]通过同时乘以相同的系数a，得到[ax,ay]，那么矩阵很简单，只需要一个对角矩阵，系数都为a就行</p>
+<p>缩放矩阵：</p>
+<p>$\begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} a &amp; 0 &amp; 0 \\ 0 &amp; a &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} ax &amp; by &amp; 1 \end{bmatrix} $</p>
+<p>这个可以使用CA的API来简单构造（也可以直接自己初始化）：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeScale</span>(<span class="built_in">CGFloat</span> sx, <span class="built_in">CGFloat</span> sy);</span><br></pre></td></tr></table></figure>
+
+<h1 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h1><p>旋转的变换矩阵初看上去好像难以理解（各种cos、sin），其实就是一个简单的解方程的出来的结果，注意这里需要的是弧度，而且iOS上旋转的正弧度代表顺时针（macOS上就是正弧度是顺时针），需要注意</p>
+<p>旋转矩阵：</p>
+<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} \cos \theta &amp; \sin \theta &amp; 0 \\ - \sin \theta &amp; \cos \theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} x \cos \theta - y \sin \theta &amp; x \sin \theta + y \cos \theta &amp; 1 \end{bmatrix} $</p>
+<p>推导过程：</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/4/ef/04946d0b15517c28f52f8aaf7a850.png"></p>
+<p>$ P = (x,y) = (r\cos A , r\sin A) \\ P^{‘} = (r \cos B, r \sin B) = (r\cos(A + \theta), r\sin(A + \theta)) \\ r\cos(A + \theta) = r\cos A \cos \theta - r\sin A \sin \theta = x \cos \theta - y \sin \theta \\ r\sin(A + \theta) = r\sin A \cos \theta + r\cos A \sin \theta = y \cos \theta + x \sin \theta \\ \therefore M = \begin{bmatrix} \cos \theta &amp; \sin \theta &amp; 0 \\ - \sin \theta &amp; \cos \theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} $</p>
+<p>对应API：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeRotation</span>(<span class="built_in">CGFloat</span> angle);</span><br></pre></td></tr></table></figure>
+
+<p>弧度可以用自带的定义，比如<code>M_PI_4</code>这些，也可以手动转换，比如用弧度、角度转换的宏：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RADIANS_TO_DEGREES(x) ((x)/M_PI*180.0) </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEGREES_TO_RADIANS(x) ((x)/180.0*M_PI)</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="错切"><a href="#错切" class="headerlink" title="错切"></a>错切</h1><p>错切，就是一种特殊的线性变换（不平移），指的是某一个坐标轴依赖不变，另一个轴线性变换，参考Wiki上的图片：<br><img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Eigen.jpg"></p>
+<p>错切矩阵：</p>
+<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ m &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} x+my &amp; y &amp; 1 \end{bmatrix} $</p>
+<p>这种变换没有提供专用的API，我们自己可以用<code>CGAffineTransformIdentity</code>创建一个矩阵，然后赋值矩阵中c或者b的值就行</p>
+<h1 id="叠加"><a href="#叠加" class="headerlink" title="叠加"></a>叠加</h1><p>既然了解了这些图层操作的矩阵变换，我们也可以自己定义矩阵，比如非线性变换(得到的向量不平行）、也可以把几个连续的变换串起来，这时候就要注意矩阵的运算顺序，比如先缩放50%，再旋转<code>M_PI_4</code>，再平移到[x+100,y]，那么等价于沿着45度平移50的距离（对应结果坐标就成了[x*sqrt(2)/4, y*sqrt(2)/4]）</p>
+<p>对应API：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformConcat</span>(<span class="built_in">CGAffineTransform</span> t1, <span class="built_in">CGAffineTransform</span> t2); <span class="comment">// 最通用</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformScale</span>(<span class="built_in">CGAffineTransform</span> t, <span class="built_in">CGFloat</span> sx, <span class="built_in">CGFloat</span> sy);</span><br><span class="line"><span class="comment">// 缩放</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeRotation</span>(<span class="built_in">CGFloat</span> angle); <span class="comment">//旋转</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformTranslate</span>(<span class="built_in">CGAffineTransform</span> t, <span class="built_in">CGFloat</span> tx, <span class="built_in">CGFloat</span> ty); <span class="comment">// 平移</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://github.com/AttackOnDobby/iOS-Core-Animation-Advanced-Techniques/blob/master/5-%E5%8F%98%E6%8D%A2/%E5%8F%98%E6%8D%A2.md">iOS Core Animation Advanced Techniques</a></p>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
+        <tag>Objective-C</tag>
+        <tag>CoreGraphics</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Core Animation 3D仿射变换知识</title>
     <url>/2016/11/01/Core-Animation-3D%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%9F%A5%E8%AF%86/</url>
     <content><![CDATA[<h1 id="Core-Animation-3D-仿射变换知识"><a href="#Core-Animation-3D-仿射变换知识" class="headerlink" title="Core Animation 3D 仿射变换知识"></a>Core Animation 3D 仿射变换知识</h1><blockquote>
@@ -228,62 +284,6 @@
       <tags>
         <tag>iOS</tag>
         <tag>CoreAnimation</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Core Graphics仿射变换知识</title>
-    <url>/2016/09/27/Core-Graphics%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%9F%A5%E8%AF%86/</url>
-    <content><![CDATA[<blockquote>
-<p>这是补充记录关于CG的几何变换的一些知识，涉及到简单的矩阵变换</p>
-</blockquote>
-<h1 id="变换矩阵"><a href="#变换矩阵" class="headerlink" title="变换矩阵"></a>变换矩阵</h1><p>在Core Graphics进行图层缩放、旋转、平移的时候，本质的操作就是使用<code>CGAffineTransform</code>这个3x2矩阵对象，与我们的<code>CGPoint</code>这个1x2的矩阵（其实就是对应就是[x,y]这个向量）进行矩阵相乘操作，得到的新矩阵就是变换后的新向量。一般通过CALayer得到的图层都是矢量，因此可以把整个图层进行相应的缩放、旋转、平移。</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="built_in">CGAffineTransform</span> &#123; </span><br><span class="line">  <span class="built_in">CGFloat</span> a; </span><br><span class="line">  <span class="built_in">CGFloat</span> b; </span><br><span class="line">  <span class="built_in">CGFloat</span> c; </span><br><span class="line">  <span class="built_in">CGFloat</span> d; </span><br><span class="line">  <span class="built_in">CGFloat</span> tx; </span><br><span class="line">  <span class="built_in">CGFloat</span> ty; </span><br><span class="line">&#125; <span class="built_in">CGAffineTransform</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这个结构体对应的矩阵如下（看不到LaTeX公式的请看<a href="https://developer.apple.com/reference/coregraphics/1455865-cgaffinetransformmake">Apple Developer Document</a>）：</p>
-<p>$ \begin{bmatrix} a &amp; b &amp; 0 \\ c &amp; d &amp; 0 \\ t_{x} &amp; t_{y} &amp; 1 \end{bmatrix} $</p>
-<p>Apple采用了用[1]补齐1x3的向量，和用[0,0,1]的转置补齐的3x3的变换矩阵相乘来做仿射变换。虽然可能觉理论上可以直接用2x3变换矩阵和3x1的向量([x,y,1]的转置)运算，得到一个2x1的向量，省3个<code>CGFloat</code>的空间。但是由于这种变换操作叠加次数特别多，与其每次得到的向量结果再补齐[1]，还不如一次性就用一个1x3和3x3运算，用空间换取时间，这也许是QuartzCore的实现者的考虑吧。</p>
-<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} a &amp; b &amp; 0 \\ c &amp; d &amp; 0 \\ t_{x} &amp; t_{y} &amp; 1 \end{bmatrix} = \begin{bmatrix} ax+cy+t_{x} &amp; bx+dy+t_{y} &amp; 1 \end{bmatrix} $</p>
-<p>注意：iOS上坐标原点从屏幕左上方起，x轴指向右方，y轴指向下方。macOS的原点在屏幕左下方，x轴指向右方，y轴指向上方，要注意区别</p>
-<h1 id="平移"><a href="#平移" class="headerlink" title="平移"></a>平移</h1><p>变换矩阵第三行的t_x和t_y对应的就是x、y的平移量，因此矩阵变换很简单，比如将[x,y]向量平移到[x+a,y+b]：</p>
-<p>平移矩阵：<br>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ a &amp; b &amp; 1 \end{bmatrix} = \begin{bmatrix} x+a &amp; y+b &amp; 1 \end{bmatrix} $</p>
-<p>对应API：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeTranslation</span>(<span class="built_in">CGFloat</span> tx, <span class="built_in">CGFloat</span> ty);</span><br></pre></td></tr></table></figure>
-
-<h1 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h1><p>缩放的本质，就是对向量[x,y]通过同时乘以相同的系数a，得到[ax,ay]，那么矩阵很简单，只需要一个对角矩阵，系数都为a就行</p>
-<p>缩放矩阵：</p>
-<p>$\begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} a &amp; 0 &amp; 0 \\ 0 &amp; a &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} ax &amp; by &amp; 1 \end{bmatrix} $</p>
-<p>这个可以使用CA的API来简单构造（也可以直接自己初始化）：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeScale</span>(<span class="built_in">CGFloat</span> sx, <span class="built_in">CGFloat</span> sy);</span><br></pre></td></tr></table></figure>
-
-<h1 id="旋转"><a href="#旋转" class="headerlink" title="旋转"></a>旋转</h1><p>旋转的变换矩阵初看上去好像难以理解（各种cos、sin），其实就是一个简单的解方程的出来的结果，注意这里需要的是弧度，而且iOS上旋转的正弧度代表顺时针（macOS上就是正弧度是顺时针），需要注意</p>
-<p>旋转矩阵：</p>
-<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} \cos \theta &amp; \sin \theta &amp; 0 \\ - \sin \theta &amp; \cos \theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} x \cos \theta - y \sin \theta &amp; x \sin \theta + y \cos \theta &amp; 1 \end{bmatrix} $</p>
-<p>推导过程：</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/4/ef/04946d0b15517c28f52f8aaf7a850.png"></p>
-<p>$ P = (x,y) = (r\cos A , r\sin A) \\ P^{‘} = (r \cos B, r \sin B) = (r\cos(A + \theta), r\sin(A + \theta)) \\ r\cos(A + \theta) = r\cos A \cos \theta - r\sin A \sin \theta = x \cos \theta - y \sin \theta \\ r\sin(A + \theta) = r\sin A \cos \theta + r\cos A \sin \theta = y \cos \theta + x \sin \theta \\ \therefore M = \begin{bmatrix} \cos \theta &amp; \sin \theta &amp; 0 \\ - \sin \theta &amp; \cos \theta &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} $</p>
-<p>对应API：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeRotation</span>(<span class="built_in">CGFloat</span> angle);</span><br></pre></td></tr></table></figure>
-
-<p>弧度可以用自带的定义，比如<code>M_PI_4</code>这些，也可以手动转换，比如用弧度、角度转换的宏：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RADIANS_TO_DEGREES(x) ((x)/M_PI*180.0) </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEGREES_TO_RADIANS(x) ((x)/180.0*M_PI)</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="错切"><a href="#错切" class="headerlink" title="错切"></a>错切</h1><p>错切，就是一种特殊的线性变换（不平移），指的是某一个坐标轴依赖不变，另一个轴线性变换，参考Wiki上的图片：<br><img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Eigen.jpg"></p>
-<p>错切矩阵：</p>
-<p>$ \begin{bmatrix} x &amp; y &amp; 1 \end{bmatrix} \times \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ m &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} = \begin{bmatrix} x+my &amp; y &amp; 1 \end{bmatrix} $</p>
-<p>这种变换没有提供专用的API，我们自己可以用<code>CGAffineTransformIdentity</code>创建一个矩阵，然后赋值矩阵中c或者b的值就行</p>
-<h1 id="叠加"><a href="#叠加" class="headerlink" title="叠加"></a>叠加</h1><p>既然了解了这些图层操作的矩阵变换，我们也可以自己定义矩阵，比如非线性变换(得到的向量不平行）、也可以把几个连续的变换串起来，这时候就要注意矩阵的运算顺序，比如先缩放50%，再旋转<code>M_PI_4</code>，再平移到[x+100,y]，那么等价于沿着45度平移50的距离（对应结果坐标就成了[x*sqrt(2)/4, y*sqrt(2)/4]）</p>
-<p>对应API：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformConcat</span>(<span class="built_in">CGAffineTransform</span> t1, <span class="built_in">CGAffineTransform</span> t2); <span class="comment">// 最通用</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformScale</span>(<span class="built_in">CGAffineTransform</span> t, <span class="built_in">CGFloat</span> sx, <span class="built_in">CGFloat</span> sy);</span><br><span class="line"><span class="comment">// 缩放</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformMakeRotation</span>(<span class="built_in">CGFloat</span> angle); <span class="comment">//旋转</span></span><br><span class="line"><span class="built_in">CGAffineTransform</span> <span class="built_in">CGAffineTransformTranslate</span>(<span class="built_in">CGAffineTransform</span> t, <span class="built_in">CGFloat</span> tx, <span class="built_in">CGFloat</span> ty); <span class="comment">// 平移</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://github.com/AttackOnDobby/iOS-Core-Animation-Advanced-Techniques/blob/master/5-%E5%8F%98%E6%8D%A2/%E5%8F%98%E6%8D%A2.md">iOS Core Animation Advanced Techniques</a></p>
-]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
-        <tag>Objective-C</tag>
-        <tag>CoreGraphics</tag>
       </tags>
   </entry>
   <entry>
@@ -571,6 +571,53 @@
       </tags>
   </entry>
   <entry>
+    <title>Retroactive Data Structure</title>
+    <url>/2016/03/30/Retroactive-Data-Structure/</url>
+    <content><![CDATA[<blockquote>
+<p>MIT Open Course</p>
+</blockquote>
+<p><a href="http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-851-advanced-data-structures-spring-2012/lecture-videos/session-2-retroactive-data-structures/">MIT-retroactive-data-structure</a></p>
+<h1 id="Time-line"><a href="#Time-line" class="headerlink" title="Time line"></a>Time line</h1><p>Insert(time, ops); Delete(time, ops); Query(time, query);</p>
+<p>How to insert ops into two times? -&gt; BST || linked list</p>
+<p>How to deal with side effect? -&gt; save all the ops except <code>delete</code></p>
+<p><code>Partial Retroactive</code></p>
+<p>Query always done at present =&gt; time = $ \infty $</p>
+<p><code>Full Retroactive</code></p>
+<p>Query can done at whatever time</p>
+<h1 id="What-about-formal-defination-of-partial-amp-full"><a href="#What-about-formal-defination-of-partial-amp-full" class="headerlink" title="What about formal defination of partial &amp; full"></a>What about formal defination of partial &amp; full</h1><p>$ query(t,A \cup B) \equiv f(query(t,A),query(t,B)) , f \ is \ O(1)$</p>
+<h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><p><code>segment tree</code> : BST on time</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Segment_tree_instance.gif" alt="title"></p>
+<p><code>Commutative updates</code> =&gt; 可交换updates</p>
+<p>$ x.y = y.x $</p>
+<p><code>Invertible updates</code> =&gt; 可逆updates</p>
+<p>$ x.x^{-1} = \emptyset $</p>
+<p>Delete(time, ops) === Insert(now, ops^{-1})</p>
+<h1 id="Practice"><a href="#Practice" class="headerlink" title="Practice"></a>Practice</h1><p>Dynamic hashing</p>
+<p>Priority queue</p>
+<ul>
+<li>  query will cost $ O(lgn) $</li>
+<li>  store in BBST (balanced binary search tree)</li>
+<li>  leaves : insert =&gt; store by time not value</li>
+</ul>
+<p>General Transformation</p>
+<ul>
+<li><p>  rollback: change r time in the past will cost $ O(r) $</p>
+</li>
+<li><p>  lower bound: $ \Omega(r) $</p>
+</li>
+</ul>
+<h1 id="More-complicated-Non-oblivious-Retroactive"><a href="#More-complicated-Non-oblivious-Retroactive" class="headerlink" title="More complicated - Non-oblivious Retroactive"></a>More complicated - Non-oblivious Retroactive</h1><p>which means after one insert or delete ,you can get <code>the query that change</code></p>
+<h1 id="Just-a-little-bit-code"><a href="#Just-a-little-bit-code" class="headerlink" title="Just a little bit code"></a>Just a little bit code</h1><p><code>retroactive queue</code>: <a href="https://github.com/lizhuoli1126/Functional.js#retroactivedata-structure">GitHub-Functional.js</a></p>
+<p>Reference: <a href="http://erikdemaine.org/papers/Retroactive/_TALG/paper.pdf">Retroactive Data Structures - ERIK D. DEMAINE, JOHN IACONO, STEFAN LANGERMAN</a></p>
+]]></content>
+      <categories>
+        <category>Code</category>
+      </categories>
+      <tags>
+        <tag>数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>React Native之Redux架构入门</title>
     <url>/2016/10/26/React-Native%E4%B9%8BRedux%E6%9E%B6%E6%9E%84%E5%85%A5%E9%97%A8/</url>
     <content><![CDATA[<blockquote>
@@ -698,53 +745,6 @@
         <tag>iOS</tag>
         <tag>React Native</tag>
         <tag>Redux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Retroactive Data Structure</title>
-    <url>/2016/03/30/Retroactive-Data-Structure/</url>
-    <content><![CDATA[<blockquote>
-<p>MIT Open Course</p>
-</blockquote>
-<p><a href="http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-851-advanced-data-structures-spring-2012/lecture-videos/session-2-retroactive-data-structures/">MIT-retroactive-data-structure</a></p>
-<h1 id="Time-line"><a href="#Time-line" class="headerlink" title="Time line"></a>Time line</h1><p>Insert(time, ops); Delete(time, ops); Query(time, query);</p>
-<p>How to insert ops into two times? -&gt; BST || linked list</p>
-<p>How to deal with side effect? -&gt; save all the ops except <code>delete</code></p>
-<p><code>Partial Retroactive</code></p>
-<p>Query always done at present =&gt; time = $ \infty $</p>
-<p><code>Full Retroactive</code></p>
-<p>Query can done at whatever time</p>
-<h1 id="What-about-formal-defination-of-partial-amp-full"><a href="#What-about-formal-defination-of-partial-amp-full" class="headerlink" title="What about formal defination of partial &amp; full"></a>What about formal defination of partial &amp; full</h1><p>$ query(t,A \cup B) \equiv f(query(t,A),query(t,B)) , f \ is \ O(1)$</p>
-<h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><p><code>segment tree</code> : BST on time</p>
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Segment_tree_instance.gif" alt="title"></p>
-<p><code>Commutative updates</code> =&gt; 可交换updates</p>
-<p>$ x.y = y.x $</p>
-<p><code>Invertible updates</code> =&gt; 可逆updates</p>
-<p>$ x.x^{-1} = \emptyset $</p>
-<p>Delete(time, ops) === Insert(now, ops^{-1})</p>
-<h1 id="Practice"><a href="#Practice" class="headerlink" title="Practice"></a>Practice</h1><p>Dynamic hashing</p>
-<p>Priority queue</p>
-<ul>
-<li>  query will cost $ O(lgn) $</li>
-<li>  store in BBST (balanced binary search tree)</li>
-<li>  leaves : insert =&gt; store by time not value</li>
-</ul>
-<p>General Transformation</p>
-<ul>
-<li><p>  rollback: change r time in the past will cost $ O(r) $</p>
-</li>
-<li><p>  lower bound: $ \Omega(r) $</p>
-</li>
-</ul>
-<h1 id="More-complicated-Non-oblivious-Retroactive"><a href="#More-complicated-Non-oblivious-Retroactive" class="headerlink" title="More complicated - Non-oblivious Retroactive"></a>More complicated - Non-oblivious Retroactive</h1><p>which means after one insert or delete ,you can get <code>the query that change</code></p>
-<h1 id="Just-a-little-bit-code"><a href="#Just-a-little-bit-code" class="headerlink" title="Just a little bit code"></a>Just a little bit code</h1><p><code>retroactive queue</code>: <a href="https://github.com/lizhuoli1126/Functional.js#retroactivedata-structure">GitHub-Functional.js</a></p>
-<p>Reference: <a href="http://erikdemaine.org/papers/Retroactive/_TALG/paper.pdf">Retroactive Data Structures - ERIK D. DEMAINE, JOHN IACONO, STEFAN LANGERMAN</a></p>
-]]></content>
-      <categories>
-        <category>Code</category>
-      </categories>
-      <tags>
-        <tag>数据结构</tag>
       </tags>
   </entry>
   <entry>
@@ -978,34 +978,6 @@
       </tags>
   </entry>
   <entry>
-    <title>iOS开发学习-用继承，静态类封装方法</title>
-    <url>/2016/03/30/iOS%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0-%E7%94%A8%E7%BB%A7%E6%89%BF%EF%BC%8C%E9%9D%99%E6%80%81%E7%B1%BB%E5%B0%81%E8%A3%85%E6%96%B9%E6%B3%95/</url>
-    <content><![CDATA[<p>iOS开发中，如果不进行适当的封装，使用协议或者继承类来进行开发，你就会遇到传说中的ViewController（以后简称VC） Hell的问题……</p>
-<p>比如说，我们先声网App中为了调用接口，做简单的判断，会有如下的垃圾代码（前辈遗留下来的）：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> color <span class="operator">=</span> <span class="type">UIColor</span>(red: <span class="number">153</span><span class="operator">/</span><span class="number">255</span>, green: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, blue: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, alpha: <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">self</span>.navigationController<span class="operator">?</span>.navigationBar.barTintColor <span class="operator">=</span> color</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.httpController.delegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line"></span><br><span class="line">    <span class="type">Config</span>.shareInstance().isNetworkRunning <span class="operator">=</span> <span class="type">CheckNetwork</span>.doesExistenceNetwork()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="type">Config</span>.<span class="type">UUID</span> <span class="operator">==</span> <span class="literal">nil</span> <span class="operator">||</span> <span class="type">Config</span>.<span class="type">UUID</span>!.isEmpty</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Tool</span>.showErrorHUD(<span class="string">&quot;去信息门户登录一下吧:)&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> <span class="operator">!</span><span class="type">Config</span>.shareInstance().isNetworkRunning</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Tool</span>.showErrorHUD(<span class="string">&quot;貌似你没有联网哦&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Tool</span>.showProgressHUD(<span class="string">&quot;正在更新校园网信息&quot;</span>)</span><br><span class="line">        sendNicAPI()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Do any additional setup after loading the view.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sendNicAPI</span>()</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> nicURL <span class="operator">=</span> <span class="string">&quot;http://herald.seu.edu.cn/api/nic&quot;</span></span><br><span class="line">    <span class="keyword">let</span> parameter:<span class="type">NSDictionary</span> <span class="operator">=</span> [<span class="string">&quot;uuid&quot;</span>:<span class="type">Config</span>.<span class="type">UUID</span>!]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.httpController.postToURLAF(nicURL, parameter: parameter, tag: <span class="string">&quot;nic&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">didReceiveDicResults</span>(<span class="params">results</span>: <span class="type">NSDictionary</span>, <span class="params">tag</span>: <span class="type">String</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> content:<span class="type">NSDictionary</span> <span class="operator">=</span> results[<span class="string">&quot;content&quot;</span>] <span class="keyword">as?</span> <span class="type">NSDictionary</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> tag <span class="operator">==</span> <span class="string">&quot;nic&quot;</span>&#123;</span><br><span class="line">            firstSend <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">            <span class="type">Tool</span>.showSuccessHUD(<span class="string">&quot;获取信息成功&quot;</span>)</span><br><span class="line">            println(content.allKeys)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>看到了吗，每个VC开头都得这样写一发，如果我们有20多个功能呢？会变成什么样子？</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/9/39/e8ffcb7a5101d2e7acd62c6d72e09.png"></p>
-<p>所以，这样下去是绝对不行的，必须对整个乱七八糟的初始化，发送请求，请求接受进行封装，这里就会用到Swift最有用的协议，代理，以及闭包了。</p>
-<p>这个首先通过协议和代理，闭包放在下一篇。</p>
-<p>协议，顾名思义，也就是其他语言里面的接口（C++的抽象类也差不多） 由于Swift不支持普通类型（Int之流）设置为Static，类方法如果是静态，必须加class关键字（我觉得这个很有槽点），只有Struct和Enum可以直接用Static（也有小Tip可以用Struct包裹一个普通类型，设为计算类型，然后充当一个Static成员，但是这里不讲了）</p>
-<p>我们首先可以这样封装简单的初始化方法……</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">func</span> <span class="title">initNavigationAPI</span>(<span class="title">VC</span>:<span class="title">UIViewController</span>,<span class="title">navBarColor</span>:<span class="title">UIColor</span>) -&gt; <span class="title">HttpController</span>?</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> httpController:<span class="type">HttpController</span> <span class="operator">=</span> <span class="type">HttpController</span>()</span><br><span class="line">    <span class="type">VC</span>.navigationController<span class="operator">?</span>.navigationBar.barTintColor <span class="operator">=</span> navBarColor</span><br><span class="line"></span><br><span class="line">    <span class="type">Config</span>.shareInstance().isNetworkRunning <span class="operator">=</span> <span class="type">CheckNetwork</span>.doesExistenceNetwork()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="type">Config</span>.<span class="type">UUID</span> <span class="operator">==</span> <span class="literal">nil</span> <span class="operator">||</span> <span class="type">Config</span>.<span class="type">UUID</span>!.isEmpty&#123;</span><br><span class="line">        <span class="type">Tool</span>.showSuccessHUD(<span class="string">&quot;请在边栏的个人资料中补全您的信息&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> <span class="operator">!</span><span class="type">Config</span>.shareInstance().isNetworkRunning&#123;</span><br><span class="line">        <span class="type">Tool</span>.showErrorHUD(<span class="string">&quot;貌似你没有联网哦&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="type">Tool</span>.showProgressHUD(<span class="string">&quot;正在获取信息&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> httpController</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>OK？那个HttpController是另一个接口，来进行网络操作的，代理需要靠它，所以我们返回一个HttpController实例，如果失败就返回nil，在实际VC里面加一个解包判断即可。</p>
-<p>以后，想要初始化，就只需要这样了</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">    <span class="keyword">var</span> color <span class="operator">=</span> <span class="type">UIColor</span>(red: <span class="number">153</span><span class="operator">/</span><span class="number">255</span>, green: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, blue: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, alpha: <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">self</span>.httpController <span class="operator">=</span> <span class="type">Tool</span>.initNavigationAPI(<span class="keyword">self</span>,navBarColor: color) <span class="operator">??</span> <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.httpController <span class="operator">!=</span> <span class="literal">nil</span>)&#123;</span><br><span class="line">        <span class="keyword">self</span>.httpController<span class="operator">!</span>.delegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">        <span class="type">Tool</span>.sendAPI(<span class="string">&quot;cardDetail&quot;</span>, httpController: <span class="keyword">self</span>.httpController<span class="operator">!</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>把一群乱七八糟的代码扔走。下一步就是如果用代理来代理我们所有的请求以及相应的结果了，下一篇文章补上……</p>
-]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>iOS开发中使用Swift来完成异步事件</title>
     <url>/2016/03/30/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Swift%E6%9D%A5%E5%AE%8C%E6%88%90%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6/</url>
     <content><![CDATA[<p>异步事件编程，其实并不是什么新东西了，基本所有涉及到GUI的，网络请求的，数据库读写的，都会有它的身影。</p>
@@ -1035,6 +1007,34 @@
       <tags>
         <tag>iOS</tag>
         <tag>Swift</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS开发学习-用继承，静态类封装方法</title>
+    <url>/2016/03/30/iOS%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0-%E7%94%A8%E7%BB%A7%E6%89%BF%EF%BC%8C%E9%9D%99%E6%80%81%E7%B1%BB%E5%B0%81%E8%A3%85%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>iOS开发中，如果不进行适当的封装，使用协议或者继承类来进行开发，你就会遇到传说中的ViewController（以后简称VC） Hell的问题……</p>
+<p>比如说，我们先声网App中为了调用接口，做简单的判断，会有如下的垃圾代码（前辈遗留下来的）：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> color <span class="operator">=</span> <span class="type">UIColor</span>(red: <span class="number">153</span><span class="operator">/</span><span class="number">255</span>, green: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, blue: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, alpha: <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">self</span>.navigationController<span class="operator">?</span>.navigationBar.barTintColor <span class="operator">=</span> color</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.httpController.delegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line"></span><br><span class="line">    <span class="type">Config</span>.shareInstance().isNetworkRunning <span class="operator">=</span> <span class="type">CheckNetwork</span>.doesExistenceNetwork()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="type">Config</span>.<span class="type">UUID</span> <span class="operator">==</span> <span class="literal">nil</span> <span class="operator">||</span> <span class="type">Config</span>.<span class="type">UUID</span>!.isEmpty</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Tool</span>.showErrorHUD(<span class="string">&quot;去信息门户登录一下吧:)&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> <span class="operator">!</span><span class="type">Config</span>.shareInstance().isNetworkRunning</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Tool</span>.showErrorHUD(<span class="string">&quot;貌似你没有联网哦&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Tool</span>.showProgressHUD(<span class="string">&quot;正在更新校园网信息&quot;</span>)</span><br><span class="line">        sendNicAPI()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Do any additional setup after loading the view.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sendNicAPI</span>()</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> nicURL <span class="operator">=</span> <span class="string">&quot;http://herald.seu.edu.cn/api/nic&quot;</span></span><br><span class="line">    <span class="keyword">let</span> parameter:<span class="type">NSDictionary</span> <span class="operator">=</span> [<span class="string">&quot;uuid&quot;</span>:<span class="type">Config</span>.<span class="type">UUID</span>!]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.httpController.postToURLAF(nicURL, parameter: parameter, tag: <span class="string">&quot;nic&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">didReceiveDicResults</span>(<span class="params">results</span>: <span class="type">NSDictionary</span>, <span class="params">tag</span>: <span class="type">String</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> content:<span class="type">NSDictionary</span> <span class="operator">=</span> results[<span class="string">&quot;content&quot;</span>] <span class="keyword">as?</span> <span class="type">NSDictionary</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> tag <span class="operator">==</span> <span class="string">&quot;nic&quot;</span>&#123;</span><br><span class="line">            firstSend <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">            <span class="type">Tool</span>.showSuccessHUD(<span class="string">&quot;获取信息成功&quot;</span>)</span><br><span class="line">            println(content.allKeys)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看到了吗，每个VC开头都得这样写一发，如果我们有20多个功能呢？会变成什么样子？</p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/9/39/e8ffcb7a5101d2e7acd62c6d72e09.png"></p>
+<p>所以，这样下去是绝对不行的，必须对整个乱七八糟的初始化，发送请求，请求接受进行封装，这里就会用到Swift最有用的协议，代理，以及闭包了。</p>
+<p>这个首先通过协议和代理，闭包放在下一篇。</p>
+<p>协议，顾名思义，也就是其他语言里面的接口（C++的抽象类也差不多） 由于Swift不支持普通类型（Int之流）设置为Static，类方法如果是静态，必须加class关键字（我觉得这个很有槽点），只有Struct和Enum可以直接用Static（也有小Tip可以用Struct包裹一个普通类型，设为计算类型，然后充当一个Static成员，但是这里不讲了）</p>
+<p>我们首先可以这样封装简单的初始化方法……</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">func</span> <span class="title">initNavigationAPI</span>(<span class="title">VC</span>:<span class="title">UIViewController</span>,<span class="title">navBarColor</span>:<span class="title">UIColor</span>) -&gt; <span class="title">HttpController</span>?</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> httpController:<span class="type">HttpController</span> <span class="operator">=</span> <span class="type">HttpController</span>()</span><br><span class="line">    <span class="type">VC</span>.navigationController<span class="operator">?</span>.navigationBar.barTintColor <span class="operator">=</span> navBarColor</span><br><span class="line"></span><br><span class="line">    <span class="type">Config</span>.shareInstance().isNetworkRunning <span class="operator">=</span> <span class="type">CheckNetwork</span>.doesExistenceNetwork()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="type">Config</span>.<span class="type">UUID</span> <span class="operator">==</span> <span class="literal">nil</span> <span class="operator">||</span> <span class="type">Config</span>.<span class="type">UUID</span>!.isEmpty&#123;</span><br><span class="line">        <span class="type">Tool</span>.showSuccessHUD(<span class="string">&quot;请在边栏的个人资料中补全您的信息&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> <span class="operator">!</span><span class="type">Config</span>.shareInstance().isNetworkRunning&#123;</span><br><span class="line">        <span class="type">Tool</span>.showErrorHUD(<span class="string">&quot;貌似你没有联网哦&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="type">Tool</span>.showProgressHUD(<span class="string">&quot;正在获取信息&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> httpController</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>OK？那个HttpController是另一个接口，来进行网络操作的，代理需要靠它，所以我们返回一个HttpController实例，如果失败就返回nil，在实际VC里面加一个解包判断即可。</p>
+<p>以后，想要初始化，就只需要这样了</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span>()</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">    <span class="keyword">var</span> color <span class="operator">=</span> <span class="type">UIColor</span>(red: <span class="number">153</span><span class="operator">/</span><span class="number">255</span>, green: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, blue: <span class="number">204</span><span class="operator">/</span><span class="number">255</span>, alpha: <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">self</span>.httpController <span class="operator">=</span> <span class="type">Tool</span>.initNavigationAPI(<span class="keyword">self</span>,navBarColor: color) <span class="operator">??</span> <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.httpController <span class="operator">!=</span> <span class="literal">nil</span>)&#123;</span><br><span class="line">        <span class="keyword">self</span>.httpController<span class="operator">!</span>.delegate <span class="operator">=</span> <span class="keyword">self</span></span><br><span class="line">        <span class="type">Tool</span>.sendAPI(<span class="string">&quot;cardDetail&quot;</span>, httpController: <span class="keyword">self</span>.httpController<span class="operator">!</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>把一群乱七八糟的代码扔走。下一步就是如果用代理来代理我们所有的请求以及相应的结果了，下一篇文章补上……</p>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -1186,66 +1186,6 @@
       </tags>
   </entry>
   <entry>
-    <title>个人笔记-《并发编程》</title>
-    <url>/2016/03/30/%E4%B8%AA%E4%BA%BA%E7%AC%94%E8%AE%B0-%E3%80%8A%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E3%80%8B/</url>
-    <content><![CDATA[<ol>
-<li><p>线程和锁</p>
-<ul>
-<li>  线程锁的的问题:</li>
-</ul>
-<blockquote>
-<p>时序问题</p>
-<p>原子操作问题(Java内存读写机制-&gt;读.改.写)</p>
-<p>竞态条件(操作取决于线程执行的先后顺序)</p>
-<p>JVM优化导致的问题（编译器静态优化，JVM动态优化，硬件指令的乱序执行）</p>
-<p>两把锁：死锁问题</p>
-<p>外部方法或者对象的线程安全问题</p>
-<p>效率问题synchronized()</p>
-<p>ThreadLocal额外讲解，线程级别的局部变量，适用于数据库连接，网络请求</p>
-</blockquote>
-<ul>
-<li>  使用concurrency</li>
-</ul>
-<blockquote>
-<p>ReetrantLock的手动加锁解锁</p>
-<p>死锁也能中断(不推荐的方式lockInterruptibly())</p>
-<p>tryLock()虽然能设定超时自动解锁，但是缺点明显：活锁（同时死锁再同时超时）</p>
-<p>条件锁：Condition类</p>
-<p>原子操作：Atomic 简单的解决方法，坑和缺点</p>
-<p>线程池 内置的Exeutors.newFixedThreadPool()</p>
-</blockquote>
-</li>
-<li><p>函数式方法</p>
-<ul>
-<li>  变量与可变状态导致的并发难题的终极解决方法-&gt;去掉变量</li>
-</ul>
-<blockquote>
-<p>函数式基础概念：顺序无关 map reduce 无穷序列和惰性求值 尾递归</p>
-<p>Clojure简单方法：pmap</p>
-<p>两种Clojure并发模型：Future(给定一个函数在新线程跑，返回一个future对象) Promise（立即返回，惰性，调用deliver才会执行）</p>
-<p>原子变量(atom)，代理(deref @)，由引用(ref)构成的软件事务内存(STM)。对任何多个并发事务进行修改发生冲突，将会导致重试</p>
-</blockquote>
-</li>
-<li><p>actor的魔力（略）</p>
-<ul>
-<li>  纯粹的消息式的交流，几乎没有限制的进程数，随时加入和进行任务，任由错误发生，集中处理</li>
-</ul>
-<blockquote>
-<p>actor：真正的消息传递，轻量级的进程开销</p>
-<p>分布式map，每个进程分配子map</p>
-</blockquote>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Code</category>
-      </categories>
-      <tags>
-        <tag>笔记</tag>
-        <tag>并发</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>一段简单逆向之旅-绕开Xcode 13.3最低macOS 12.0限制</title>
     <url>/2022/03/25/%E4%B8%80%E6%AE%B5%E7%AE%80%E5%8D%95%E9%80%86%E5%90%91%E4%B9%8B%E6%97%85-%E7%BB%95%E5%BC%80Xcode-13-3%E6%9C%80%E4%BD%8EmacOS-12-0%E9%99%90%E5%88%B6/</url>
     <content><![CDATA[<blockquote>
@@ -1335,30 +1275,63 @@
       </tags>
   </entry>
   <entry>
-    <title>偶然发现的，关于C++指针的一点注意事项</title>
-    <url>/2016/03/30/%E5%81%B6%E7%84%B6%E5%8F%91%E7%8E%B0%E7%9A%84%EF%BC%8C%E5%85%B3%E4%BA%8EC-%E6%8C%87%E9%92%88%E7%9A%84%E4%B8%80%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
-    <content><![CDATA[<p>C++的指针是大一时期一直觉得头疼的一个东西。当年一直对指针敬而远之。一旦不小心，指针越界的后果就是程序崩溃……&gt; &lt;</p>
-<p>然而，偶然一次学妹问到关于动态数组的问题的时候……才偶然发现当年自己学指针似乎一直没有搞清楚这两者的关系：</p>
-<p><code>pointer</code>和<code>pointer[i]</code></p>
-<p>比如实现一个简单的动态数组，举例就是看如下代码：</p>
-<p>第一种方法：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> arrayInput;</span><br><span class="line">	<span class="keyword">int</span> arraySize = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>* arrayPointer;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;依次输入数字到这个数组中，输入EOF（Windows下为Ctrl＋Z，Unix/Linux下为Ctrl+D）来停止输入&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">while</span>(cin&gt;&gt;arrayInput)&#123;</span><br><span class="line">		arrayPointer[arraySize] = arrayInput;</span><br><span class="line">		arraySize++;</span><br><span class="line">	&#125;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;现在输出数组中元素&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">		cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;arrayPointer[i]&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>第二种方法：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> arrayInput;</span><br><span class="line">	<span class="keyword">int</span> arraySize = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>* arrayPointer;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;依次输入数字到这个数组中，输入EOF（Windows下为Ctrl＋Z，Unix/Linux下为Ctrl+D）来停止输入&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">while</span>(cin&gt;&gt;arrayInput)&#123;</span><br><span class="line">		*(arrayPointer+arraySize) = arrayInput;</span><br><span class="line">		arraySize++;</span><br><span class="line">	&#125;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;现在输出数组中元素&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">		cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;*(arrayPointer+i)&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>直到写完了，才发现自己其实一直没有搞懂，这种arrayPointer[i]表示什么。于是做了一个测试～</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cout&lt;&lt;<span class="string">&quot;现在输出数组中元素\n第一种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;arrayPointer[i]&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">cout&lt;&lt;<span class="string">&quot;\n第二种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;*(arrayPointer + i)&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png"></p>
-<p>试验了一下，才发现，其实arrayPointer[i] 和*(arrayPointer + i) 是等价的，前者是代表从arrayPointer的首地址开始计数，而arrayPointer[0]代表就是arrayPointer指向的地址所对应的值。这一点应该注意一下（其实以前觉得数组和指针挺像的，但是从这一点就知道数组绝对是指针的一小部分子集）。</p>
-<p>给自己提个醒吧－ －顺便怀念一下远去的C++。</p>
+    <title>个人笔记-《并发编程》</title>
+    <url>/2016/03/30/%E4%B8%AA%E4%BA%BA%E7%AC%94%E8%AE%B0-%E3%80%8A%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E3%80%8B/</url>
+    <content><![CDATA[<ol>
+<li><p>线程和锁</p>
+<ul>
+<li>  线程锁的的问题:</li>
+</ul>
+<blockquote>
+<p>时序问题</p>
+<p>原子操作问题(Java内存读写机制-&gt;读.改.写)</p>
+<p>竞态条件(操作取决于线程执行的先后顺序)</p>
+<p>JVM优化导致的问题（编译器静态优化，JVM动态优化，硬件指令的乱序执行）</p>
+<p>两把锁：死锁问题</p>
+<p>外部方法或者对象的线程安全问题</p>
+<p>效率问题synchronized()</p>
+<p>ThreadLocal额外讲解，线程级别的局部变量，适用于数据库连接，网络请求</p>
+</blockquote>
+<ul>
+<li>  使用concurrency</li>
+</ul>
+<blockquote>
+<p>ReetrantLock的手动加锁解锁</p>
+<p>死锁也能中断(不推荐的方式lockInterruptibly())</p>
+<p>tryLock()虽然能设定超时自动解锁，但是缺点明显：活锁（同时死锁再同时超时）</p>
+<p>条件锁：Condition类</p>
+<p>原子操作：Atomic 简单的解决方法，坑和缺点</p>
+<p>线程池 内置的Exeutors.newFixedThreadPool()</p>
+</blockquote>
+</li>
+<li><p>函数式方法</p>
+<ul>
+<li>  变量与可变状态导致的并发难题的终极解决方法-&gt;去掉变量</li>
+</ul>
+<blockquote>
+<p>函数式基础概念：顺序无关 map reduce 无穷序列和惰性求值 尾递归</p>
+<p>Clojure简单方法：pmap</p>
+<p>两种Clojure并发模型：Future(给定一个函数在新线程跑，返回一个future对象) Promise（立即返回，惰性，调用deliver才会执行）</p>
+<p>原子变量(atom)，代理(deref @)，由引用(ref)构成的软件事务内存(STM)。对任何多个并发事务进行修改发生冲突，将会导致重试</p>
+</blockquote>
+</li>
+<li><p>actor的魔力（略）</p>
+<ul>
+<li>  纯粹的消息式的交流，几乎没有限制的进程数，随时加入和进行任务，任由错误发生，集中处理</li>
+</ul>
+<blockquote>
+<p>actor：真正的消息传递，轻量级的进程开销</p>
+<p>分布式map，每个进程分配子map</p>
+</blockquote>
+</li>
+</ol>
 ]]></content>
       <categories>
-        <category>C++</category>
+        <category>Code</category>
       </categories>
       <tags>
-        <tag>C++</tag>
+        <tag>笔记</tag>
+        <tag>并发</tag>
       </tags>
   </entry>
   <entry>
@@ -1491,39 +1464,31 @@
       </tags>
   </entry>
   <entry>
-    <title>发誓我不写Monad教程</title>
-    <url>/2016/03/30/%E5%8F%91%E8%AA%93%E6%88%91%E4%B8%8D%E5%86%99Monad%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[<blockquote>
-<p>我保证，不再在网上又发布一篇Monad教程(By Erik Meijer)</p>
-</blockquote>
-<p>自我娱乐，附赠各种Functional with OO，参见<a href="https://github.com/lizhuoli1126/Functional-OO">GitHub</a></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Define</span></span><br><span class="line">Monad = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.value = <span class="built_in">arguments</span>[<span class="number">0</span>];</span><br><span class="line">&#125;;</span><br><span class="line">Monad.prototype.unit = <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.value = value;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">&#125;</span><br><span class="line">Monad.prototype.bind = <span class="function"><span class="keyword">function</span> (<span class="params">func</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> value = func(<span class="built_in">this</span>.value);</span><br><span class="line">    <span class="keyword">var</span> monad = <span class="keyword">new</span> Monad(value);</span><br><span class="line">    <span class="keyword">return</span> monad;</span><br><span class="line">&#125;</span><br><span class="line">Monad.prototype.extract = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Use</span></span><br><span class="line"><span class="keyword">var</span> monad = <span class="keyword">new</span> Monad;</span><br><span class="line"><span class="keyword">var</span> monad = <span class="keyword">new</span> Monad(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">monad.unit(<span class="number">20</span>);</span><br><span class="line">monad.unit(<span class="keyword">new</span> Monad(<span class="number">30</span>));</span><br><span class="line"></span><br><span class="line">monad.bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123; <span class="keyword">return</span> value &#125;);</span><br><span class="line"><span class="keyword">var</span> result = monad.bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value.extract() * <span class="number">2</span>;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(result.extract());<span class="comment">//60</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Test</span></span><br><span class="line"><span class="keyword">var</span> monad = <span class="keyword">new</span> Monad;</span><br><span class="line">monad.unit(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(monad.extract());<span class="comment">//10</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> firstMonad = monad.bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value / <span class="number">2</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(firstMonad.extract());<span class="comment">//5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> secondMonad = monad.bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value + <span class="number">1</span>;</span><br><span class="line">&#125;).bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value + <span class="number">2</span>;</span><br><span class="line">&#125;).bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value + <span class="number">3</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(monad.extract())<span class="comment">//10</span></span><br><span class="line"><span class="built_in">console</span>.log(secondMonad.extract());<span class="comment">//16</span></span><br></pre></td></tr></table></figure>
+    <title>偶然发现的，关于C++指针的一点注意事项</title>
+    <url>/2016/03/30/%E5%81%B6%E7%84%B6%E5%8F%91%E7%8E%B0%E7%9A%84%EF%BC%8C%E5%85%B3%E4%BA%8EC-%E6%8C%87%E9%92%88%E7%9A%84%E4%B8%80%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
+    <content><![CDATA[<p>C++的指针是大一时期一直觉得头疼的一个东西。当年一直对指针敬而远之。一旦不小心，指针越界的后果就是程序崩溃……&gt; &lt;</p>
+<p>然而，偶然一次学妹问到关于动态数组的问题的时候……才偶然发现当年自己学指针似乎一直没有搞清楚这两者的关系：</p>
+<p><code>pointer</code>和<code>pointer[i]</code></p>
+<p>比如实现一个简单的动态数组，举例就是看如下代码：</p>
+<p>第一种方法：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> arrayInput;</span><br><span class="line">	<span class="keyword">int</span> arraySize = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>* arrayPointer;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;依次输入数字到这个数组中，输入EOF（Windows下为Ctrl＋Z，Unix/Linux下为Ctrl+D）来停止输入&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">while</span>(cin&gt;&gt;arrayInput)&#123;</span><br><span class="line">		arrayPointer[arraySize] = arrayInput;</span><br><span class="line">		arraySize++;</span><br><span class="line">	&#125;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;现在输出数组中元素&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">		cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;arrayPointer[i]&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>第二种方法：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> arrayInput;</span><br><span class="line">	<span class="keyword">int</span> arraySize = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span>* arrayPointer;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;依次输入数字到这个数组中，输入EOF（Windows下为Ctrl＋Z，Unix/Linux下为Ctrl+D）来停止输入&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">while</span>(cin&gt;&gt;arrayInput)&#123;</span><br><span class="line">		*(arrayPointer+arraySize) = arrayInput;</span><br><span class="line">		arraySize++;</span><br><span class="line">	&#125;</span><br><span class="line">	cout&lt;&lt;<span class="string">&quot;现在输出数组中元素&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">		cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;*(arrayPointer+i)&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>直到写完了，才发现自己其实一直没有搞懂，这种arrayPointer[i]表示什么。于是做了一个测试～</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cout&lt;&lt;<span class="string">&quot;现在输出数组中元素\n第一种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;arrayPointer[i]&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">cout&lt;&lt;<span class="string">&quot;\n第二种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;*(arrayPointer + i)&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png"></p>
+<p>试验了一下，才发现，其实arrayPointer[i] 和*(arrayPointer + i) 是等价的，前者是代表从arrayPointer的首地址开始计数，而arrayPointer[0]代表就是arrayPointer指向的地址所对应的值。这一点应该注意一下（其实以前觉得数组和指针挺像的，但是从这一点就知道数组绝对是指针的一小部分子集）。</p>
+<p>给自己提个醒吧－ －顺便怀念一下远去的C++。</p>
 ]]></content>
       <categories>
-        <category>JavaScript</category>
+        <category>C++</category>
       </categories>
       <tags>
-        <tag>Functional</tag>
-        <tag>JavaScript</tag>
+        <tag>C++</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>圣诞节快乐</title>
-    <url>/2016/03/30/%E5%9C%A3%E8%AF%9E%E8%8A%82%E5%BF%AB%E4%B9%90/</url>
-    <content><![CDATA[<p>一年一度的圣诞节又到了……或许这又意味这一年的开始了。</p>
-<p>这一年中，有很多人给了我帮助，有欢乐之时，也有低落之时。曾经以为自己能够找到自己的目标，却发现自己还是原地踏步。希望来年之时，心中这份迷茫能够或许减少一分吧。</p>
-<p>感慨就到这里，希望在这个圣诞日子中，你我能够忘却烦恼，睁开眼睛发现属于自己的幸福，勇于追求自己的未来，不要被周遭而所困扰。</p>
-<p>最后，谨祝愿：</p>
-<p>自己能够追寻自己的梦想，看到这的你能够拥抱自己的幸福与喜悦。</p>
-<p>最后，献上我的圣诞贺卡～</p>
-<p>最近有点忙，所以就找别人做好的模版啦（顺便感觉WebGL好厉害……），以后有空可能自己做一个自己的贺卡～感谢大家</p>
-<p>贺卡链接：<a href="http://www.dreampiggy.com/wp-site/christmas/">http://www.dreampiggy.com/wp-site/christmas/</a></p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/35/a9f2b746ae91a4d2f985966e93de8.png"></p>
-]]></content>
-      <categories>
-        <category>Life</category>
-      </categories>
   </entry>
   <entry>
     <title>发现iOS SDK的Bug - Hopper使用教程向</title>
@@ -1672,6 +1637,41 @@
         <tag>逆向</tag>
         <tag>Hopper</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>发誓我不写Monad教程</title>
+    <url>/2016/03/30/%E5%8F%91%E8%AA%93%E6%88%91%E4%B8%8D%E5%86%99Monad%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<blockquote>
+<p>我保证，不再在网上又发布一篇Monad教程(By Erik Meijer)</p>
+</blockquote>
+<p>自我娱乐，附赠各种Functional with OO，参见<a href="https://github.com/lizhuoli1126/Functional-OO">GitHub</a></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Define</span></span><br><span class="line">Monad = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.value = <span class="built_in">arguments</span>[<span class="number">0</span>];</span><br><span class="line">&#125;;</span><br><span class="line">Monad.prototype.unit = <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.value = value;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">&#125;</span><br><span class="line">Monad.prototype.bind = <span class="function"><span class="keyword">function</span> (<span class="params">func</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> value = func(<span class="built_in">this</span>.value);</span><br><span class="line">    <span class="keyword">var</span> monad = <span class="keyword">new</span> Monad(value);</span><br><span class="line">    <span class="keyword">return</span> monad;</span><br><span class="line">&#125;</span><br><span class="line">Monad.prototype.extract = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Use</span></span><br><span class="line"><span class="keyword">var</span> monad = <span class="keyword">new</span> Monad;</span><br><span class="line"><span class="keyword">var</span> monad = <span class="keyword">new</span> Monad(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">monad.unit(<span class="number">20</span>);</span><br><span class="line">monad.unit(<span class="keyword">new</span> Monad(<span class="number">30</span>));</span><br><span class="line"></span><br><span class="line">monad.bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123; <span class="keyword">return</span> value &#125;);</span><br><span class="line"><span class="keyword">var</span> result = monad.bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value.extract() * <span class="number">2</span>;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(result.extract());<span class="comment">//60</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Test</span></span><br><span class="line"><span class="keyword">var</span> monad = <span class="keyword">new</span> Monad;</span><br><span class="line">monad.unit(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(monad.extract());<span class="comment">//10</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> firstMonad = monad.bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value / <span class="number">2</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(firstMonad.extract());<span class="comment">//5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> secondMonad = monad.bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value + <span class="number">1</span>;</span><br><span class="line">&#125;).bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value + <span class="number">2</span>;</span><br><span class="line">&#125;).bind(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value + <span class="number">3</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(monad.extract())<span class="comment">//10</span></span><br><span class="line"><span class="built_in">console</span>.log(secondMonad.extract());<span class="comment">//16</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>JavaScript</category>
+      </categories>
+      <tags>
+        <tag>Functional</tag>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>圣诞节快乐</title>
+    <url>/2016/03/30/%E5%9C%A3%E8%AF%9E%E8%8A%82%E5%BF%AB%E4%B9%90/</url>
+    <content><![CDATA[<p>一年一度的圣诞节又到了……或许这又意味这一年的开始了。</p>
+<p>这一年中，有很多人给了我帮助，有欢乐之时，也有低落之时。曾经以为自己能够找到自己的目标，却发现自己还是原地踏步。希望来年之时，心中这份迷茫能够或许减少一分吧。</p>
+<p>感慨就到这里，希望在这个圣诞日子中，你我能够忘却烦恼，睁开眼睛发现属于自己的幸福，勇于追求自己的未来，不要被周遭而所困扰。</p>
+<p>最后，谨祝愿：</p>
+<p>自己能够追寻自己的梦想，看到这的你能够拥抱自己的幸福与喜悦。</p>
+<p>最后，献上我的圣诞贺卡～</p>
+<p>最近有点忙，所以就找别人做好的模版啦（顺便感觉WebGL好厉害……），以后有空可能自己做一个自己的贺卡～感谢大家</p>
+<p>贺卡链接：<a href="http://www.dreampiggy.com/wp-site/christmas/">http://www.dreampiggy.com/wp-site/christmas/</a></p>
+<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/35/a9f2b746ae91a4d2f985966e93de8.png"></p>
+]]></content>
+      <categories>
+        <category>Life</category>
+      </categories>
   </entry>
   <entry>
     <title>学期感想和总结</title>
@@ -1848,6 +1848,37 @@
 ]]></content>
   </entry>
   <entry>
+    <title>推荐一个Swift以及iOS开发的Git合集</title>
+    <url>/2016/03/30/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AASwift%E4%BB%A5%E5%8F%8AiOS%E5%BC%80%E5%8F%91%E7%9A%84Git%E5%90%88%E9%9B%86/</url>
+    <content><![CDATA[<p style="text-align: left;">
+  地址在此：
+</p>
+
+<p style="text-align: left;">
+</p>
+
+<p><a title="SwiftGuide" href="https://github.com/ipader/SwiftGuide" target="_blank"><strong>https://github.com/ipader/SwiftGuide</strong></a></p>
+<p>里面包括但不限于这些内容：</p>
+<ol>
+<li> <span style="font-size: 13px;">Swift语法</span></li>
+<li> Swift和Objective-C合作</li>
+<li> <span style="font-size: 13px;">iOS开发</span></li>
+<li> <span style="font-size: 13px;">Cocoa框架</span></li>
+<li> 设计模式</li>
+<li> 函数式编程思想</li>
+<li> 常用UI控件、库</li>
+<li> 实际Swift项目</li>
+</ol>
+<p>喜欢的赶紧过去看看点个Star……重要的事情我只说一遍    </p>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>接上一话，在Swift中使用代理来中转请求和响应</title>
     <url>/2016/03/30/%E6%8E%A5%E4%B8%8A%E4%B8%80%E8%AF%9D%EF%BC%8C%E5%9C%A8Swift%E4%B8%AD%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E6%9D%A5%E4%B8%AD%E8%BD%AC%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94/</url>
     <content><![CDATA[<blockquote>
@@ -1916,37 +1947,6 @@
       <tags>
         <tag>PHP</tag>
         <tag>SQL</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>推荐一个Swift以及iOS开发的Git合集</title>
-    <url>/2016/03/30/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AASwift%E4%BB%A5%E5%8F%8AiOS%E5%BC%80%E5%8F%91%E7%9A%84Git%E5%90%88%E9%9B%86/</url>
-    <content><![CDATA[<p style="text-align: left;">
-  地址在此：
-</p>
-
-<p style="text-align: left;">
-</p>
-
-<p><a title="SwiftGuide" href="https://github.com/ipader/SwiftGuide" target="_blank"><strong>https://github.com/ipader/SwiftGuide</strong></a></p>
-<p>里面包括但不限于这些内容：</p>
-<ol>
-<li> <span style="font-size: 13px;">Swift语法</span></li>
-<li> Swift和Objective-C合作</li>
-<li> <span style="font-size: 13px;">iOS开发</span></li>
-<li> <span style="font-size: 13px;">Cocoa框架</span></li>
-<li> 设计模式</li>
-<li> 函数式编程思想</li>
-<li> 常用UI控件、库</li>
-<li> 实际Swift项目</li>
-</ol>
-<p>喜欢的赶紧过去看看点个Star……重要的事情我只说一遍    </p>
-]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -2618,7 +2618,7 @@
 <h1 id="解决方案：自定义LLDB工具链"><a href="#解决方案：自定义LLDB工具链" class="headerlink" title="解决方案：自定义LLDB工具链"></a>解决方案：自定义LLDB工具链</h1><p>经过调研，我们发现业界常见做法，无外乎这几种思路：</p>
 <ol>
 <li> 工程改造：缩减Swift Module/Search Path数量：可行，但是收益较低，且不可能无限制缩减</li>
-<li> 通过LLDB一些开关：可行，但是内网测试下依旧达不到理想的调试状态</li>
+<li> 通过LLDB一些开关：可行，但是内部测试下依旧达不到理想的调试状态</li>
 </ol>
 <p>我们致力于在字节跳动的移动端提供基础能力支持，因此提出了一套解决方案，不依赖业务工程结构的改造，而是从LLDB工具链上入手，提供定向的调试性能优化。</p>
 <p>调研期间也确认到，借助自定义LLDB工具链，集成到Xcode IDE是完全可行的，包括iPhone模拟器、真机以及Mac应用。</p>
@@ -2737,7 +2737,7 @@
 <p>Prefer Swift Remote Mirrors over Remote AST</p>
 </blockquote>
 <p>这里的remoteAST和Swift Mirror的概念，上文介绍过，不同方案会影响Swift的Dynamic Type Resolve的性能。</p>
-<p>经过实测，关闭之后，内网项目的复杂场景下，断点陷入耗时从原本的2分20秒，缩减为1分钟。这部分开关，目前已经通过Xcode自定义的<a href="https://lldb.llvm.org/man/lldb.html#configuration-files">LLDBInit</a>[6]文件，在多个项目中设置。</p>
+<p>经过实测，关闭之后，内部项目的复杂场景下，断点陷入耗时从原本的2分20秒，缩减为1分钟。这部分开关，目前已经通过Xcode自定义的<a href="https://lldb.llvm.org/man/lldb.html#configuration-files">LLDBInit</a>[6]文件，在多个项目中设置。</p>
 <p>注：和Apple同事沟通后，swift-typeref-typesystem是团队20年提出的新方案，目前有一些已知的性能问题，但是对Swift变量和类型展示有更好的兼容性。关闭以后会导致诸如，typealias的变量在p/v时展示会有差异，比如<code>TimeInterval</code>（alias为<code>__C.Double</code>）等。待Apple后续优化之后，建议恢复开启状态。</p>
 <h2 id="修复静态链接库错误地使用dlopen-Fixed-in-Swift-5-7"><a href="#修复静态链接库错误地使用dlopen-Fixed-in-Swift-5-7" class="headerlink" title="修复静态链接库错误地使用dlopen(Fixed in Swift 5.7)"></a>修复静态链接库错误地使用dlopen(Fixed in Swift 5.7)</h2><p>简述问题：LLDB在<code>SwiftASTContext::LoadOneModule</code>时假设所有framework包装格式都是动态链接库，忽略了静态链接库的可能性。</p>
 <p>在调试测试工程中，我们追踪日志发现，LLDB会尝试使用dlopen去加载静态链接库（Static Framework），这是很不符合预期的一点，因为对一个静态链接库进行dlopen是必定失败的，如日志所示（使用下文提到的复现Demo）：</p>
@@ -2745,7 +2745,7 @@
 
 <p>查看代码阅读发现，这里触发的时机是，LLDB在执行Swift变量Dynamic Type Resolve之前，因为需要激活remoteAST，需要加载源码对应的swiftmodule到内存中。</p>
 <p>swiftmodule是编译器序列化的包含了AST的<a href="https://llvm.org/docs/BitCodeFormat.html">LLVM Bitcode</a>[7]。除了AST之外，还有很多Metadata，如编译器版本，编译时刻的参数，Search Paths等（通过编译器参数<code>-serialize-debugging-options</code>记录）。另外，对Swift代码中出现的import语句，也会记录一条加载模块依赖。而主二进制在编译时会记录所有子模块的递归依赖。</p>
-<p>LLDB在进行加载模块依赖时，会根据编译器得到的Search Paths，拼接上当前的Module Name，然后遍历进行dlopen。涉及较高的时间开销：N个Module，M个Search Path，复杂度O(NxM)（内网项目为400x1000数量级）。而在执行前。并未检测当前被加载的路径是否真正是一个动态链接库，最终产生了这个错误的开销。</p>
+<p>LLDB在进行加载模块依赖时，会根据编译器得到的Search Paths，拼接上当前的Module Name，然后遍历进行dlopen。涉及较高的时间开销：N个Module，M个Search Path，复杂度O(NxM)（内部项目为400x1000数量级）。而在执行前。并未检测当前被加载的路径是否真正是一个动态链接库，最终产生了这个错误的开销。</p>
 <ul>
 <li>修复方案</li>
 </ul>
@@ -2770,19 +2770,19 @@
 
 <p>这个开关的作用是，在开启情况下，Swift编译器遇到clang type（如C/C++/Objc）导入到Swift时，允许通过一个自定义代理实现，来从DWARF中读取类型信息，而不是借助编译器使用<a href="https://clang.llvm.org/docs/Modules.html#id20">clang precompiled module</a>[8]，即pcm，以及ClangImporter导入桥接类型。</p>
 <p>切换以后可能部分clang type的类型解析并不会很精确（比如Apple系统库的那种overlay framework，用原生Swift类型覆盖了同名C类型），但是能稍微加速解析速度，这是因为clang pcm和DWARF的解析实现差异。</p>
-<p>禁用之后，对内网测试工程部分场景有正向提升约10秒，如果遇到问题建议保持默认的true。</p>
+<p>禁用之后，对内部项目测试工程部分场景有正向提升约10秒，如果遇到问题建议保持默认的true。</p>
 <h2 id="优化External-Module的查找路径逻辑"><a href="#优化External-Module的查找路径逻辑" class="headerlink" title="优化External Module的查找路径逻辑"></a>优化External Module的查找路径逻辑</h2><p>在混编工程中，Swift Module依赖一个C/OC的clang module是非常常见的事情。在这种情况下，LLDB需要同时使用编译器，加载到对应的clang module到内存中，用于进行C/OC Type到Swift Type的导入逻辑。</p>
 <p>但是实际情况下，我们可能有一些Swift混编产物，是预二进制的产物，在非当前机器中进行的编译。这种情况下，对应编译器记录的的External Module的路径很可能是在当前机器找不到的。</p>
 <p>LLDB的原始逻辑，会针对每一个可能的路径，分别由它的4种ObjectFile插件（为了支持不同的二进制格式）依次进行判断。每个ObjectFile插件会各自通过文件IO读取和解析Header。这是非常大的开销。</p>
 <ul>
 <li>优化方案</li>
 </ul>
-<p>我们内网采取的策略比较激进，除了直接利用fstat进行前置的判断（而不是分别交给4个ObjectFile插件总计判断4次）外，还针对Mac机器的路径进行了一些特殊路径匹配规则，这里举个例子：</p>
+<p>我们内部采取的策略比较激进，除了直接利用fstat进行前置的判断（而不是分别交给4个ObjectFile插件总计判断4次）外，还针对Mac机器的路径进行了一些特殊路径匹配规则，这里举个例子：</p>
 <p>比如说，Mac电脑的编译产物绝对路径，一定是以<code>/Users/$&#123;whoami&#125;</code>开头，所以我们可以先尝试获取当前调试器进程的<code>uname</code>（非常快且LLDB进程周期内不会变化），如果不匹配，说明编译产物一定不是在当前设备进行上产出的，直接跳过。</p>
 <p>图14：特殊匹配规则，直接避免文件IO判定存在与否</p>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338511.png"></p>
-<p>通过这一项优化，在内网项目测试下（1000多个External Module路径，其中800+无效路径），可以减少首次变量显示v耗时约30秒。</p>
-<h2 id="增加共享的symbols缓存"><a href="#增加共享的symbols缓存" class="headerlink" title="增加共享的symbols缓存"></a>增加共享的symbols缓存</h2><p>我们使用内网项目进行性能Profile时，发现<code>Module::FindTypes</code>和<code>SymbolFile::FindTypes</code>函数耗时调用占了主要的大头。这个函数的功能是通过DWARF（记录于Mach-O结构中），查找一个符号字符串是否包含在内。耗时主要是在需要进行一次性DWARF的解析，以及每次查找的section遍历。</p>
+<p>通过这一项优化，在内部项目测试下（1000多个External Module路径，其中800+无效路径），可以减少首次变量显示v耗时约30秒。</p>
+<h2 id="增加共享的symbols缓存"><a href="#增加共享的symbols缓存" class="headerlink" title="增加共享的symbols缓存"></a>增加共享的symbols缓存</h2><p>我们使用内部项目进行性能Profile时，发现<code>Module::FindTypes</code>和<code>SymbolFile::FindTypes</code>函数耗时调用占了主要的大头。这个函数的功能是通过DWARF（记录于Mach-O结构中），查找一个符号字符串是否包含在内。耗时主要是在需要进行一次性DWARF的解析，以及每次查找的section遍历。</p>
 <p>LLDB本身是存在一个<code>searched_symbol_files</code>参数用来缓存，但是问题在于，这份缓存并不是存在于一个全局共享池中，而是在每个具体调用处的临时堆栈上。一旦调用方结束了调用，这份缓存会被直接丢弃。</p>
 <p>图15：symbols缓存参数</p>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338574.png"></p>
@@ -2790,7 +2790,7 @@
 <li>优化方案</li>
 </ul>
 <p>我们在这里引入了一个共享的symbols缓存，保存了这份访问记录来避免多个不同调用方依然搜索到同一个符号，以空间换时间。实现方案比较简单。</p>
-<p>内网工程实测，下来可以减少10-20秒的第一次访问开销，而每个symbol缓存占据字节约为8KB，一次调试周期约10万个符号占据800MB，对于Mac设备这种有虚拟内存的设备来说，内存压力不算很大。另外，也提供了关闭的开关。</p>
+<p>内部工程实测，下来可以减少10-20秒的第一次访问开销，而每个symbol缓存占据字节约为8KB，一次调试周期约10万个符号占据800MB，对于Mac设备这种有虚拟内存的设备来说，内存压力不算很大。另外，也提供了关闭的开关。</p>
 <h2 id="优化不必要的同名symbols查找"><a href="#优化不必要的同名symbols查找" class="headerlink" title="优化不必要的同名symbols查找"></a>优化不必要的同名symbols查找</h2><p>另一项优化<code>Module::FindTypes</code>和<code>SymbolFile::FindTypes</code>函数开销的方案是，原始的这两个函数会返回所有匹配到的列表，原因在于C++/Rust/Swift等支持重载的语言，会使用naming mangle来区分同一个函数名的不同类型的变种。这些符号名称会以同样的demangled name，记录到DWARF中。</p>
 <p>但是调用方可能会关心同名类型的具体的变种（甚至包括是const还是非const），甚至有很多地方只取了第一个符号，搜索全部的Symbol File其实是一种浪费（在Swift 5.6版本中找到累积约10处调用只取了第一个）</p>
 <ul>
@@ -2799,7 +2799,7 @@
 <p>我们对上述<code>Module::FindTypes</code>和<code>SymbolFile::FindTypes</code>函数，提供了一个新的参数<code>match_callback</code>，用于提前过滤所需要的具体类型。类似于很多语言标准库提供sort函数中的stop参数。这样，如果只需要第一个找到的符号就可以提前终止搜索，而需要全部符号列表不受影响。</p>
 <p>图16：symbols查找筛选参数</p>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338656.png"></p>
-<p>内网项目测试这项优化以后，可以减少C++/C/OC类型导入到Swift类型这种场景下，约5-10秒的第一次查找耗时。</p>
+<p>内部项目测试这项优化以后，可以减少C++/C/OC类型导入到Swift类型这种场景下，约5-10秒的第一次查找耗时。</p>
 <h1 id="其他优化"><a href="#其他优化" class="headerlink" title="其他优化"></a>其他优化</h1><h2 id="定向优化Dynamic-Type-Resolve的一些特例"><a href="#定向优化Dynamic-Type-Resolve的一些特例" class="headerlink" title="定向优化Dynamic Type Resolve的一些特例"></a>定向优化Dynamic Type Resolve的一些特例</h2><p>在实际项目测试中，我们发现，Dynamic Type Resolve是有一些特例可以进行针对性的shortcut优化，剔除无用开销的。这部分优化仅对特定代码场景有效，并不通用。这里仅列举部分思路</p>
 <ul>
 <li>优化Core Foundation类型的Dynamic Type Resolve</li>
@@ -3152,97 +3152,6 @@
       </tags>
   </entry>
   <entry>
-    <title>iOS平台图片编解码入门教程（第三方编解码篇）</title>
-    <url>/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/</url>
-    <content><![CDATA[<blockquote>
-<p>这篇教程，是系列教程的第二篇，前篇名为《iOS平台图片编解码入门教程（Image/IO篇）》。这篇主要讲第三方解码器如何在iOS平台上处理（和Image/IO的几大要点一一对应），更会介绍一些基本的Bitmap概念，总结通用的处理方法，毕竟授人以鱼不如授人以渔</p>
-</blockquote>
-<h1 id="第三方编解码"><a href="#第三方编解码" class="headerlink" title="第三方编解码"></a>第三方编解码</h1><p>对于图片编解码来说，Apple自带的Image/IO确实非常的易用，但是对于Image/IO不支持的图像格式就能无能为力了。截止到iOS 11，Image/IO不支持WebP，BPG，对于一些需要依赖WebP的业务就比较麻烦了（WebP的优点就不再介绍了）。不过我们可以自己集成第三方的图片解码器，去支持这些需要的的格式。</p>
-<p>一般来说，我们需要根据自己想要支持的图像格式，选择相对应的编解码器，进行编解码。这里我们以WebP的解码库<a href="https://developers.google.com/speed/webp/docs/api">libwebp</a>为例子，其他解码器需要根据对应解码器的API处理，基本概念类似。</p>
-<h1 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h1><p>不像Image/IO那样封装了整套流程，第三方解码的关键之处，就是在于获取到图像的<a href="https://en.wikipedia.org/wiki/Raster_graphics">Bitmap</a>数据，通常情况就是<a href="https://en.wikipedia.org/wiki/RGBA_color_space">RGBA</a>的矢量表示。</p>
-<p>简单解释一下，Bitmap可以理解为连续排列像素（Pixel）的二维数组，一个像素包括4个通道(Components)的点，每个点的位数叫做色深（常见的32位色，指的就是1个像素有4通道，每个通道8位），而像素的通道排列顺序按照对应的RGBA Mode顺序排列，比如说RGBA8888（大端序），就是这样一串连续的值：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha...&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这样的话，在内存中，一般就可以用<code>uint8_t bitmap[width * components * 8][height]</code>来表示。</p>
-<p>有了这样的知识，对照着就能看懂CGImage的BitmapInfo所表示的信息了。</p>
-<p><img src="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/colorformatrgba32.gif" alt="Bitmap的表示"></p>
-<h2 id="静态图"><a href="#静态图" class="headerlink" title="静态图"></a>静态图</h2><p>只要Bitmap数据到手，后面的过程其实都大同小异。第三方解码器主要处理图像编码数据到原始Bitmap的解码过程，后续就可以通过固定的方式来得到CGImage或者UIImage，用于上层UI组件的渲染。</p>
-<ol>
-<li>第三方解码器获取图像Bitmap</li>
-<li>通过Bitmap创建CGImage</li>
-<li>CGImage重绘（可选）</li>
-<li>生成上层的UIImage，清理</li>
-</ol>
-<h3 id="1-第三方解码器获取图像Bitmap"><a href="#1-第三方解码器获取图像Bitmap" class="headerlink" title="1. 第三方解码器获取图像Bitmap"></a>1. 第三方解码器获取图像Bitmap</h3><p>根据自己的需要，可以选择对应的编码器，来获取图像Bitmap。这里我们以WebP的解码库<a href="https://developers.google.com/speed/webp/docs/api">libwebp</a>为例子，其他解码器需要根据对应解码器的API处理，基本概念类似。</p>
-<p>示例代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSData</span> *data; <span class="comment">// 待解码的图像二进制数据</span></span><br><span class="line"></span><br><span class="line">WebPData webpData;</span><br><span class="line">WebPDataInit(&amp;webpData);</span><br><span class="line">webpData.bytes = data.bytes;</span><br><span class="line">webpData.size = data.length;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化Config，用于存储图像的Bitmap，大小等信息</span></span><br><span class="line">WebPDecoderConfig config;</span><br><span class="line"><span class="keyword">if</span> (!WebPInitDecoderConfig(&amp;config)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断是否能够解码</span></span><br><span class="line"><span class="keyword">if</span> (WebPGetFeatures(webpData.bytes, webpData.size, &amp;config.input) != VP8_STATUS_OK) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设定输出的Bitmap色彩空间，有Alpha通道选择RGBA，没有选择RGB </span></span><br><span class="line"><span class="keyword">bool</span> has_alpha = config.input.has_alpha;</span><br><span class="line">config.output.colorspace = has_alpha ? MODE_rgbA : MODE_RGB;</span><br><span class="line">config.options.use_threads = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 真正开始解码，输出RGBA数据到Config的output中</span></span><br><span class="line"><span class="keyword">if</span> (WebPDecode(webpData.bytes, webpData.size, &amp;config) != VP8_STATUS_OK) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取图像的大小</span></span><br><span class="line"><span class="keyword">int</span> width = config.input.width;</span><br><span class="line"><span class="keyword">int</span> height = config.input.height;</span><br><span class="line"><span class="keyword">if</span> (config.options.use_scaling) &#123;</span><br><span class="line">    width = config.options.scaled_width;</span><br><span class="line">    height = config.options.scaled_height;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//RGBA矢量和对应的大小</span></span><br><span class="line">uint8_t *rgba = config.output.u.RGBA.rgb;</span><br><span class="line">size_t rgbaSize = config.output.u.RGBA.size;</span><br></pre></td></tr></table></figure>
-
-<p>截止到这里，我们基本上调用通过第三方解码库的接口，就完成了获取Bitmap的工作。一般来说，以RGBA来说，最少需要知道以下信息：图像RGBA数组，数组大小，图像宽度、高度、是否含有Alpha通道这几个，以便开始下一步的创建CGImage的过程</p>
-<h3 id="2-通过Bitmap创建CGImage"><a href="#2-通过Bitmap创建CGImage" class="headerlink" title="2. 通过Bitmap创建CGImage"></a>2. 通过Bitmap创建CGImage</h3><p>有了图像的Bitmap数据之后，可以通过<code>CGImageCreate</code>来生成CGImage。对于RGBA的输入，需要的参数基本比较固定，以下代码基本上可以参考来复用。（需要注意，iOS上只支持<a href="https://segmentfault.com/a/1190000002990030">premultiplied-alpha</a>，macOS可以支持非premultiplied-alpha）</p>
-<p>示例代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 通过RGBA数组，创建一个DataProvider。最后一个参数是一个函数指针，用来在创建完成后清理内存用的</span></span><br><span class="line"><span class="built_in">CGDataProviderRef</span> provider = <span class="built_in">CGDataProviderCreateWithData</span>(<span class="literal">NULL</span>, rgba, rgbaSize, FreeImageData);</span><br><span class="line"><span class="comment">// 目标色彩空间，我们这里用的就是RGBA</span></span><br><span class="line"><span class="built_in">CGColorSpaceRef</span> colorSpaceRef = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line"><span class="comment">// Bitmap数据，如果含有Alpha通道，设置Premultiplied Alpha。没有就忽略Alpha通道</span></span><br><span class="line"><span class="built_in">CGBitmapInfo</span> bitmapInfo = has_alpha ? kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast : kCGBitmapByteOrder32Big | kCGImageAlphaNoneSkipLast;</span><br><span class="line"><span class="comment">// 通道数，有alpha就是4，没有就是3</span></span><br><span class="line">size_t components = has_alpha ? <span class="number">4</span> : <span class="number">3</span>;</span><br><span class="line"><span class="comment">// 这个是用来做色彩空间变换的指示，如果超出色彩空间，比如P3转RGBA，默认会进行兼容转换</span></span><br><span class="line"><span class="built_in">CGColorRenderingIntent</span> renderingIntent = kCGRenderingIntentDefault;</span><br><span class="line"><span class="comment">// 每行字节数（RGBA数组就是连续排列的多维数组，一行就是宽度*通道数），又叫做stride，因为Bitmap本质就是Pixel(uint_8)的二维数组，需要知道何时分行</span></span><br><span class="line">size_t bytesPerRow = components * width;</span><br><span class="line"><span class="comment">// 创建CGImage，参数分别意义为：宽度，高度，每通道的Bit数（RGBA自然是256，对应8Bit），每行字节数，色彩空间，Bitmap信息，数据Provider，解码数组（这个传NULL即可，其他值的话，会将经过变换比如premultiplied-alpha之后的Bitmap写回这个数组），是否过滤插值（这个一般不用开，可以在专门的图像锐化里面搞），色彩空间变换指示</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = <span class="built_in">CGImageCreate</span>(width, height, <span class="number">8</span>, components * <span class="number">8</span>, bytesPerRow, colorSpaceRef, bitmapInfo, provider, <span class="literal">NULL</span>, <span class="literal">NO</span>, renderingIntent);</span><br><span class="line"><span class="comment">// 别忘了清理DataProvider，此时会调用之前传入的清理函数</span></span><br><span class="line"><span class="built_in">CGDataProviderRelease</span>(provider);</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> FreeImageData(<span class="keyword">void</span> *info, <span class="keyword">const</span> <span class="keyword">void</span> *data, size_t size) &#123;</span><br><span class="line">    free((<span class="keyword">void</span> *)data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-CGImage重绘"><a href="#3-CGImage重绘" class="headerlink" title="3. CGImage重绘"></a>3. CGImage重绘</h3><p>这一步其实是可选的，但是建议都加上这一步骤。虽然我们之前通过RGBA创建了CGImage，但是实际上，CALayer和上层的UIImageView这些渲染的时候，要求的色彩是限定的，不然会有额外的内存和渲染消耗，我们解码出来的rgba的格式可能并不是按照这样的色彩空间排列，因此建议进行一次重绘，即将CGImage重绘到一个CGBitmapContext之上。这个代码比较简单。</p>
-<p>示例代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGImageRef</span> imageRef;</span><br><span class="line">size_t canvasWidth = <span class="built_in">CGImageGetWidth</span>(imageRef)</span><br><span class="line">size_t canvasHeight = <span class="built_in">CGImageGetHeight</span>(imageRef)</span><br><span class="line"><span class="built_in">CGBitmapInfo</span> bitmapInfo;</span><br><span class="line"><span class="keyword">if</span> (! has_alpha) &#123;</span><br><span class="line">    bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaNoneSkipLast;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 参数意思很简单，由于没有数据，对于RGBA可以自动计算bytesPerRow</span></span><br><span class="line"><span class="built_in">CGContextRef</span> canvas = <span class="built_in">CGBitmapContextCreate</span>(<span class="literal">NULL</span>, canvasWidth, canvasHeight, <span class="number">8</span>, <span class="number">0</span>, <span class="built_in">CGColorSpaceCreateDeviceRGB</span>(), bitmapInfo);</span><br><span class="line"><span class="keyword">if</span> (!canvas) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = image.CGImage;</span><br><span class="line">size_t width = <span class="built_in">CGImageGetWidth</span>(imageRef);</span><br><span class="line">size_t height = <span class="built_in">CGImageGetHeight</span>(imageRef);</span><br><span class="line"><span class="comment">// 画CGImage上去</span></span><br><span class="line"><span class="built_in">CGContextDrawImage</span>(canvas, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, width, height), imageRef);</span><br><span class="line"><span class="built_in">CGImageRef</span> newImageRef = <span class="built_in">CGBitmapContextCreateImage</span>(canvas);</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-生成上层的UIImage，清理"><a href="#4-生成上层的UIImage，清理" class="headerlink" title="4. 生成上层的UIImage，清理"></a>4. 生成上层的UIImage，清理</h3><p>有了最终的用于显示CGImage，那么我们就可以生成一个UIImage来给UI组件显示了。注意如果需要有特殊的scale，orientation处理（比如说图像可能有额外的EXIF Orientation信息），需要在这一步加上。<br>由于是C接口，需要手动清理内存，除了CGImage相关的，也需要清理第三方库自己的内存分配。对于错误提前返回的清理内存，灵活运用<code>__attribute__((cleanup))</code>，设置一个返回函数前清理的Block，可以减少犯错的可能性</p>
-<p>示例代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithCGImage:imageRef scale:<span class="number">1</span> orientation:<span class="built_in">UIImageOrientationUp</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 各种清理，省略</span></span><br><span class="line"><span class="built_in">CGImageRelease</span>(newImageRef);</span><br><span class="line"><span class="built_in">CGContextRelease</span>(canvas);</span><br></pre></td></tr></table></figure>
-
-<h2 id="动态图"><a href="#动态图" class="headerlink" title="动态图"></a>动态图</h2><p>动态图的解码过程，其实很直观的想，我们目标就是需要对所有动图帧，都拿到Bitmap，解码到CGImage和UIImage就行了。这样想的话，其实步骤就比较明确了。</p>
-<p>步骤：</p>
-<ol>
-<li>第三方解码器生成每帧的Bitmap</li>
-<li>重复静态图的2-3</li>
-<li>生成动图UIImage（参考Image/IO）</li>
-</ol>
-<h3 id="1-第三方解码器生成每帧的Bitmap"><a href="#1-第三方解码器生成每帧的Bitmap" class="headerlink" title="1. 第三方解码器生成每帧的Bitmap"></a>1. 第三方解码器生成每帧的Bitmap</h3><p>不同解码器可能对于动图有特殊的解码过程，拿libwebp举例来说，libwebp的动图，需要用到它的demux模块，其他解码器自行参考对应的API。</p>
-<p>同时，这里需要额外介绍一些概念。一般来说，动图格式的话不会直接将每帧原始的Bitmap都编码到文件中，这样得到的文件过于庞大（帧数 * 每帧Bitmap）。因此，会有Dispose Method的方式（可以参考WebP规范<a href="https://developers.google.com/speed/webp/docs/riff_container">Disposal method (D): 1 bit</a>，<a href="https://blog.ibireme.com/2015/11/02/mobile_image_benchmark/">移动端图片格式调研</a>）。简单点来说，对于动图来说，每一帧有一个参考画布，在前一帧画完以后，后一帧可以利用前一帧已画好的图像，仅仅改变前后变化的部分，从而减小整体大小。因此我们创建动图时，需要准备好一个CGBitmapContext当作画布，根据Disposal Method（如果为None，不清空canvas；如果为Background，清空为Background Color，一般就是直接清空成透明）</p>
-<p>有了所有帧的Bitmap后，转成CGImage，UIImage，最后生成动图UIImage，这个在系列前篇已经介绍过了，不再赘述</p>
-<p>示例代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)decodeWebP &#123;</span><br><span class="line">	<span class="comment">// 前期准备代码，直接略过，假设已经创建好canvas</span></span><br><span class="line">	WebPDemuxer *demuxer;</span><br><span class="line">	WebPIterator iter;</span><br><span class="line">	<span class="keyword">if</span> (!WebPDemuxGetFrame(demuxer, <span class="number">1</span>, &amp;iter)) &#123;</span><br><span class="line">	    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	    </span><br><span class="line">	<span class="built_in">NSMutableArray</span>&lt;<span class="built_in">UIImage</span> *&gt; *images = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line">	<span class="keyword">double</span> durations[frameCount];</span><br><span class="line">	    </span><br><span class="line">	<span class="keyword">do</span> &#123;</span><br><span class="line">	    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">	        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> drawnWebpImageWithCanvas:canvas iterator:iter];</span><br><span class="line">	        <span class="keyword">int</span> duration = iter.duration;</span><br><span class="line">	        [images addObject:image];</span><br><span class="line">	        durations[frame_num] = duration;</span><br><span class="line">	    &#125;</span><br><span class="line">	    </span><br><span class="line">	&#125; <span class="keyword">while</span> (WebPDemuxNextFrame(&amp;iter));</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 创建UIImage动图，和Image/IO的相同，这里就直接封装成方法，略过</span></span><br><span class="line">	<span class="built_in">UIImage</span> *animatedImage = [<span class="keyword">self</span> animatedImageWithImages:images durations:durations];</span><br><span class="line">	    </span><br><span class="line">	<span class="comment">// 清理……略</span></span><br><span class="line">	WebPDemuxReleaseIterator(&amp;iter);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">nullable</span> <span class="built_in">UIImage</span> *)drawnWebpImageWithCanvas:(<span class="built_in">CGContextRef</span>)canvas iterator:(WebPIterator)iter &#123;</span><br><span class="line">    <span class="comment">// 这里是调用的前面静态图绘制的方法</span></span><br><span class="line">    <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> rawWebpImageWithData:iter.fragment];</span><br><span class="line">    <span class="keyword">if</span> (!image) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    size_t canvasWidth = <span class="built_in">CGBitmapContextGetWidth</span>(canvas);</span><br><span class="line">    size_t canvasHeight = <span class="built_in">CGBitmapContextGetHeight</span>(canvas);</span><br><span class="line">    <span class="built_in">CGSize</span> size = <span class="built_in">CGSizeMake</span>(canvasWidth, canvasHeight);</span><br><span class="line">    <span class="built_in">CGFloat</span> tmpX = iter.x_offset;</span><br><span class="line">    <span class="built_in">CGFloat</span> tmpY = size.height - iter.height - iter.y_offset;</span><br><span class="line">    <span class="built_in">CGRect</span> imageRect = <span class="built_in">CGRectMake</span>(tmpX, tmpY, iter.width, iter.height);</span><br><span class="line">    <span class="comment">// Blend</span></span><br><span class="line">    <span class="built_in">BOOL</span> shouldBlend = iter.blend_method == WEBP_MUX_BLEND;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 如果BlendMode开启，该帧应当混合画画布上，否则，应该覆盖，也就是清空指定范围后再重画</span></span><br><span class="line">    <span class="keyword">if</span> (!shouldBlend) &#123;</span><br><span class="line">        <span class="built_in">CGContextClearRect</span>(canvas, imageRect);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">CGContextDrawImage</span>(canvas, imageRect, image.CGImage);</span><br><span class="line">    <span class="built_in">CGImageRef</span> newImageRef = <span class="built_in">CGBitmapContextCreateImage</span>(canvas);</span><br><span class="line">    </span><br><span class="line">    image = [<span class="built_in">UIImage</span> imageWithCGImage:newImageRef];</span><br><span class="line">    <span class="built_in">CGImageRelease</span>(newImageRef);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Dispose如果是Background，表示解码下一帧需要清空画布</span></span><br><span class="line">    <span class="keyword">if</span> (iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND) &#123;</span><br><span class="line">        <span class="built_in">CGContextClearRect</span>(canvas, imageRect);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="渐进式解码"><a href="#渐进式解码" class="headerlink" title="渐进式解码"></a>渐进式解码</h2><p>渐进式解码的概念，在系列前篇中已经介绍过了，一般来说，第三方解码器支持渐进式解码的接口都比较类似，通过提供二进制流不断进行Update，每次能够得到当前解码的部分的Bitmap，最后可以拿到完整的Bitmap。之后只需要参考静态图对应步骤即可。</p>
-<p>这里还是以libwebp的接口为例，libwebp需要使用它的WebPIDecoder接口，来专门进行渐进式解码。注意，libwebp渐进式解码出来的Bitmap不会将未解码的部分自动填空，会保留随机的内存地址置，要么手动清空，要么画的时候仅仅画解码出来的高度部分。</p>
-<p>示例代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSData</span> *data; <span class="comment">// 输入的原始图像格式的二进制数据</span></span><br><span class="line"><span class="built_in">UIImage</span> *image;</span><br><span class="line">WebPIDecoder *idec = WebPINewRGB(MODE_rgbA, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (!idec) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里需要更新全部的数据，当然libwebp也有仅仅更新新增数据（非全部）的接口</span></span><br><span class="line">VP8StatusCode status = WebPIUpdate(idec, data.bytes, data.length);</span><br><span class="line"><span class="keyword">if</span> (status != VP8_STATUS_OK &amp;&amp; status != VP8_STATUS_SUSPENDED) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">int</span> width = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> height = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> last_y = <span class="number">0</span>; <span class="comment">// 已经解码出来的Bitmap数据的高度，即对应有效Bitmap的行数</span></span><br><span class="line"><span class="keyword">int</span> stride = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// 然后可以拿到Bitmap数据和相应的图像信息了</span></span><br><span class="line">uint8_t *rgba = WebPIDecGetRGB(_idec, &amp;last_y, &amp;width, &amp;height, &amp;stride);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 和静图解码的过程类似，构造一个DataProvider，略过</span></span><br><span class="line"><span class="built_in">CGDataProviderRef</span> provider;</span><br><span class="line"><span class="built_in">CGBitmapInfo</span> bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;</span><br><span class="line">size_t components = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//这里说一个坑，libwebp不能保证last_y以下的数据是全空的，所以一定注意，仅仅解码last_y范围内的Bitmap</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = <span class="built_in">CGImageCreate</span>(width, last_y, <span class="number">8</span>, components * <span class="number">8</span>, components * width, <span class="built_in">CGColorSpaceCreateDeviceRGB</span>(), bitmapInfo, provider, <span class="literal">NULL</span>, <span class="literal">NO</span>, kCGRenderingIntentDefault);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为了能得到完整的图片高度，创建一个canvas来画图，不画的部分保持透明状态即可</span></span><br><span class="line"><span class="built_in">CGContextRef</span> canvas = <span class="built_in">CGBitmapContextCreate</span>(<span class="literal">NULL</span>, width, height, <span class="number">8</span>, <span class="number">0</span>, <span class="built_in">CGColorSpaceCreateDeviceRGB</span>(), bitmapInfo);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 仅仅画last_y高度的图像（不是全部），注意CoreGraphics的坐标系统是右手系的，与UIKit的坐标相反</span></span><br><span class="line"><span class="built_in">CGContextDrawImage</span>(canvas, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, height - last_y, width, last_y), imageRef);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 拿到CGImage</span></span><br><span class="line"><span class="built_in">CGImageRef</span> newImageRef = <span class="built_in">CGBitmapContextCreateImage</span>(canvas);</span><br><span class="line"><span class="comment">// 创建UIImage</span></span><br><span class="line">image = [[<span class="built_in">UIImage</span> alloc] initWithCGImage:newImageRef];</span><br><span class="line"><span class="comment">// 各种清理，省略</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h1><p>编码过程其实比解码过程要简单得多，因为实际上，我们可以通过自带的接口，直接拿到当前UIImage的Bitmap数据，因此只要将Bitmap交给第三方编码库来进行编码，最后输出数据即可。</p>
-<h2 id="静态图-1"><a href="#静态图-1" class="headerlink" title="静态图"></a>静态图</h2><p>静态图的过程其实就可以直接分为两步：</p>
-<ol>
-<li>UIImage获取Bitmap</li>
-<li>调用编码器进行编码</li>
-</ol>
-<h3 id="1-UIImage获取Bitmap"><a href="#1-UIImage获取Bitmap" class="headerlink" title="1. UIImage获取Bitmap"></a>1. UIImage获取Bitmap</h3><p>UIImage本身能够直接通过方法拿到对应的CGImage，这样只需要调用<code>CGImageGetDataProvider</code>就可以拿到对应的Bitmap数据的DataProvider了，直接上代码吧。</p>
-<p>示例代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">UIImage</span> *image;</span><br><span class="line"><span class="built_in">NSData</span> *webpData; <span class="comment">// Bitmap数据的容器</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = image.CGImage;</span><br><span class="line">    </span><br><span class="line">size_t width = <span class="built_in">CGImageGetWidth</span>(imageRef);</span><br><span class="line">size_t height = <span class="built_in">CGImageGetHeight</span>(imageRef);    </span><br><span class="line">size_t bytesPerRow = <span class="built_in">CGImageGetBytesPerRow</span>(imageRef); <span class="comment">// 大部分编码器需要知道bytesPerRow，或者叫做stride</span></span><br><span class="line"><span class="built_in">CGDataProviderRef</span> dataProvider = <span class="built_in">CGImageGetDataProvider</span>(imageRef);</span><br><span class="line"><span class="built_in">CFDataRef</span> dataRef = <span class="built_in">CGDataProviderCopyData</span>(dataProvider);</span><br><span class="line">uint8_t *rgba = (uint8_t *)<span class="built_in">CFDataGetBytePtr</span>(dataRef);</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-调用编码器进行编码"><a href="#2-调用编码器进行编码" class="headerlink" title="2. 调用编码器进行编码"></a>2. 调用编码器进行编码</h3><p>我们还是以libwebp来对WebP进行编码，libwebp对于静态图片的编码非常简单（动态图片需要调用另一套mux的API，在动图章节讲）</p>
-<p>示例代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">uint8_t *data = <span class="literal">NULL</span>; <span class="comment">//编码输出的二进制数据</span></span><br><span class="line"><span class="keyword">float</span> quality = <span class="number">100.0</span>; <span class="comment">// libwebp可以选择编码质量，影响输出文件大小和编码速度</span></span><br><span class="line">size_t size = WebPEncodeRGBA(rgba, (<span class="keyword">int</span>)width, (<span class="keyword">int</span>)height, (<span class="keyword">int</span>)bytesPerRow, quality, &amp;data);</span><br><span class="line"><span class="built_in">CFRelease</span>(dataRef); <span class="comment">// 编码后清理Bitmap数据</span></span><br><span class="line">rgba = <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> (size) &#123;</span><br><span class="line">    <span class="comment">// success</span></span><br><span class="line">    webpData = [<span class="built_in">NSData</span> dataWithBytes:data length:size];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (data) &#123;</span><br><span class="line">    WebPFree(data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="动态图-1"><a href="#动态图-1" class="headerlink" title="动态图"></a>动态图</h2><p>对于动态图来说，也就是将多帧的Bitmap输入到编码器即可。对于libwebp的动态图编码，需要利用到它的mux模块，它能够将多个编码成WebP的二进制流，最后mux合并一次，最终得到了动态WebP。因此我们需要利用之前的静态图编码的步骤，只需要依次遍历取图并编码，最后使用mux处理即可。</p>
-<p>步骤：</p>
-<ol>
-<li>遍历每帧Bitmap，编码</li>
-</ol>
-<h3 id="1-遍历每帧Bitmap，编码"><a href="#1-遍历每帧Bitmap，编码" class="headerlink" title="1. 遍历每帧Bitmap，编码"></a>1. 遍历每帧Bitmap，编码</h3><p>示例代码：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSData</span> *data;</span><br><span class="line"><span class="built_in">NSArray</span>&lt;<span class="built_in">UIImgae</span> *&gt; *images;</span><br><span class="line"><span class="keyword">double</span> durations[frameCount];</span><br><span class="line"><span class="keyword">int</span> loopCount;</span><br><span class="line"><span class="comment">// 创建mux</span></span><br><span class="line">WebPMux *mux = WebPMuxNew();</span><br><span class="line"><span class="keyword">if</span> (!mux) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 遍历带编码的每帧</span></span><br><span class="line"><span class="keyword">for</span> (size_t i = <span class="number">0</span>; i &lt; framesCount; i++) &#123;</span><br><span class="line">    <span class="built_in">NSData</span> *webpData = [<span class="keyword">self</span> encodedWebpDataWithImage:images[i]]; <span class="comment">// 单帧编码后数据</span></span><br><span class="line">    <span class="keyword">int</span> duration = (<span class="keyword">int</span>)durations[i] * <span class="number">1000</span>; <span class="comment">// 单帧持续时长</span></span><br><span class="line">    <span class="comment">// 设置WebP每帧属性，包括Data，Blend，Disposal等</span></span><br><span class="line">    WebPMuxFrameInfo frame = &#123;.bitstream.bytes = webpData.bytes <span class="comment">//省略&#125;</span></span><br><span class="line">    <span class="keyword">if</span> (WebPMuxPushFrame(mux, &amp;frame, <span class="number">0</span>) != WEBP_MUX_OK) &#123;</span><br><span class="line">        WebPMuxDelete(mux);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置动图本身的属性</span></span><br><span class="line">WebPMuxAnimParams params;</span><br><span class="line">params.bgcolor = <span class="number">0</span>, params.loop_count = loopCount;</span><br><span class="line">WebPMuxSetAnimationParams(mux, &amp;params);</span><br><span class="line"></span><br><span class="line">WebPData outputData;</span><br><span class="line"><span class="comment">// 最后进行编码，拿到输出的二进制</span></span><br><span class="line">WebPMuxError error = WebPMuxAssemble(mux, &amp;outputData);</span><br><span class="line">WebPMuxDelete(mux);</span><br><span class="line"><span class="keyword">if</span> (error != WEBP_MUX_OK) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line">data = [<span class="built_in">NSData</span> dataWithBytes:outputData.bytes length:outputData.size];</span><br><span class="line">WebPDataClear(&amp;outputData);</span><br></pre></td></tr></table></figure>
-
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>第三方编解码其实相对于Image/IO来说，主要难度其实在于需要获取的Bitmap。开发者需要一点基本的图像知识，再者就是要能会用第三方编解码器的接口（一般来说第三方编解码器就是C或者C++写的，与OC和Swift交互也非常方便，至少不用像Java JNI那样调用）。之后只要按照通用的步骤，去编码和解码即可。</p>
-<p>到这里的话，一般的大部分格式的编解码就基本没有问题了。当然，关于进阶的方面，比如图像的编解码性能优化，进阶的图像处理（Bitmap的几何变化，Alpha合成，位数转换等等）这就需要用到更低层的库vImage了，会在之后的系列教程中进行介绍。</p>
-]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
-        <tag>Image</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>iOS平台图片编解码入门教程（vImage篇）</title>
     <url>/2017/11/12/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88vImage%E7%AF%87%EF%BC%89/</url>
     <content><![CDATA[<blockquote>
@@ -3333,6 +3242,97 @@
 <p>但是vImage强大之处远不在这里，里面还包含了类似图像卷积，形态处理等，可以对复杂滤镜进行支持，类似于<a href="https://github.com/BradLarson/GPUImage">GPUImage</a>。这些功能都需要数字图像处理相关知识，在这种教程系列就不会介绍了。</p>
 <p>对于这篇教程的示例代码，其实我写了个非常简单的库，放到GitHub上了：<a href="https://github.com/dreampiggy/vImageProcessor">vImageProcessor</a>，有兴趣的可以去参考一下，希望能够用于自己的图片处理相关框架中。</p>
 <p>由于自己完全是业余兴趣，工作和图像处理基本不相关，并不打算深入学习数字图像处理的知识，因此这个教程可能就会暂时告一段落了。最后，之所以写这篇教程，是因为自己想要参考一下vImage的教程，却发现只会搜出来一堆互相抄袭的内容，而且大部分都是关于图像滤镜的，对于图像处理本身不会太多介绍。我希望这系列教程，能给同样对图像编解码、图像处理有一点兴趣的人，提供一个相对简单且清晰的入门概览吧。</p>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
+        <tag>Image</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS平台图片编解码入门教程（第三方编解码篇）</title>
+    <url>/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/</url>
+    <content><![CDATA[<blockquote>
+<p>这篇教程，是系列教程的第二篇，前篇名为《iOS平台图片编解码入门教程（Image/IO篇）》。这篇主要讲第三方解码器如何在iOS平台上处理（和Image/IO的几大要点一一对应），更会介绍一些基本的Bitmap概念，总结通用的处理方法，毕竟授人以鱼不如授人以渔</p>
+</blockquote>
+<h1 id="第三方编解码"><a href="#第三方编解码" class="headerlink" title="第三方编解码"></a>第三方编解码</h1><p>对于图片编解码来说，Apple自带的Image/IO确实非常的易用，但是对于Image/IO不支持的图像格式就能无能为力了。截止到iOS 11，Image/IO不支持WebP，BPG，对于一些需要依赖WebP的业务就比较麻烦了（WebP的优点就不再介绍了）。不过我们可以自己集成第三方的图片解码器，去支持这些需要的的格式。</p>
+<p>一般来说，我们需要根据自己想要支持的图像格式，选择相对应的编解码器，进行编解码。这里我们以WebP的解码库<a href="https://developers.google.com/speed/webp/docs/api">libwebp</a>为例子，其他解码器需要根据对应解码器的API处理，基本概念类似。</p>
+<h1 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h1><p>不像Image/IO那样封装了整套流程，第三方解码的关键之处，就是在于获取到图像的<a href="https://en.wikipedia.org/wiki/Raster_graphics">Bitmap</a>数据，通常情况就是<a href="https://en.wikipedia.org/wiki/RGBA_color_space">RGBA</a>的矢量表示。</p>
+<p>简单解释一下，Bitmap可以理解为连续排列像素（Pixel）的二维数组，一个像素包括4个通道(Components)的点，每个点的位数叫做色深（常见的32位色，指的就是1个像素有4通道，每个通道8位），而像素的通道排列顺序按照对应的RGBA Mode顺序排列，比如说RGBA8888（大端序），就是这样一串连续的值：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha...&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样的话，在内存中，一般就可以用<code>uint8_t bitmap[width * components * 8][height]</code>来表示。</p>
+<p>有了这样的知识，对照着就能看懂CGImage的BitmapInfo所表示的信息了。</p>
+<p><img src="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Art/colorformatrgba32.gif" alt="Bitmap的表示"></p>
+<h2 id="静态图"><a href="#静态图" class="headerlink" title="静态图"></a>静态图</h2><p>只要Bitmap数据到手，后面的过程其实都大同小异。第三方解码器主要处理图像编码数据到原始Bitmap的解码过程，后续就可以通过固定的方式来得到CGImage或者UIImage，用于上层UI组件的渲染。</p>
+<ol>
+<li>第三方解码器获取图像Bitmap</li>
+<li>通过Bitmap创建CGImage</li>
+<li>CGImage重绘（可选）</li>
+<li>生成上层的UIImage，清理</li>
+</ol>
+<h3 id="1-第三方解码器获取图像Bitmap"><a href="#1-第三方解码器获取图像Bitmap" class="headerlink" title="1. 第三方解码器获取图像Bitmap"></a>1. 第三方解码器获取图像Bitmap</h3><p>根据自己的需要，可以选择对应的编码器，来获取图像Bitmap。这里我们以WebP的解码库<a href="https://developers.google.com/speed/webp/docs/api">libwebp</a>为例子，其他解码器需要根据对应解码器的API处理，基本概念类似。</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSData</span> *data; <span class="comment">// 待解码的图像二进制数据</span></span><br><span class="line"></span><br><span class="line">WebPData webpData;</span><br><span class="line">WebPDataInit(&amp;webpData);</span><br><span class="line">webpData.bytes = data.bytes;</span><br><span class="line">webpData.size = data.length;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化Config，用于存储图像的Bitmap，大小等信息</span></span><br><span class="line">WebPDecoderConfig config;</span><br><span class="line"><span class="keyword">if</span> (!WebPInitDecoderConfig(&amp;config)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断是否能够解码</span></span><br><span class="line"><span class="keyword">if</span> (WebPGetFeatures(webpData.bytes, webpData.size, &amp;config.input) != VP8_STATUS_OK) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设定输出的Bitmap色彩空间，有Alpha通道选择RGBA，没有选择RGB </span></span><br><span class="line"><span class="keyword">bool</span> has_alpha = config.input.has_alpha;</span><br><span class="line">config.output.colorspace = has_alpha ? MODE_rgbA : MODE_RGB;</span><br><span class="line">config.options.use_threads = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 真正开始解码，输出RGBA数据到Config的output中</span></span><br><span class="line"><span class="keyword">if</span> (WebPDecode(webpData.bytes, webpData.size, &amp;config) != VP8_STATUS_OK) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取图像的大小</span></span><br><span class="line"><span class="keyword">int</span> width = config.input.width;</span><br><span class="line"><span class="keyword">int</span> height = config.input.height;</span><br><span class="line"><span class="keyword">if</span> (config.options.use_scaling) &#123;</span><br><span class="line">    width = config.options.scaled_width;</span><br><span class="line">    height = config.options.scaled_height;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//RGBA矢量和对应的大小</span></span><br><span class="line">uint8_t *rgba = config.output.u.RGBA.rgb;</span><br><span class="line">size_t rgbaSize = config.output.u.RGBA.size;</span><br></pre></td></tr></table></figure>
+
+<p>截止到这里，我们基本上调用通过第三方解码库的接口，就完成了获取Bitmap的工作。一般来说，以RGBA来说，最少需要知道以下信息：图像RGBA数组，数组大小，图像宽度、高度、是否含有Alpha通道这几个，以便开始下一步的创建CGImage的过程</p>
+<h3 id="2-通过Bitmap创建CGImage"><a href="#2-通过Bitmap创建CGImage" class="headerlink" title="2. 通过Bitmap创建CGImage"></a>2. 通过Bitmap创建CGImage</h3><p>有了图像的Bitmap数据之后，可以通过<code>CGImageCreate</code>来生成CGImage。对于RGBA的输入，需要的参数基本比较固定，以下代码基本上可以参考来复用。（需要注意，iOS上只支持<a href="https://segmentfault.com/a/1190000002990030">premultiplied-alpha</a>，macOS可以支持非premultiplied-alpha）</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 通过RGBA数组，创建一个DataProvider。最后一个参数是一个函数指针，用来在创建完成后清理内存用的</span></span><br><span class="line"><span class="built_in">CGDataProviderRef</span> provider = <span class="built_in">CGDataProviderCreateWithData</span>(<span class="literal">NULL</span>, rgba, rgbaSize, FreeImageData);</span><br><span class="line"><span class="comment">// 目标色彩空间，我们这里用的就是RGBA</span></span><br><span class="line"><span class="built_in">CGColorSpaceRef</span> colorSpaceRef = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line"><span class="comment">// Bitmap数据，如果含有Alpha通道，设置Premultiplied Alpha。没有就忽略Alpha通道</span></span><br><span class="line"><span class="built_in">CGBitmapInfo</span> bitmapInfo = has_alpha ? kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast : kCGBitmapByteOrder32Big | kCGImageAlphaNoneSkipLast;</span><br><span class="line"><span class="comment">// 通道数，有alpha就是4，没有就是3</span></span><br><span class="line">size_t components = has_alpha ? <span class="number">4</span> : <span class="number">3</span>;</span><br><span class="line"><span class="comment">// 这个是用来做色彩空间变换的指示，如果超出色彩空间，比如P3转RGBA，默认会进行兼容转换</span></span><br><span class="line"><span class="built_in">CGColorRenderingIntent</span> renderingIntent = kCGRenderingIntentDefault;</span><br><span class="line"><span class="comment">// 每行字节数（RGBA数组就是连续排列的多维数组，一行就是宽度*通道数），又叫做stride，因为Bitmap本质就是Pixel(uint_8)的二维数组，需要知道何时分行</span></span><br><span class="line">size_t bytesPerRow = components * width;</span><br><span class="line"><span class="comment">// 创建CGImage，参数分别意义为：宽度，高度，每通道的Bit数（RGBA自然是256，对应8Bit），每行字节数，色彩空间，Bitmap信息，数据Provider，解码数组（这个传NULL即可，其他值的话，会将经过变换比如premultiplied-alpha之后的Bitmap写回这个数组），是否过滤插值（这个一般不用开，可以在专门的图像锐化里面搞），色彩空间变换指示</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = <span class="built_in">CGImageCreate</span>(width, height, <span class="number">8</span>, components * <span class="number">8</span>, bytesPerRow, colorSpaceRef, bitmapInfo, provider, <span class="literal">NULL</span>, <span class="literal">NO</span>, renderingIntent);</span><br><span class="line"><span class="comment">// 别忘了清理DataProvider，此时会调用之前传入的清理函数</span></span><br><span class="line"><span class="built_in">CGDataProviderRelease</span>(provider);</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> FreeImageData(<span class="keyword">void</span> *info, <span class="keyword">const</span> <span class="keyword">void</span> *data, size_t size) &#123;</span><br><span class="line">    free((<span class="keyword">void</span> *)data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-CGImage重绘"><a href="#3-CGImage重绘" class="headerlink" title="3. CGImage重绘"></a>3. CGImage重绘</h3><p>这一步其实是可选的，但是建议都加上这一步骤。虽然我们之前通过RGBA创建了CGImage，但是实际上，CALayer和上层的UIImageView这些渲染的时候，要求的色彩是限定的，不然会有额外的内存和渲染消耗，我们解码出来的rgba的格式可能并不是按照这样的色彩空间排列，因此建议进行一次重绘，即将CGImage重绘到一个CGBitmapContext之上。这个代码比较简单。</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGImageRef</span> imageRef;</span><br><span class="line">size_t canvasWidth = <span class="built_in">CGImageGetWidth</span>(imageRef)</span><br><span class="line">size_t canvasHeight = <span class="built_in">CGImageGetHeight</span>(imageRef)</span><br><span class="line"><span class="built_in">CGBitmapInfo</span> bitmapInfo;</span><br><span class="line"><span class="keyword">if</span> (! has_alpha) &#123;</span><br><span class="line">    bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaNoneSkipLast;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 参数意思很简单，由于没有数据，对于RGBA可以自动计算bytesPerRow</span></span><br><span class="line"><span class="built_in">CGContextRef</span> canvas = <span class="built_in">CGBitmapContextCreate</span>(<span class="literal">NULL</span>, canvasWidth, canvasHeight, <span class="number">8</span>, <span class="number">0</span>, <span class="built_in">CGColorSpaceCreateDeviceRGB</span>(), bitmapInfo);</span><br><span class="line"><span class="keyword">if</span> (!canvas) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = image.CGImage;</span><br><span class="line">size_t width = <span class="built_in">CGImageGetWidth</span>(imageRef);</span><br><span class="line">size_t height = <span class="built_in">CGImageGetHeight</span>(imageRef);</span><br><span class="line"><span class="comment">// 画CGImage上去</span></span><br><span class="line"><span class="built_in">CGContextDrawImage</span>(canvas, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, width, height), imageRef);</span><br><span class="line"><span class="built_in">CGImageRef</span> newImageRef = <span class="built_in">CGBitmapContextCreateImage</span>(canvas);</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-生成上层的UIImage，清理"><a href="#4-生成上层的UIImage，清理" class="headerlink" title="4. 生成上层的UIImage，清理"></a>4. 生成上层的UIImage，清理</h3><p>有了最终的用于显示CGImage，那么我们就可以生成一个UIImage来给UI组件显示了。注意如果需要有特殊的scale，orientation处理（比如说图像可能有额外的EXIF Orientation信息），需要在这一步加上。<br>由于是C接口，需要手动清理内存，除了CGImage相关的，也需要清理第三方库自己的内存分配。对于错误提前返回的清理内存，灵活运用<code>__attribute__((cleanup))</code>，设置一个返回函数前清理的Block，可以减少犯错的可能性</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithCGImage:imageRef scale:<span class="number">1</span> orientation:<span class="built_in">UIImageOrientationUp</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 各种清理，省略</span></span><br><span class="line"><span class="built_in">CGImageRelease</span>(newImageRef);</span><br><span class="line"><span class="built_in">CGContextRelease</span>(canvas);</span><br></pre></td></tr></table></figure>
+
+<h2 id="动态图"><a href="#动态图" class="headerlink" title="动态图"></a>动态图</h2><p>动态图的解码过程，其实很直观的想，我们目标就是需要对所有动图帧，都拿到Bitmap，解码到CGImage和UIImage就行了。这样想的话，其实步骤就比较明确了。</p>
+<p>步骤：</p>
+<ol>
+<li>第三方解码器生成每帧的Bitmap</li>
+<li>重复静态图的2-3</li>
+<li>生成动图UIImage（参考Image/IO）</li>
+</ol>
+<h3 id="1-第三方解码器生成每帧的Bitmap"><a href="#1-第三方解码器生成每帧的Bitmap" class="headerlink" title="1. 第三方解码器生成每帧的Bitmap"></a>1. 第三方解码器生成每帧的Bitmap</h3><p>不同解码器可能对于动图有特殊的解码过程，拿libwebp举例来说，libwebp的动图，需要用到它的demux模块，其他解码器自行参考对应的API。</p>
+<p>同时，这里需要额外介绍一些概念。一般来说，动图格式的话不会直接将每帧原始的Bitmap都编码到文件中，这样得到的文件过于庞大（帧数 * 每帧Bitmap）。因此，会有Dispose Method的方式（可以参考WebP规范<a href="https://developers.google.com/speed/webp/docs/riff_container">Disposal method (D): 1 bit</a>，<a href="https://blog.ibireme.com/2015/11/02/mobile_image_benchmark/">移动端图片格式调研</a>）。简单点来说，对于动图来说，每一帧有一个参考画布，在前一帧画完以后，后一帧可以利用前一帧已画好的图像，仅仅改变前后变化的部分，从而减小整体大小。因此我们创建动图时，需要准备好一个CGBitmapContext当作画布，根据Disposal Method（如果为None，不清空canvas；如果为Background，清空为Background Color，一般就是直接清空成透明）</p>
+<p>有了所有帧的Bitmap后，转成CGImage，UIImage，最后生成动图UIImage，这个在系列前篇已经介绍过了，不再赘述</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)decodeWebP &#123;</span><br><span class="line">	<span class="comment">// 前期准备代码，直接略过，假设已经创建好canvas</span></span><br><span class="line">	WebPDemuxer *demuxer;</span><br><span class="line">	WebPIterator iter;</span><br><span class="line">	<span class="keyword">if</span> (!WebPDemuxGetFrame(demuxer, <span class="number">1</span>, &amp;iter)) &#123;</span><br><span class="line">	    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	    </span><br><span class="line">	<span class="built_in">NSMutableArray</span>&lt;<span class="built_in">UIImage</span> *&gt; *images = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line">	<span class="keyword">double</span> durations[frameCount];</span><br><span class="line">	    </span><br><span class="line">	<span class="keyword">do</span> &#123;</span><br><span class="line">	    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">	        <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> drawnWebpImageWithCanvas:canvas iterator:iter];</span><br><span class="line">	        <span class="keyword">int</span> duration = iter.duration;</span><br><span class="line">	        [images addObject:image];</span><br><span class="line">	        durations[frame_num] = duration;</span><br><span class="line">	    &#125;</span><br><span class="line">	    </span><br><span class="line">	&#125; <span class="keyword">while</span> (WebPDemuxNextFrame(&amp;iter));</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 创建UIImage动图，和Image/IO的相同，这里就直接封装成方法，略过</span></span><br><span class="line">	<span class="built_in">UIImage</span> *animatedImage = [<span class="keyword">self</span> animatedImageWithImages:images durations:durations];</span><br><span class="line">	    </span><br><span class="line">	<span class="comment">// 清理……略</span></span><br><span class="line">	WebPDemuxReleaseIterator(&amp;iter);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">nullable</span> <span class="built_in">UIImage</span> *)drawnWebpImageWithCanvas:(<span class="built_in">CGContextRef</span>)canvas iterator:(WebPIterator)iter &#123;</span><br><span class="line">    <span class="comment">// 这里是调用的前面静态图绘制的方法</span></span><br><span class="line">    <span class="built_in">UIImage</span> *image = [<span class="keyword">self</span> rawWebpImageWithData:iter.fragment];</span><br><span class="line">    <span class="keyword">if</span> (!image) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    size_t canvasWidth = <span class="built_in">CGBitmapContextGetWidth</span>(canvas);</span><br><span class="line">    size_t canvasHeight = <span class="built_in">CGBitmapContextGetHeight</span>(canvas);</span><br><span class="line">    <span class="built_in">CGSize</span> size = <span class="built_in">CGSizeMake</span>(canvasWidth, canvasHeight);</span><br><span class="line">    <span class="built_in">CGFloat</span> tmpX = iter.x_offset;</span><br><span class="line">    <span class="built_in">CGFloat</span> tmpY = size.height - iter.height - iter.y_offset;</span><br><span class="line">    <span class="built_in">CGRect</span> imageRect = <span class="built_in">CGRectMake</span>(tmpX, tmpY, iter.width, iter.height);</span><br><span class="line">    <span class="comment">// Blend</span></span><br><span class="line">    <span class="built_in">BOOL</span> shouldBlend = iter.blend_method == WEBP_MUX_BLEND;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 如果BlendMode开启，该帧应当混合画画布上，否则，应该覆盖，也就是清空指定范围后再重画</span></span><br><span class="line">    <span class="keyword">if</span> (!shouldBlend) &#123;</span><br><span class="line">        <span class="built_in">CGContextClearRect</span>(canvas, imageRect);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">CGContextDrawImage</span>(canvas, imageRect, image.CGImage);</span><br><span class="line">    <span class="built_in">CGImageRef</span> newImageRef = <span class="built_in">CGBitmapContextCreateImage</span>(canvas);</span><br><span class="line">    </span><br><span class="line">    image = [<span class="built_in">UIImage</span> imageWithCGImage:newImageRef];</span><br><span class="line">    <span class="built_in">CGImageRelease</span>(newImageRef);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Dispose如果是Background，表示解码下一帧需要清空画布</span></span><br><span class="line">    <span class="keyword">if</span> (iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND) &#123;</span><br><span class="line">        <span class="built_in">CGContextClearRect</span>(canvas, imageRect);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="渐进式解码"><a href="#渐进式解码" class="headerlink" title="渐进式解码"></a>渐进式解码</h2><p>渐进式解码的概念，在系列前篇中已经介绍过了，一般来说，第三方解码器支持渐进式解码的接口都比较类似，通过提供二进制流不断进行Update，每次能够得到当前解码的部分的Bitmap，最后可以拿到完整的Bitmap。之后只需要参考静态图对应步骤即可。</p>
+<p>这里还是以libwebp的接口为例，libwebp需要使用它的WebPIDecoder接口，来专门进行渐进式解码。注意，libwebp渐进式解码出来的Bitmap不会将未解码的部分自动填空，会保留随机的内存地址置，要么手动清空，要么画的时候仅仅画解码出来的高度部分。</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSData</span> *data; <span class="comment">// 输入的原始图像格式的二进制数据</span></span><br><span class="line"><span class="built_in">UIImage</span> *image;</span><br><span class="line">WebPIDecoder *idec = WebPINewRGB(MODE_rgbA, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (!idec) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里需要更新全部的数据，当然libwebp也有仅仅更新新增数据（非全部）的接口</span></span><br><span class="line">VP8StatusCode status = WebPIUpdate(idec, data.bytes, data.length);</span><br><span class="line"><span class="keyword">if</span> (status != VP8_STATUS_OK &amp;&amp; status != VP8_STATUS_SUSPENDED) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">int</span> width = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> height = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> last_y = <span class="number">0</span>; <span class="comment">// 已经解码出来的Bitmap数据的高度，即对应有效Bitmap的行数</span></span><br><span class="line"><span class="keyword">int</span> stride = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// 然后可以拿到Bitmap数据和相应的图像信息了</span></span><br><span class="line">uint8_t *rgba = WebPIDecGetRGB(_idec, &amp;last_y, &amp;width, &amp;height, &amp;stride);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 和静图解码的过程类似，构造一个DataProvider，略过</span></span><br><span class="line"><span class="built_in">CGDataProviderRef</span> provider;</span><br><span class="line"><span class="built_in">CGBitmapInfo</span> bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;</span><br><span class="line">size_t components = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//这里说一个坑，libwebp不能保证last_y以下的数据是全空的，所以一定注意，仅仅解码last_y范围内的Bitmap</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = <span class="built_in">CGImageCreate</span>(width, last_y, <span class="number">8</span>, components * <span class="number">8</span>, components * width, <span class="built_in">CGColorSpaceCreateDeviceRGB</span>(), bitmapInfo, provider, <span class="literal">NULL</span>, <span class="literal">NO</span>, kCGRenderingIntentDefault);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为了能得到完整的图片高度，创建一个canvas来画图，不画的部分保持透明状态即可</span></span><br><span class="line"><span class="built_in">CGContextRef</span> canvas = <span class="built_in">CGBitmapContextCreate</span>(<span class="literal">NULL</span>, width, height, <span class="number">8</span>, <span class="number">0</span>, <span class="built_in">CGColorSpaceCreateDeviceRGB</span>(), bitmapInfo);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 仅仅画last_y高度的图像（不是全部），注意CoreGraphics的坐标系统是右手系的，与UIKit的坐标相反</span></span><br><span class="line"><span class="built_in">CGContextDrawImage</span>(canvas, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, height - last_y, width, last_y), imageRef);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 拿到CGImage</span></span><br><span class="line"><span class="built_in">CGImageRef</span> newImageRef = <span class="built_in">CGBitmapContextCreateImage</span>(canvas);</span><br><span class="line"><span class="comment">// 创建UIImage</span></span><br><span class="line">image = [[<span class="built_in">UIImage</span> alloc] initWithCGImage:newImageRef];</span><br><span class="line"><span class="comment">// 各种清理，省略</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h1><p>编码过程其实比解码过程要简单得多，因为实际上，我们可以通过自带的接口，直接拿到当前UIImage的Bitmap数据，因此只要将Bitmap交给第三方编码库来进行编码，最后输出数据即可。</p>
+<h2 id="静态图-1"><a href="#静态图-1" class="headerlink" title="静态图"></a>静态图</h2><p>静态图的过程其实就可以直接分为两步：</p>
+<ol>
+<li>UIImage获取Bitmap</li>
+<li>调用编码器进行编码</li>
+</ol>
+<h3 id="1-UIImage获取Bitmap"><a href="#1-UIImage获取Bitmap" class="headerlink" title="1. UIImage获取Bitmap"></a>1. UIImage获取Bitmap</h3><p>UIImage本身能够直接通过方法拿到对应的CGImage，这样只需要调用<code>CGImageGetDataProvider</code>就可以拿到对应的Bitmap数据的DataProvider了，直接上代码吧。</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">UIImage</span> *image;</span><br><span class="line"><span class="built_in">NSData</span> *webpData; <span class="comment">// Bitmap数据的容器</span></span><br><span class="line"><span class="built_in">CGImageRef</span> imageRef = image.CGImage;</span><br><span class="line">    </span><br><span class="line">size_t width = <span class="built_in">CGImageGetWidth</span>(imageRef);</span><br><span class="line">size_t height = <span class="built_in">CGImageGetHeight</span>(imageRef);    </span><br><span class="line">size_t bytesPerRow = <span class="built_in">CGImageGetBytesPerRow</span>(imageRef); <span class="comment">// 大部分编码器需要知道bytesPerRow，或者叫做stride</span></span><br><span class="line"><span class="built_in">CGDataProviderRef</span> dataProvider = <span class="built_in">CGImageGetDataProvider</span>(imageRef);</span><br><span class="line"><span class="built_in">CFDataRef</span> dataRef = <span class="built_in">CGDataProviderCopyData</span>(dataProvider);</span><br><span class="line">uint8_t *rgba = (uint8_t *)<span class="built_in">CFDataGetBytePtr</span>(dataRef);</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-调用编码器进行编码"><a href="#2-调用编码器进行编码" class="headerlink" title="2. 调用编码器进行编码"></a>2. 调用编码器进行编码</h3><p>我们还是以libwebp来对WebP进行编码，libwebp对于静态图片的编码非常简单（动态图片需要调用另一套mux的API，在动图章节讲）</p>
+<p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">uint8_t *data = <span class="literal">NULL</span>; <span class="comment">//编码输出的二进制数据</span></span><br><span class="line"><span class="keyword">float</span> quality = <span class="number">100.0</span>; <span class="comment">// libwebp可以选择编码质量，影响输出文件大小和编码速度</span></span><br><span class="line">size_t size = WebPEncodeRGBA(rgba, (<span class="keyword">int</span>)width, (<span class="keyword">int</span>)height, (<span class="keyword">int</span>)bytesPerRow, quality, &amp;data);</span><br><span class="line"><span class="built_in">CFRelease</span>(dataRef); <span class="comment">// 编码后清理Bitmap数据</span></span><br><span class="line">rgba = <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> (size) &#123;</span><br><span class="line">    <span class="comment">// success</span></span><br><span class="line">    webpData = [<span class="built_in">NSData</span> dataWithBytes:data length:size];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (data) &#123;</span><br><span class="line">    WebPFree(data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="动态图-1"><a href="#动态图-1" class="headerlink" title="动态图"></a>动态图</h2><p>对于动态图来说，也就是将多帧的Bitmap输入到编码器即可。对于libwebp的动态图编码，需要利用到它的mux模块，它能够将多个编码成WebP的二进制流，最后mux合并一次，最终得到了动态WebP。因此我们需要利用之前的静态图编码的步骤，只需要依次遍历取图并编码，最后使用mux处理即可。</p>
+<p>步骤：</p>
+<ol>
+<li>遍历每帧Bitmap，编码</li>
+</ol>
+<h3 id="1-遍历每帧Bitmap，编码"><a href="#1-遍历每帧Bitmap，编码" class="headerlink" title="1. 遍历每帧Bitmap，编码"></a>1. 遍历每帧Bitmap，编码</h3><p>示例代码：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSData</span> *data;</span><br><span class="line"><span class="built_in">NSArray</span>&lt;<span class="built_in">UIImgae</span> *&gt; *images;</span><br><span class="line"><span class="keyword">double</span> durations[frameCount];</span><br><span class="line"><span class="keyword">int</span> loopCount;</span><br><span class="line"><span class="comment">// 创建mux</span></span><br><span class="line">WebPMux *mux = WebPMuxNew();</span><br><span class="line"><span class="keyword">if</span> (!mux) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 遍历带编码的每帧</span></span><br><span class="line"><span class="keyword">for</span> (size_t i = <span class="number">0</span>; i &lt; framesCount; i++) &#123;</span><br><span class="line">    <span class="built_in">NSData</span> *webpData = [<span class="keyword">self</span> encodedWebpDataWithImage:images[i]]; <span class="comment">// 单帧编码后数据</span></span><br><span class="line">    <span class="keyword">int</span> duration = (<span class="keyword">int</span>)durations[i] * <span class="number">1000</span>; <span class="comment">// 单帧持续时长</span></span><br><span class="line">    <span class="comment">// 设置WebP每帧属性，包括Data，Blend，Disposal等</span></span><br><span class="line">    WebPMuxFrameInfo frame = &#123;.bitstream.bytes = webpData.bytes <span class="comment">//省略&#125;</span></span><br><span class="line">    <span class="keyword">if</span> (WebPMuxPushFrame(mux, &amp;frame, <span class="number">0</span>) != WEBP_MUX_OK) &#123;</span><br><span class="line">        WebPMuxDelete(mux);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置动图本身的属性</span></span><br><span class="line">WebPMuxAnimParams params;</span><br><span class="line">params.bgcolor = <span class="number">0</span>, params.loop_count = loopCount;</span><br><span class="line">WebPMuxSetAnimationParams(mux, &amp;params);</span><br><span class="line"></span><br><span class="line">WebPData outputData;</span><br><span class="line"><span class="comment">// 最后进行编码，拿到输出的二进制</span></span><br><span class="line">WebPMuxError error = WebPMuxAssemble(mux, &amp;outputData);</span><br><span class="line">WebPMuxDelete(mux);</span><br><span class="line"><span class="keyword">if</span> (error != WEBP_MUX_OK) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line">data = [<span class="built_in">NSData</span> dataWithBytes:outputData.bytes length:outputData.size];</span><br><span class="line">WebPDataClear(&amp;outputData);</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>第三方编解码其实相对于Image/IO来说，主要难度其实在于需要获取的Bitmap。开发者需要一点基本的图像知识，再者就是要能会用第三方编解码器的接口（一般来说第三方编解码器就是C或者C++写的，与OC和Swift交互也非常方便，至少不用像Java JNI那样调用）。之后只要按照通用的步骤，去编码和解码即可。</p>
+<p>到这里的话，一般的大部分格式的编解码就基本没有问题了。当然，关于进阶的方面，比如图像的编解码性能优化，进阶的图像处理（Bitmap的几何变化，Alpha合成，位数转换等等）这就需要用到更低层的库vImage了，会在之后的系列教程中进行介绍。</p>
 ]]></content>
       <categories>
         <category>iOS</category>
