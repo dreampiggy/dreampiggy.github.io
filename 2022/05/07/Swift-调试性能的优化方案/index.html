@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="声明此篇文章预计5月中，发布于微信公众号《字节跳动终端技术》，原作者就是我，版权所有。在个人博客这里转发去掉了招聘相关的文案。如果需要也可以进行进一步交流（邮件或者GitHub）提供试用版工具链。 公众号链接： 背景通常来说，大型Swift项目常含有大量混编（Objc&#x2F;C&#x2F;C++甚至是Rust）代码，含有超过100个以上的Swift Module，并可能同时包含二进制部分和源码部分。而这种大型项目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift 调试性能的优化方案">
+<meta property="og:url" content="http://dreampiggy.com/2022/05/07/Swift-%E8%B0%83%E8%AF%95%E6%80%A7%E8%83%BD%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="声明此篇文章预计5月中，发布于微信公众号《字节跳动终端技术》，原作者就是我，版权所有。在个人博客这里转发去掉了招聘相关的文案。如果需要也可以进行进一步交流（邮件或者GitHub）提供试用版工具链。 公众号链接： 背景通常来说，大型Swift项目常含有大量混编（Objc&#x2F;C&#x2F;C++甚至是Rust）代码，含有超过100个以上的Swift Module，并可能同时包含二进制部分和源码部分。而这种大型项目">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mp.weixin.qq.com/mp/qrcode?scene=10000005&size=102&__biz=Mzg2NTYyMjYxNg==&mid=2247486840&idx=1&sn=43b8a41875f86f7b62356ff2a3c064ab&send_time=">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143337884.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143337952.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338006.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338059.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338079.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338123.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338166.gif">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338184.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338242.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338287.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338331.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338391.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338450.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338511.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338574.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338656.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338723.png">
+<meta property="article:published_time" content="2022-05-07T09:13:43.000Z">
+<meta property="article:modified_time" content="2022-05-07T09:21:32.420Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="swift">
+<meta property="article:tag" content="lldb">
+<meta property="article:tag" content="llvm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mp.weixin.qq.com/mp/qrcode?scene=10000005&size=102&__biz=Mzg2NTYyMjYxNg==&mid=2247486840&idx=1&sn=43b8a41875f86f7b62356ff2a3c064ab&send_time=">
+
+<link rel="canonical" href="http://dreampiggy.com/2022/05/07/Swift-%E8%B0%83%E8%AF%95%E6%80%A7%E8%83%BD%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Swift 调试性能的优化方案 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2022/05/07/Swift-%E8%B0%83%E8%AF%95%E6%80%A7%E8%83%BD%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Swift 调试性能的优化方案
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-07 17:13:43 / 修改时间：17:21:32" itemprop="dateCreated datePublished" datetime="2022-05-07T17:13:43+08:00">2022-05-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h1><p>此篇文章预计5月中，发布于微信公众号《字节跳动终端技术》，原作者就是我，版权所有。在个人博客这里转发去掉了招聘相关的文案。如果需要也可以进行进一步交流（邮件或者GitHub）提供试用版工具链。</p>
+<p>公众号链接：<br><img src="https://mp.weixin.qq.com/mp/qrcode?scene=10000005&size=102&__biz=Mzg2NTYyMjYxNg==&mid=2247486840&idx=1&sn=43b8a41875f86f7b62356ff2a3c064ab&send_time="></p>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a><strong>背景</strong></h1><p>通常来说，大型Swift项目常含有大量混编（Objc/C/C++甚至是Rust）代码，含有超过100个以上的Swift Module，并可能同时包含二进制部分和源码部分。而这种大型项目在目前的Xcode 13体验下非常不好，经常存在类似“断点陷入后变量面板卡顿转菊花”、“显示变量失效”等问题。而且一直存在于多个历史Xcode版本。</p>
+<p>图1：Xcode变量区显示卡顿转菊花，测试使用Xcode 13.3和下文提到的复现Demo</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143337884.png"></p>
+<p>这部分Apple Team迟迟不优化的原因在于，Apple公司的内部项目和外部项目开发模式的巨大差异。Apple内部产品，如系统应用，系统库，会直接内嵌到iOS固件中，并直接受益于dyld shared cache（参考<a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/wwdc2017/413/">WWDC 2017-App Startup Time: Past, Present, and Future</a>[1]）来提升加载速度。这意味着他们通常会将一个App，拆分为一个薄的主二进制，搭载以相当多的动态链接库（Dynamic Framework），以及插件（PlugIn）的模式来进行开发。</p>
+<p>举个例子，我们以iOS的消息App（MobileSMS.app）为例子，使用iOS 15.4模拟器测试。可以看到其主二进制大小仅有844KB（x86_64架构）。通过<code>otool -L</code>查询链接，可以看到总计动态链接了22个动态链接库，其中有9个是非公开的，大都是支撑消息App的功能库，这些库占据了大量存储。</p>
+<p>图2：消息App的动态链接库列表</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143337952.png"></p>
+<p>而iOS平台的第三方开发者的工程，为了追求更快的冷启动时长，由于没有了dyld shared cache的优化（dyld 3提出的启动闭包只能优化非冷启动），很多项目会使用尽量少的动态链接库。加之开源社区的CocoaPods，Carthage，SwiftPM等包管理器的盛行导致的Swift Module爆炸增长，预二进制的Framework/XCFramework包装格式的滥用，加之闭源三方公司的SDK的集成，最终形成了一个无论是体积还是符号量都非常巨大的主二进制，以及相当长的Search Paths。</p>
+<p>以公司内飞书应用的内测版为例子，在使用Debug，Onone模式编译，不剥离（Strip）任何符号情况下，可以看到其主二进制大小为1.1GB，动态链接库数量为105，但是仅包含Apple的系统库和Swift标准库。业务代码以静态链接库集成。</p>
+<p>图3：公司飞书应用的动态链接库列表</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338006.png"></p>
+<p>上述这两种不同的工程结构，带来了非常显著的调试体验的差异，并且Apple公司近年来的Xcode Team和Debugger Team优化，并没有完全考虑部分第三方开发者常使用的，厚主二进制下的工程结构。</p>
+<p>PS：理论上可以通过业务的工程结构的改造，在本地开发模式下，使用一个动态链接库包裹基础静态链接库的方式，减少主二进制大小（也会减少后续提到的DWARF搜索的耗时），但是大型项目推进工程结构的改造会是一个非常漫长的过程。</p>
+<p>图4：一种减少主二进制大小的工程结构设计</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338059.jpg"></p>
+<h1 id="解决方案：自定义LLDB工具链"><a href="#解决方案：自定义LLDB工具链" class="headerlink" title="解决方案：自定义LLDB工具链"></a>解决方案：自定义LLDB工具链</h1><p>经过调研，我们发现业界常见做法，无外乎这几种思路：</p>
+<ol>
+<li> 工程改造：缩减Swift Module/Search Path数量：可行，但是收益较低，且不可能无限制缩减</li>
+<li> 通过LLDB一些开关：可行，但是内网测试下依旧达不到理想的调试状态</li>
+</ol>
+<p>我们致力于在字节跳动的移动端提供基础能力支持，因此提出了一套解决方案，不依赖业务工程结构的改造，而是从LLDB工具链上入手，提供定向的调试性能优化。</p>
+<p>调研期间也确认到，借助自定义LLDB工具链，集成到Xcode IDE是完全可行的，包括iPhone模拟器、真机以及Mac应用。</p>
+<p>图5：自定义LLDB工具链的文件结构，系列后续文章会单独讲解，这里不展开</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338079.png"></p>
+<p>而LLVM/LLDB本身的工具链代码，在Apple的开源范畴之内（仓库地址：<a target="_blank" rel="noopener" href="https://github.com/apple/llvm-project%EF%BC%89">https://github.com/apple/llvm-project）</a> 通过严格追踪跟进上游的发布历史，分支模型，能够尽可能地保证工具链的代码和功能的一致性。</p>
+<h1 id="实际收益"><a href="#实际收益" class="headerlink" title="实际收益"></a>实际收益</h1><p>经过后文提到的一系列优化手段，以公司内大型项目飞书测试，编译器采取Swift 5.6，Xcode选择13.3为例，对比调试性能：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>Xcode 13.3</th>
+<th>自定义LLDB</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>v耗时</td>
+<td>2分钟</td>
+<td>40秒</td>
+</tr>
+<tr>
+<td>po耗时</td>
+<td>1分钟</td>
+<td>5秒</td>
+</tr>
+<tr>
+<td>p耗时</td>
+<td>20秒</td>
+<td>5秒</td>
+</tr>
+</tbody></table>
+<p>图6：切换自定义LLDB工具链</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338123.png"></p>
+<p>图7：调试优化演示，使用Xcode 13.3自定义LLDB，运行文中提到的耗时Demo（原po耗时约1分钟）：</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338166.gif"></p>
+<h1 id="简述po-p-v的工作流程"><a href="#简述po-p-v的工作流程" class="headerlink" title="简述po/p/v的工作流程"></a>简述po/p/v的工作流程</h1><p>在介绍我们自定义LLDB工具链的优化之前，首先来简述一下LLDB的核心调试场景的工作流程，方便后续理解优化的技术点。</p>
+<p>我们一期的目的是主要优化核心的调试场景，包括最常见的“断点陷入到Xcode左侧变量区展示完毕”（v），“点击Show Description”（po），“勾选Show Types”（p）。这些对应LLDB原生的下面三个交互命令。</p>
+<p>图8：LLDB的交互命令</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338184.png"></p>
+<p>Apple在<a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/wwdc2019/429/">WWDC 2019-LLDB: Beyond “po”</a>[2]中，进行了较为详细的介绍，这里我们进一步详细解释其部分工作流程，为后文的具体优化技术点提供参考。建议可以搭配视频一并学习。</p>
+<h2 id="po-expr"><a href="#po-expr" class="headerlink" title="po [expr]"></a>po [expr]</h2><p>po是命令<code>expression --object-description -- [expr]</code>的alias</p>
+<p>图9：po的流程</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338242.png"></p>
+<ol>
+<li> 使用Swift编译器编译<code>result = expr</code>得到IR</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 精简版，实际较为复杂，源代码搜@LLDBDebuggerFunction关键字</span><br><span class="line">func __lldb_expr() &#123;</span><br><span class="line">  __lldb_result = expr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>执行IR代码</p>
+<ol>
+<li> 在支持JIT的平台上使用JIT，不支持则使用LLVM的IRInterpreter</li>
+</ol>
+</li>
+<li><p> 获取执行结果</p>
+</li>
+<li><p>使用Swift编译器编译<code>result.description</code></p>
+<ol>
+<li> 实际上LLDB调用的是Swift标准库的私有方法：<a target="_blank" rel="noopener" href="https://github.com/apple/swift/blob/release/5.6/stdlib/public/core/DebuggerSupport.swift#L242">_DebuggerSupport.stringForPrintObject</a>[3]</li>
+</ol>
+</li>
+<li><p> 执行IR代码</p>
+</li>
+<li><p> 获取执行结果字符串</p>
+</li>
+<li><p> 对得到的字符串进行格式化输出</p>
+</li>
+</ol>
+<h2 id="p-expr"><a href="#p-expr" class="headerlink" title="p [expr]"></a>p [expr]</h2><p>p是命令<code>expression -- [expr]</code>的alias</p>
+<p>图10：p的流程</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338287.png"></p>
+<ol>
+<li><p> 使用Swift编译器编译<code>result = expr</code>得到IR</p>
+</li>
+<li><p> 执行IR代码</p>
+</li>
+<li><p> 获取执行结果</p>
+</li>
+<li><p>对<code>result</code>进行Dynamic Type Resolve</p>
+<ol>
+<li> 利用Swift编译器提供的remoteAST，拥有源码的AST之后，会根据内存布局直接读取对象细节</li>
+<li> 也会利用Swift Reflection，即Mirror来进行读取，和remoteAST二选一</li>
+</ol>
+</li>
+<li><p> 对得到的对象细节进行格式化输出</p>
+</li>
+</ol>
+<p>对比下来可以看到，po和p的最大不同点，在于表达式执行的结果，如何获取变量的描述这一点上。po会直接利用运行时的object description（支持<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/customdebugstringconvertible">CustomDebugStringConvertible</a>[4]协议）拿到的字符串直接展示，并不真正了解对象细节。</p>
+<p>图11：获取Object Description的实现细节（SwiftLanguageRuntime.cpp）</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338331.png"></p>
+<p>而p使用了Swift Runtime（Objc的话就是ISA，Method List那些，资料很多不赘述），拿到了对象细节（支持<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/customreflectable">CustomReflectable</a>[5]协议），进行按层遍历打印。不过值得注意的是，Swift Runtime依赖remoteAST（需要源码AST，即swiftmodule）或者Reflection（可能被Strip掉，并不一定有），意味着它强绑定了，编译时的Swift版本和调试时的LLDB的版本（牢记这一点）。并不像Objc那样有一个成熟稳定运行时，不依赖编译器也能动态得知任意的对象细节。</p>
+<p>图12：Swift Dynamic Type Resolve的实现（SwiftLanguageRuntimeDynamicTypeResolution.cpp）</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338391.png"></p>
+<h2 id="v-expr"><a href="#v-expr" class="headerlink" title="v [expr]"></a>v [expr]</h2><p>v是命令<code>frame variable [expr]</code>的alias</p>
+<p>图13：v的流程</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338450.png"></p>
+<ol>
+<li> 获取程序运行状态（寄存器/内存等）</li>
+<li> 递归开始</li>
+<li> 解释<code>expr</code>的每一层访问（-&gt;或者.），得知当前变量的内存布局</li>
+<li> 对当前变量进行Dynamic Type Resolve</li>
+<li> 递归结束</li>
+<li> 对得到的对象细节格式化输出</li>
+</ol>
+<p>v的特点在于全程没有注入任何代码到程序中，也就是它是理论无副作用的。它的expr只支持访问对象的表达式（-&gt;/.等），不支持函数调用，并不是真正的C++/C/OC/Swift语法。</p>
+<h1 id="优化v"><a href="#优化v" class="headerlink" title="优化v"></a>优化v</h1><p>下述所有说明基于发稿日的Swift 5.6（优化思路也适配Swift 5.5）说明优化方案，后续不排除Apple或者LLVM上游进行其他优化替代，具有一定时效性。</p>
+<h2 id="暂时-关闭swift-typeref-system"><a href="#暂时-关闭swift-typeref-system" class="headerlink" title="(暂时)关闭swift-typeref-system"></a>(暂时)关闭swift-typeref-system</h2><ul>
+<li>关闭方式</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">settings set symbols.use-swift-typeref-typesystem false</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>开关说明</li>
+</ul>
+<blockquote>
+<p>Prefer Swift Remote Mirrors over Remote AST</p>
+</blockquote>
+<p>这里的remoteAST和Swift Mirror的概念，上文介绍过，不同方案会影响Swift的Dynamic Type Resolve的性能。</p>
+<p>经过实测，关闭之后，内网项目的复杂场景下，断点陷入耗时从原本的2分20秒，缩减为1分钟。这部分开关，目前已经通过Xcode自定义的<a target="_blank" rel="noopener" href="https://lldb.llvm.org/man/lldb.html#configuration-files">LLDBInit</a>[6]文件，在多个项目中设置。</p>
+<p>注：和Apple同事沟通后，swift-typeref-typesystem是团队20年提出的新方案，目前有一些已知的性能问题，但是对Swift变量和类型展示有更好的兼容性。关闭以后会导致诸如，typealias的变量在p/v时展示会有差异，比如<code>TimeInterval</code>（alias为<code>__C.Double</code>）等。待Apple后续优化之后，建议恢复开启状态。</p>
+<h2 id="修复静态链接库错误地使用dlopen-Fixed-in-Swift-5-7"><a href="#修复静态链接库错误地使用dlopen-Fixed-in-Swift-5-7" class="headerlink" title="修复静态链接库错误地使用dlopen(Fixed in Swift 5.7)"></a>修复静态链接库错误地使用dlopen(Fixed in Swift 5.7)</h2><p>简述问题：LLDB在<code>SwiftASTContext::LoadOneModule</code>时假设所有framework包装格式都是动态链接库，忽略了静态链接库的可能性。</p>
+<p>在调试测试工程中，我们追踪日志发现，LLDB会尝试使用dlopen去加载静态链接库（Static Framework），这是很不符合预期的一点，因为对一个静态链接库进行dlopen是必定失败的，如日志所示（使用下文提到的复现Demo）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SwiftASTContextForExpressions::LoadOneModule() -- Couldn&#x27;t import module AAStub: Failed to load linked library AAStub of module AAStub - errors:</span><br><span class="line">Looking for &quot;@rpath/AAStub.framework/AAStub&quot;, error: dlopen failed for unknown reasons.</span><br><span class="line">Failed to find framework for &quot;AAStub&quot; looking along paths:</span><br><span class="line">// ...</span><br></pre></td></tr></table></figure>
+
+<p>查看代码阅读发现，这里触发的时机是，LLDB在执行Swift变量Dynamic Type Resolve之前，因为需要激活remoteAST，需要加载源码对应的swiftmodule到内存中。</p>
+<p>swiftmodule是编译器序列化的包含了AST的<a target="_blank" rel="noopener" href="https://llvm.org/docs/BitCodeFormat.html">LLVM Bitcode</a>[7]。除了AST之外，还有很多Metadata，如编译器版本，编译时刻的参数，Search Paths等（通过编译器参数<code>-serialize-debugging-options</code>记录）。另外，对Swift代码中出现的import语句，也会记录一条加载模块依赖。而主二进制在编译时会记录所有子模块的递归依赖。</p>
+<p>LLDB在进行加载模块依赖时，会根据编译器得到的Search Paths，拼接上当前的Module Name，然后遍历进行dlopen。涉及较高的时间开销：N个Module，M个Search Path，复杂度O(NxM)（内网项目为400x1000数量级）。而在执行前。并未检测当前被加载的路径是否真正是一个动态链接库，最终产生了这个错误的开销。</p>
+<ul>
+<li>修复方案</li>
+</ul>
+<p>我们的修复方案一期是进行了一次File Signature判定，只对动态链接库进行dlopen，在内部工程测试（约总计1000个Framework Search Path，400个Module）情况下，一举可以减少大约1分钟的额外开销。</p>
+<ul>
+<li>复现Demo</li>
+</ul>
+<p>仓库地址：<a target="_blank" rel="noopener" href="https://github.com/PRESIDENT810/slowDebugTest">https://github.com/PRESIDENT810/slowDebugTest</a></p>
+<p>这个Demo构造了100个Swift Static Framework，每个Module有100个编译单元，以此模拟复杂场景。</p>
+<p>后文的一些测试数据优化，会反复提及这个Demo对比。</p>
+<p>注：和Apple的同事沟通后，发现可以在上层进行来源区分：只有通过<code>expression import UIKit</code>这种用户交互输入的Module会进行dlopen检查，以支持调试期间注入外部动态库；其他情况统一不执行，因为这些模块的符号必然已经在当前被调试进程的内存中了。</p>
+<p>Apple修复的PR：<a target="_blank" rel="noopener" href="https://github.com/apple/llvm-project/pull/4077">https://github.com/apple/llvm-project/pull/4077</a> 预计在Swift 5.7上车</p>
+<h1 id="优化po-p"><a href="#优化po-p" class="headerlink" title="优化po/p"></a>优化po/p</h1><h2 id="暂时-关闭swift-dwarfimporter"><a href="#暂时-关闭swift-dwarfimporter" class="headerlink" title="(暂时)关闭swift-dwarfimporter"></a>(暂时)关闭swift-dwarfimporter</h2><ul>
+<li>关闭方式</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">settings set symbols.use-swift-dwarfimporter false</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>开关说明</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Reconstruct Clang module dependencies from DWARF when debugging Swift code</span><br></pre></td></tr></table></figure>
+
+<p>这个开关的作用是，在开启情况下，Swift编译器遇到clang type（如C/C++/Objc）导入到Swift时，允许通过一个自定义代理实现，来从DWARF中读取类型信息，而不是借助编译器使用<a target="_blank" rel="noopener" href="https://clang.llvm.org/docs/Modules.html#id20">clang precompiled module</a>[8]，即pcm，以及ClangImporter导入桥接类型。</p>
+<p>切换以后可能部分clang type的类型解析并不会很精确（比如Apple系统库的那种overlay framework，用原生Swift类型覆盖了同名C类型），但是能稍微加速解析速度，这是因为clang pcm和DWARF的解析实现差异。</p>
+<p>禁用之后，对内网测试工程部分场景有正向提升约10秒，如果遇到问题建议保持默认的true。</p>
+<h2 id="优化External-Module的查找路径逻辑"><a href="#优化External-Module的查找路径逻辑" class="headerlink" title="优化External Module的查找路径逻辑"></a>优化External Module的查找路径逻辑</h2><p>在混编工程中，Swift Module依赖一个C/OC的clang module是非常常见的事情。在这种情况下，LLDB需要同时使用编译器，加载到对应的clang module到内存中，用于进行C/OC Type到Swift Type的导入逻辑。</p>
+<p>但是实际情况下，我们可能有一些Swift混编产物，是预二进制的产物，在非当前机器中进行的编译。这种情况下，对应编译器记录的的External Module的路径很可能是在当前机器找不到的。</p>
+<p>LLDB的原始逻辑，会针对每一个可能的路径，分别由它的4种ObjectFile插件（为了支持不同的二进制格式）依次进行判断。每个ObjectFile插件会各自通过文件IO读取和解析Header。这是非常大的开销。</p>
+<ul>
+<li>优化方案</li>
+</ul>
+<p>我们内网采取的策略比较激进，除了直接利用fstat进行前置的判断（而不是分别交给4个ObjectFile插件总计判断4次）外，还针对Mac机器的路径进行了一些特殊路径匹配规则，这里举个例子：</p>
+<p>比如说，Mac电脑的编译产物绝对路径，一定是以<code>/Users/$&#123;whoami&#125;</code>开头，所以我们可以先尝试获取当前调试器进程的<code>uname</code>（非常快且LLDB进程周期内不会变化），如果不匹配，说明编译产物一定不是在当前设备进行上产出的，直接跳过。</p>
+<p>图14：特殊匹配规则，直接避免文件IO判定存在与否</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338511.png"></p>
+<p>通过这一项优化，在内网项目测试下（1000多个External Module路径，其中800+无效路径），可以减少首次变量显示v耗时约30秒。</p>
+<h2 id="增加共享的symbols缓存"><a href="#增加共享的symbols缓存" class="headerlink" title="增加共享的symbols缓存"></a>增加共享的symbols缓存</h2><p>我们使用内网项目进行性能Profile时，发现<code>Module::FindTypes</code>和<code>SymbolFile::FindTypes</code>函数耗时调用占了主要的大头。这个函数的功能是通过DWARF（记录于Mach-O结构中），查找一个符号字符串是否包含在内。耗时主要是在需要进行一次性DWARF的解析，以及每次查找的section遍历。</p>
+<p>LLDB本身是存在一个<code>searched_symbol_files</code>参数用来缓存，但是问题在于，这份缓存并不是存在于一个全局共享池中，而是在每个具体调用处的临时堆栈上。一旦调用方结束了调用，这份缓存会被直接丢弃。</p>
+<p>图15：symbols缓存参数</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338574.png"></p>
+<ul>
+<li>优化方案</li>
+</ul>
+<p>我们在这里引入了一个共享的symbols缓存，保存了这份访问记录来避免多个不同调用方依然搜索到同一个符号，以空间换时间。实现方案比较简单。</p>
+<p>内网工程实测，下来可以减少10-20秒的第一次访问开销，而每个symbol缓存占据字节约为8KB，一次调试周期约10万个符号占据800MB，对于Mac设备这种有虚拟内存的设备来说，内存压力不算很大。另外，也提供了关闭的开关。</p>
+<h2 id="优化不必要的同名symbols查找"><a href="#优化不必要的同名symbols查找" class="headerlink" title="优化不必要的同名symbols查找"></a>优化不必要的同名symbols查找</h2><p>另一项优化<code>Module::FindTypes</code>和<code>SymbolFile::FindTypes</code>函数开销的方案是，原始的这两个函数会返回所有匹配到的列表，原因在于C++/Rust/Swift等支持重载的语言，会使用naming mangle来区分同一个函数名的不同类型的变种。这些符号名称会以同样的demangled name，记录到DWARF中。</p>
+<p>但是调用方可能会关心同名类型的具体的变种（甚至包括是const还是非const），甚至有很多地方只取了第一个符号，搜索全部的Symbol File其实是一种浪费（在Swift 5.6版本中找到累积约10处调用只取了第一个）</p>
+<ul>
+<li>优化方案</li>
+</ul>
+<p>我们对上述<code>Module::FindTypes</code>和<code>SymbolFile::FindTypes</code>函数，提供了一个新的参数<code>match_callback</code>，用于提前过滤所需要的具体类型。类似于很多语言标准库提供sort函数中的stop参数。这样，如果只需要第一个找到的符号就可以提前终止搜索，而需要全部符号列表不受影响。</p>
+<p>图16：symbols查找筛选参数</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338656.png"></p>
+<p>内网项目测试这项优化以后，可以减少C++/C/OC类型导入到Swift类型这种场景下，约5-10秒的第一次查找耗时。</p>
+<h1 id="其他优化"><a href="#其他优化" class="headerlink" title="其他优化"></a>其他优化</h1><h2 id="定向优化Dynamic-Type-Resolve的一些特例"><a href="#定向优化Dynamic-Type-Resolve的一些特例" class="headerlink" title="定向优化Dynamic Type Resolve的一些特例"></a>定向优化Dynamic Type Resolve的一些特例</h2><p>在实际项目测试中，我们发现，Dynamic Type Resolve是有一些特例可以进行针对性的shortcut优化，剔除无用开销的。这部分优化仅对特定代码场景有效，并不通用。这里仅列举部分思路</p>
+<ul>
+<li>优化Core Foundation类型的Dynamic Type Resolve</li>
+</ul>
+<p>Core Foundation类型（后文以CF类型指代），是Apple的诸多底层系统库的支撑。Objc的Founadtion的NS前缀的很多类型，也会<a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html">Toll-Free Bridging</a>[9]到CF类型上。而Swift也针对部分常用的CF类型支持了Briding。</p>
+<p>CF类型的特点是，它内存布局类似Objc的Class ISA，但是又不是真正的Objc Class或者Swift imported Type，ISA固定是<code>__NSCFType</code>。</p>
+<p>而目前LLDB遇到在Swift堆栈中出现的CF类型，依旧把它当作标准的clang type进行C++/C那一套解析，还会递归寻找父类ivar，比较费时。我们可以利用这一特点提前判定而跳过无用的父类查找。</p>
+<p>图17：筛选CF类型</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-05-07/16519143338723.png"></p>
+<p>这一项优化在特定场景（如使用CoreText和CoreVideo库和Swift混编）下，可以优化10-20秒的每次Dynamic Type Resolve耗时。</p>
+<h1 id="接下来"><a href="#接下来" class="headerlink" title="接下来"></a>接下来</h1><p>我们在之后会有一系列的相关话题，包括：</p>
+<ul>
+<li>Xcode 13.3导致部分项目po提示Couldn’t realize type of self，有什么解决办法？</li>
+<li>如何极速构建，分发自定义LLVM/LLDB工具链，来让用户无缝部署？</li>
+<li>如何进行调试性能指标的监控和建设，包括Xcode原生的LLDB？</li>
+</ul>
+<p>另外，这篇文章提到的非定制的优化和功能，均会向Apple或LLVM上游提交Patches，以回馈社区。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这篇文章讲解了，大型Swift项目如何通过开关，以及自定义LLDB，优化Swift开发同学的调试速度，提高整体的研发效能。其中讲解了LLDB的部分工作流程，以及针对性优化的技术细节，以及实际效果。</p>
+<p>我们的优化目标，不仅仅是服务于字节跳动移动端内部，更希望能推动业界的Swift和LLVM结合领域的相关发展，交流更多工具链方向的优化建设。</p>
+<h1 id="鸣谢"><a href="#鸣谢" class="headerlink" title="鸣谢"></a>鸣谢</h1><p>感谢飞书基础技术团队提供的一系列技术支持，以及最终业务试点提供的帮助推广。<br>感谢Apple同事Adrian Prantl在GitHub和邮件上进行的交流反馈，协助定位问题。</p>
+<h1 id="引用链接"><a href="#引用链接" class="headerlink" title="引用链接"></a>引用链接</h1><ol>
+<li> <a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/wwdc2017/413/">https://developer.apple.com/videos/play/wwdc2017/413/</a></li>
+<li> <a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/wwdc2019/429/">https://developer.apple.com/videos/play/wwdc2019/429/</a></li>
+<li> <a target="_blank" rel="noopener" href="https://github.com/apple/swift/blob/release/5.6/stdlib/public/core/DebuggerSupport.swift#L242">https://github.com/apple/swift/blob/release/5.6/stdlib/public/core/DebuggerSupport.swift#L242</a></li>
+<li> <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/customdebugstringconvertible">https://developer.apple.com/documentation/swift/customdebugstringconvertible</a></li>
+<li> <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/customreflectable">https://developer.apple.com/documentation/swift/customreflectable</a></li>
+<li> <a target="_blank" rel="noopener" href="https://lldb.llvm.org/man/lldb.html#configuration-files">https://lldb.llvm.org/man/lldb.html#configuration-files</a></li>
+<li> <a target="_blank" rel="noopener" href="https://llvm.org/docs/BitCodeFormat.html">https://llvm.org/docs/BitCodeFormat.html</a></li>
+<li> <a target="_blank" rel="noopener" href="https://clang.llvm.org/docs/Modules.html#id20">https://clang.llvm.org/docs/Modules.html#id20</a></li>
+<li> <a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html">https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/swift/" rel="tag"># swift</a>
+              <a href="/tags/lldb/" rel="tag"># lldb</a>
+              <a href="/tags/llvm/" rel="tag"># llvm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/25/%E4%B8%80%E6%AE%B5%E7%AE%80%E5%8D%95%E9%80%86%E5%90%91%E4%B9%8B%E6%97%85-%E7%BB%95%E5%BC%80Xcode-13-3%E6%9C%80%E4%BD%8EmacOS-12-0%E9%99%90%E5%88%B6/" rel="prev" title="一段简单逆向之旅-绕开Xcode 13.3最低macOS 12.0限制">
+      <i class="fa fa-chevron-left"></i> 一段简单逆向之旅-绕开Xcode 13.3最低macOS 12.0限制
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89LLDB%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">3.</span> <span class="nav-text">解决方案：自定义LLDB工具链</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E6%94%B6%E7%9B%8A"><span class="nav-number">4.</span> <span class="nav-text">实际收益</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E8%BF%B0po-p-v%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">5.</span> <span class="nav-text">简述po&#x2F;p&#x2F;v的工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#po-expr"><span class="nav-number">5.1.</span> <span class="nav-text">po [expr]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#p-expr"><span class="nav-number">5.2.</span> <span class="nav-text">p [expr]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v-expr"><span class="nav-number">5.3.</span> <span class="nav-text">v [expr]</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%98%E5%8C%96v"><span class="nav-number">6.</span> <span class="nav-text">优化v</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%82%E6%97%B6-%E5%85%B3%E9%97%ADswift-typeref-system"><span class="nav-number">6.1.</span> <span class="nav-text">(暂时)关闭swift-typeref-system</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E5%A4%8D%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93%E9%94%99%E8%AF%AF%E5%9C%B0%E4%BD%BF%E7%94%A8dlopen-Fixed-in-Swift-5-7"><span class="nav-number">6.2.</span> <span class="nav-text">修复静态链接库错误地使用dlopen(Fixed in Swift 5.7)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%98%E5%8C%96po-p"><span class="nav-number">7.</span> <span class="nav-text">优化po&#x2F;p</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%82%E6%97%B6-%E5%85%B3%E9%97%ADswift-dwarfimporter"><span class="nav-number">7.1.</span> <span class="nav-text">(暂时)关闭swift-dwarfimporter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96External-Module%E7%9A%84%E6%9F%A5%E6%89%BE%E8%B7%AF%E5%BE%84%E9%80%BB%E8%BE%91"><span class="nav-number">7.2.</span> <span class="nav-text">优化External Module的查找路径逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E5%85%B1%E4%BA%AB%E7%9A%84symbols%E7%BC%93%E5%AD%98"><span class="nav-number">7.3.</span> <span class="nav-text">增加共享的symbols缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E4%B8%8D%E5%BF%85%E8%A6%81%E7%9A%84%E5%90%8C%E5%90%8Dsymbols%E6%9F%A5%E6%89%BE"><span class="nav-number">7.4.</span> <span class="nav-text">优化不必要的同名symbols查找</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96"><span class="nav-number">8.</span> <span class="nav-text">其他优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%90%91%E4%BC%98%E5%8C%96Dynamic-Type-Resolve%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E4%BE%8B"><span class="nav-number">8.1.</span> <span class="nav-text">定向优化Dynamic Type Resolve的一些特例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A5%E4%B8%8B%E6%9D%A5"><span class="nav-number">9.</span> <span class="nav-text">接下来</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%B8%A3%E8%B0%A2"><span class="nav-number">11.</span> <span class="nav-text">鸣谢</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E7%94%A8%E9%93%BE%E6%8E%A5"><span class="nav-number">12.</span> <span class="nav-text">引用链接</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

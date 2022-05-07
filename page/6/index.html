@@ -210,6 +210,97 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/Autolayout%E5%B0%8F%E6%8A%80%E5%B7%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/03/30/Autolayout%E5%B0%8F%E6%8A%80%E5%B7%A7/" class="post-title-link" itemprop="url">Autolayout小技巧</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2016-03-30 01:43:27 / 修改时间：01:44:01" itemprop="dateCreated datePublished" datetime="2016-03-30T01:43:27+08:00">2016-03-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>iOS开发UI一直是一个问题，当年用代码画UI一度成为流行趋势，相信代码能万能解决问题，而且十分简单。</p>
+<p>然而，现在由于iOS设备的不断迭代，市场上常见的iPhone设备就会有：</p>
+<ol>
+<li><p> iPhone4/4S 960<em>640 (480</em>320 @2x)</p>
+</li>
+<li><p> iPhone5/5S 1136<em>640 (568</em>320 @2x)</p>
+</li>
+<li><p> iPhone6 1334*750(667*375 @2x)</p>
+</li>
+<li><p> iPhone6 Plus 1920*1080(736*414 @3x)-&gt;(2208*1242)</p>
+</li>
+</ol>
+<p>加上iPad以后，还会有一个1024<em>768(@1x) 和 2048</em>1536(@2x) 原来想要做一个自适应的，同时支持iPhone和iPad的应用，就算用代码来画UI，也是十分简单的。而现在，在这总共3类，5种，7状态的iOS设备面前，就会有点力不从心了，更别说以后想要做WatchOS的开发就会遇到很多问题，而Autolayout的解决方法的提出大大简化了这一过程</p>
+<blockquote>
+<p>Autolayout，就是通过一系列的约束条件来控制一个UIView在视图中的位置，同时还要配合Size Classes(兼容iOS8之后的设备)</p>
+</blockquote>
+<p>1、对于一个TableView，我们只需要设置它的Leading、Trailing、Top、Bottom临接到根View即可让它永远全屏显示，无论设备像素。而且，重要的一点，就是在Attribute Inspector中，要把这些距离设置为Standard（或者是0），这样才能在不同设备中获得推荐的显示效果（如果不是Standard或者0的话，就要小心了，这些就是所谓的魔法数字，很可能不同尺寸设备上显示效果会有所差别）</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/03/30/Autolayout%E5%B0%8F%E6%8A%80%E5%B7%A7/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/%E6%8E%A8%E8%8D%90%E4%B8%80%E4%B8%AASwift%E4%BB%A5%E5%8F%8AiOS%E5%BC%80%E5%8F%91%E7%9A%84Git%E5%90%88%E9%9B%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -784,86 +875,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/%E6%9C%8B%E5%8F%8B%E5%9C%88%E5%A5%BD%E5%8F%8B%E5%85%B3%E7%B3%BB%E5%BB%BA%E6%A8%A1%E8%AE%BE%E8%AE%A1%E2%80%94%E5%8A%A8%E6%80%81%E8%AF%84%E8%AE%BA%E8%AE%BE%E8%AE%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/03/30/%E6%9C%8B%E5%8F%8B%E5%9C%88%E5%A5%BD%E5%8F%8B%E5%85%B3%E7%B3%BB%E5%BB%BA%E6%A8%A1%E8%AE%BE%E8%AE%A1%E2%80%94%E5%8A%A8%E6%80%81%E8%AF%84%E8%AE%BA%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">朋友圈好友关系建模设计—动态评论设计</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2016-03-30 00:44:21 / 修改时间：00:46:22" itemprop="dateCreated datePublished" datetime="2016-03-30T00:44:21+08:00">2016-03-30</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>接上一篇，我们有了好友关系之后，就又涉及到了怎么样处理“只能看到好友的动态，和好友在好友动态下的评论）</p>
-<p>其实关于获取好友状态，已经不成问题，从数据库中读取出来就行了，最后统一出一个好友列表，然后进行查询就行了。关键的地方在于这个好友动态的排序以及评论呈现。</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png"></p>
-<p>1、关于评论和动态的获取</p>
-<p>我们采取的方式是：后端返回全部动态，前端进行排序。这样的好处是大幅减小了后端的压力，因为如果不这样，后端得依次进行如下操作：</p>
-<p><strong>获取当前用户 -&gt; 获取用户的好友列表 -&gt; 对每个用户的好友选择出所有动态 -&gt; 对所有好友选择出来的动态进行排序 -&gt; 对最后结果只返回前n个（后续的再次发送请求获取）</strong></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/03/30/%E6%9C%8B%E5%8F%8B%E5%9C%88%E5%A5%BD%E5%8F%8B%E5%85%B3%E7%B3%BB%E5%BB%BA%E6%A8%A1%E8%AE%BE%E8%AE%A1%E2%80%94%E5%8A%A8%E6%80%81%E8%AF%84%E8%AE%BA%E8%AE%BE%E8%AE%A1/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -935,20 +946,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">45</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

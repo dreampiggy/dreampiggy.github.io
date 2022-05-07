@@ -210,6 +210,84 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2022/05/07/Swift-%E8%B0%83%E8%AF%95%E6%80%A7%E8%83%BD%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/05/07/Swift-%E8%B0%83%E8%AF%95%E6%80%A7%E8%83%BD%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/" class="post-title-link" itemprop="url">Swift 调试性能的优化方案</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-07 17:13:43 / 修改时间：17:21:32" itemprop="dateCreated datePublished" datetime="2022-05-07T17:13:43+08:00">2022-05-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h1><p>此篇文章预计5月中，发布于微信公众号《字节跳动终端技术》，原作者就是我，版权所有。在个人博客这里转发去掉了招聘相关的文案。如果需要也可以进行进一步交流（邮件或者GitHub）提供试用版工具链。</p>
+<p>公众号链接：<br><img src="https://mp.weixin.qq.com/mp/qrcode?scene=10000005&size=102&__biz=Mzg2NTYyMjYxNg==&mid=2247486840&idx=1&sn=43b8a41875f86f7b62356ff2a3c064ab&send_time="></p>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a><strong>背景</strong></h1><p>通常来说，大型Swift项目常含有大量混编（Objc/C/C++甚至是Rust）代码，含有超过100个以上的Swift Module，并可能同时包含二进制部分和源码部分。而这种大型项目在目前的Xcode 13体验下非常不好，经常存在类似“断点陷入后变量面板卡顿转菊花”、“显示变量失效”等问题。而且一直存在于多个历史Xcode版本。</p>
+<p>图1：Xcode变量区显示卡顿转菊花，测试使用Xcode 13.3和下文提到的复现Demo</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/05/07/Swift-%E8%B0%83%E8%AF%95%E6%80%A7%E8%83%BD%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2022/03/25/%E4%B8%80%E6%AE%B5%E7%AE%80%E5%8D%95%E9%80%86%E5%90%91%E4%B9%8B%E6%97%85-%E7%BB%95%E5%BC%80Xcode-13-3%E6%9C%80%E4%BD%8EmacOS-12-0%E9%99%90%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -782,93 +860,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2018/11/26/CocoaPods%E7%9A%84%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8CAsset%20Catalog%E4%BC%98%E5%8C%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/26/CocoaPods%E7%9A%84%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8CAsset%20Catalog%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">CocoaPods的资源管理和Asset Catalog优化</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-11-26 17:54:17" itemprop="dateCreated datePublished" datetime="2018-11-26T17:54:17+08:00">2018-11-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>这篇文章介绍了关于CocoaPods的资源管理行为，对于Pod库作者是必须了解的知识。同时介绍了CocoaPods使用Asset Catalog的注意事项。如果已经了解某方面知识，可以大致略过直接看结论。</p>
-</blockquote>
-<h2 id="Asset-Catalog和App-Thinning"><a href="#Asset-Catalog和App-Thinning" class="headerlink" title="Asset Catalog和App Thinning"></a>Asset Catalog和App Thinning</h2><p>Asset Catalog，是Xcode提供的一项图片资源管理方式。每个Asset表示一个图片资源，但是可以对应一个或者多个实际PNG图，比如可以提供<code>@1x</code>, <code>@2x</code>, <code>@3x</code>多张尺寸的图以适配；在macOS上，还可以通过指定日间和夜间不同Appearances的两套图片。</p>
-<p>这种资源，在编译时会被压缩，然后在App运行时，可以通过API动态根据设备scale factor（Mac上日夜间设置）来选择对应的真实的图片渲染。</p>
-<p><a target="_blank" rel="noopener" href="https://help.apple.com/xcode/mac/current/#/devbbdc5ce4f">App Thinning</a>，是苹果平台（iOS/tvOS/watchOS）上的一个用于优化App包下载资源大小的方案。在App包提交上传到App Store后，苹果后台服务器，会对不同的设备，根据设备的scale factor，重新把App包进行精简，这样不同设备从App Store下载需要的容量不同，3x设备不需要同时下载1x和2x的图。</p>
-<p>但是，这套机制直接基于Asset Catalog，换言之，只有在Asset Catalog中引入的图片，才可以利用这套App Thinning。直接拷贝到App Bundle中的散落图片，所有设备还是都会全部下载。因此如何尽量提升Asset Catalog利用率，是一个很大的包大小优化点。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/11/26/CocoaPods%E7%9A%84%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8CAsset%20Catalog%E4%BC%98%E5%8C%96/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -940,20 +931,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">45</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
