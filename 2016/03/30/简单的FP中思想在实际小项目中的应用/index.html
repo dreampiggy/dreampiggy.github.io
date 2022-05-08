@@ -20,7 +20,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="函数式编程，无论是谁，第一次听到都会感到好奇，疑惑以及畏惧。因为一提到函数式编程就会让人想到很多数学或者计算机科学理论研究的深奥原理，无论是Lamda演算还是高阶函数，似乎都和平常自己所接触到的编程语言毫无关系。 随着现代语言的发展，大多数传统面向对象语言已经支持了很多函数式编程中的语法，比如说： 闭包：就是指一个函数块，把连同这个函数所需要的所有参数（全局的or局部的）放入一个闭包中，然后这个函">
@@ -95,6 +95,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="小猪的博客" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -223,7 +224,7 @@
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/%E7%AE%80%E5%8D%95%E7%9A%84FP%E4%B8%AD%E6%80%9D%E6%83%B3%E5%9C%A8%E5%AE%9E%E9%99%85%E5%B0%8F%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="DreamPiggy">
       <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
     </span>
@@ -352,11 +353,7 @@
 
           </div>
           
-    
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
-  </div>
-  
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -410,7 +407,7 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="DreamPiggy"
-      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">DreamPiggy</p>
   <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
 </div>
@@ -449,6 +446,9 @@
       </span>
       <span class="links-of-author-item">
         <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
       </span>
   </div>
 
@@ -555,19 +555,23 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
 <script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '783d0f6afbe6385e00fe',
+      clientSecret: '1ce280f20fd69e57611792eb3b660ada8385af2c',
+      repo        : 'dreampiggy.github.io',
+      owner       : 'dreampiggy',
+      admin       : ['dreampiggy'],
+      id          : '7a0957c8e914dc251ff4066430d4d3f2',
+        language: window.navigator.language || window.navigator.userLanguage,
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
 });
 </script>
 

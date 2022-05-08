@@ -20,7 +20,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="Xcode or Reveal在iOS开发中，UI调试总是一个大问题……原始的暴力调试（View强行着色然后看，或者在@Selector中直接把viewForLastBaselineLayout或者viewForFirstBaselineLayout）利用Swizzle Hook，然后Debug输出相应的内容（比如View的属性，描述符等等）。 这是一个好方法……但是过于暴力，而且非常不直观。虽然">
@@ -96,6 +96,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="小猪的博客" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -224,7 +225,7 @@
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/05/30/Xcode%E8%87%AA%E5%B8%A6%E7%9A%84UI%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="DreamPiggy">
       <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
     </span>
@@ -321,11 +322,7 @@
 
           </div>
           
-    
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
-  </div>
-  
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -379,7 +376,7 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="DreamPiggy"
-      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">DreamPiggy</p>
   <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
 </div>
@@ -418,6 +415,9 @@
       </span>
       <span class="links-of-author-item">
         <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
       </span>
   </div>
 
@@ -524,19 +524,23 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
 <script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '783d0f6afbe6385e00fe',
+      clientSecret: '1ce280f20fd69e57611792eb3b660ada8385af2c',
+      repo        : 'dreampiggy.github.io',
+      owner       : 'dreampiggy',
+      admin       : ['dreampiggy'],
+      id          : 'c635b8f24756bee4d07b9dbda1520c20',
+        language: window.navigator.language || window.navigator.userLanguage,
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
 });
 </script>
 

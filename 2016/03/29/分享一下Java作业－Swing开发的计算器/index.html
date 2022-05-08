@@ -20,7 +20,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="上周我们Java课程老师要求我们用Swing来开发一个计算器。 说起来图形化的开发，我最早用的应该就是MFC了，当时就只会拖一下控件，然后双击一下写函数……改改属性什么的…… 其次接触到了Qt，是在我们大二上实训的时候。那个时候要求我们做一个Qt跨平台的聊天工具，我们最后的效果差不多就是这样，代码放在了GitHub： https:&#x2F;&#x2F;github.com&#x2F;lizhuoli1126&#x2F;SEU-Chat">
@@ -92,6 +92,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="小猪的博客" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -220,7 +221,7 @@
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/29/%E5%88%86%E4%BA%AB%E4%B8%80%E4%B8%8BJava%E4%BD%9C%E4%B8%9A%EF%BC%8DSwing%E5%BC%80%E5%8F%91%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="DreamPiggy">
       <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
     </span>
@@ -320,11 +321,7 @@
 
           </div>
           
-    
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
-  </div>
-  
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -377,7 +374,7 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="DreamPiggy"
-      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">DreamPiggy</p>
   <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
 </div>
@@ -416,6 +413,9 @@
       </span>
       <span class="links-of-author-item">
         <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
       </span>
   </div>
 
@@ -522,19 +522,23 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
 <script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '783d0f6afbe6385e00fe',
+      clientSecret: '1ce280f20fd69e57611792eb3b660ada8385af2c',
+      repo        : 'dreampiggy.github.io',
+      owner       : 'dreampiggy',
+      admin       : ['dreampiggy'],
+      id          : '857b6f093788288289baca8456205d37',
+        language: window.navigator.language || window.navigator.userLanguage,
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
 });
 </script>
 

@@ -20,7 +20,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="背景自己很早之前曾经写过一些CocoaPods管理Resource资源的文章：CocoaPods的资源管理和Asset Catalog优化 ，当时列举了对普通图片类型的管理方式和一些用法，也普及了一下UIImage获取Bundle去加载不在mainBundle图像的方式。 但是苹果早在iOS 9，Xcode 7时代，苹果就已经推出了Data Asset的概念，并在随后的Xcode，尤其是Xcode">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957323_ceced1da15007185b48893a6eda48754.png">
 <meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957272_fa17b69e9dd37090291bc0a6952baa38.png">
 <meta property="article:published_time" content="2021-07-16T08:16:18.000Z">
-<meta property="article:modified_time" content="2022-05-08T05:02:34.564Z">
+<meta property="article:modified_time" content="2022-05-08T05:18:36.670Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="iOS">
 <meta property="article:tag" content="CocoaPods">
@@ -96,6 +96,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="小猪的博客" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -224,7 +225,7 @@
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="DreamPiggy">
       <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
     </span>
@@ -251,7 +252,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-08 13:02:34" itemprop="dateModified" datetime="2022-05-08T13:02:34+08:00">2022-05-08</time>
+                <time title="修改时间：2022-05-08 13:18:36" itemprop="dateModified" datetime="2022-05-08T13:18:36+08:00">2022-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -367,11 +368,7 @@
 
           </div>
           
-    
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTc4NC82MzUw"></div>
-  </div>
-  
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -425,7 +422,7 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="DreamPiggy"
-      src="http://dreampiggy-image.test.upcdn.net/image/avatarIMG_0019.jpg">
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">DreamPiggy</p>
   <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
 </div>
@@ -464,6 +461,9 @@
       </span>
       <span class="links-of-author-item">
         <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
       </span>
   </div>
 
@@ -570,19 +570,23 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
 <script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '783d0f6afbe6385e00fe',
+      clientSecret: '1ce280f20fd69e57611792eb3b660ada8385af2c',
+      repo        : 'dreampiggy.github.io',
+      owner       : 'dreampiggy',
+      admin       : ['dreampiggy'],
+      id          : 'e3536fde199634d4408b4d8c30474e10',
+        language: window.navigator.language || window.navigator.userLanguage,
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
 });
 </script>
 
