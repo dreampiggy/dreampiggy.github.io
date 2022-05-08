@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.2">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
   <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
@@ -241,7 +241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+                <time title="修改时间：2022-05-08 13:02:34" itemprop="dateModified" datetime="2022-05-08T13:02:34+08:00">2022-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -327,7 +327,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-22 20:58:43" itemprop="dateModified" datetime="2019-10-22T20:58:43+08:00">2019-10-22</time>
+                <time title="修改时间：2022-05-08 13:02:34" itemprop="dateModified" datetime="2022-05-08T13:02:34+08:00">2022-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -787,7 +787,7 @@
 </blockquote>
 <p>虽然block对于Objective-C来说已经早不新鲜了，但现如今很多博文讲述的block行为是基于MRC的，这与ARC下的表现是不同的。现代Objective-C也应该渐渐淘汰MRC和GC（其实GC已经淘汰了，在<code>macOS Sierra已经无法使用，iOS从来不支持</code>）本文所提及情况均限于ARC</p>
 <h1 id="ARC下不同类型的block表现"><a href="#ARC下不同类型的block表现" class="headerlink" title="ARC下不同类型的block表现"></a>ARC下不同类型的block表现</h1><p>很多博文都提到过，block通过llvm编译后，会生成对应的三种Class的实例变量，分别是：<code>NSStackBlock</code>、<code>NSGlobalBlock</code>、<code>NSMallocBlock</code>，分配区域分别位于进程的栈，TEXT段，堆。ARC下为了简化block的内存管理，以及性能优化，llvm会对不同情形下的block进行不同的类型变化，</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">NSString</span> *string = <span class="string">@&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([^()&#123;&#125; <span class="keyword">class</span>]));</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([^()&#123;</span><br><span class="line">	<span class="keyword">int</span> b = a;</span><br><span class="line">&#125; <span class="keyword">class</span>]));</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> (^block1)(<span class="keyword">void</span>) = ^&#123;</span><br><span class="line">	<span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([block1 <span class="keyword">class</span>]));</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> (^block2)(<span class="keyword">void</span>) = ^&#123;</span><br><span class="line">	<span class="built_in">NSString</span> *b = string;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([block2 <span class="keyword">class</span>]));</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">NSString</span> *string = <span class="string">@&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([^()&#123;&#125; <span class="keyword">class</span>]));</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([^()&#123;</span><br><span class="line">	<span class="type">int</span> b = a;</span><br><span class="line">&#125; <span class="keyword">class</span>]));</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> (^block1)(<span class="type">void</span>) = ^&#123;</span><br><span class="line">	<span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([block1 <span class="keyword">class</span>]));</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> (^block2)(<span class="type">void</span>) = ^&#123;</span><br><span class="line">	<span class="built_in">NSString</span> *b = string;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([block2 <span class="keyword">class</span>]));</span><br></pre></td></tr></table></figure>
 
 <p>猜猜输出是什么？</p>
           <!--noindex-->
