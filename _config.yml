@@ -96,5 +96,5 @@ theme: next
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: git@github.com:dreampiggy/dreampiggy.github.io.git
-  branch: master
+  repo: https://github.com/dreampiggy/dreampiggy.github.io
+  branch: gh-pages
