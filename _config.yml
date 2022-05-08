@@ -86,10 +86,10 @@ excerpt:
 
 # Search
 search:
-  path: search.xml
-  field: post
+  path: search.json
+  field: all
   content: true
-  format: html
+  format: raw
 
 # Sitemap
 sitemap:
