@@ -15,7 +15,9 @@ Hopper，全称Hopper Disassembler，是一个macOS和Linux平台上的反汇编
 
 # Hopper安装
 
-Hopper本身目前是收费的软件，提供了免费的使用（30分钟）。官方下载地址为：[https://www.hopperapp.com](https://www.hopperapp.com/)。Mac版本后解压，拖到Application下即可使用。
+Hopper本身目前是收费的软件，提供了免费的使用（30分钟）。官方下载地址为：[https://www.hopperapp.com](https://www.hopperapp.com/)
+
+Mac版本后解压，拖到Application下即可使用。
 
 对于个人使用，价格不菲，有两种方案，个人比较推荐第一种
 
