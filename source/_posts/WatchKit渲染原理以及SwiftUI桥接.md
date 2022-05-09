@@ -17,7 +17,7 @@ Apple Watch作为苹果智能穿戴设备领域的重头，自从第一代发布
 
 不同于iPhone的App，watchOS上的大部分App都侧重于健康管理，并且UI交互以直观，快速为基准。在2015年WWDC上，苹果发布的watchOS的同时，面向开发者发布了WatchKit，以用于构建watchOS App。
 
-![watchkit-app.jpg](https://cdn.macrumors.com/article-new/2019/06/apple-watch-watchos-apps-home-screen.jpg)
+![watchkit-app.jpg](https://help.apple.com/assets/61BCCC0198613862887EA61B/61BCCC2A98613862887EA62C/en_US/091b3af363505482da15ec78aa547a4d.png)
 
 这篇主要讲了关于WatchOS上的App的架构介绍，基本概念，并深入分析了WatchKit的UI渲染逻辑，也谈了一些WatchOS和SwiftUI相关的问题。
 
