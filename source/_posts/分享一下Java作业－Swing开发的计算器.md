@@ -25,10 +25,10 @@ https://github.com/lizhuoli1126/SEU-Chat
 
 百度一下，就发现了Netbeans这款神器，建Java应用－添加JFrame，然后一个熟悉的GUI空间界面就出现了T.T（拖控件其实相当于在Java代码中自动写进去布局代码）终于可以愉快的玩耍了……
 
-![](http://dreampiggy-image.test.upcdn.net/image/a/3c/3bfdef0a075c8130da1ba2fafd3b4.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/a/3c/3bfdef0a075c8130da1ba2fafd3b4.png)
 
 最终的成品就是这个样子（做得不好别打我，代码也不上传了）：
 
-![](http://dreampiggy-image.test.upcdn.net/image/0/31/6e31b3c293f2be8bd75da3c977780.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/0/31/6e31b3c293f2be8bd75da3c977780.png)
 
 说这么多，其实我就是想说Java的Swing并没有提供一个把代码和布局通过灵活方式分开的方法（GUI之所以叫GUI，我认为这是一种交互方式，如果用CLI的交互方式开发GUI程序，这绝对产生不出完美的产品）。如果你们有什么想法或者吐槽的地方，尽情说出来吧！评论就有礼品送。:-P

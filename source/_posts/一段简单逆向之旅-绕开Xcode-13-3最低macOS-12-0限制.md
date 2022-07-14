@@ -42,7 +42,7 @@ tags:
 
 安装完毕后，我们在Finder中看到的Xcode.app是一个画着❎的样子，直接打开会提示如下：
 
-![1648210752406_af87e2021743b9639d35f86714f127c7](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752406_af87e2021743b9639d35f86714f127c7.png)
+![1648210752406_af87e2021743b9639d35f86714f127c7](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752406_af87e2021743b9639d35f86714f127c7.png)
 
 
 # 绕过GUI部分的限制
@@ -53,7 +53,7 @@ tags:
 
 我们用另一个Xcode（或者plistutil）打开`Xcode.app/Contents/Info.plist`，果然发现了对应的字段：
 
-![1648210752770_b314e1b23bdd01fe803ede1383e29491](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752770_b314e1b23bdd01fe803ede1383e29491.png)
+![1648210752770_b314e1b23bdd01fe803ede1383e29491](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752770_b314e1b23bdd01fe803ede1383e29491.png)
 
 这个[LSMinimumSystemVersion](https://developer.apple.com/documentation/bundleresources/information_property_list/lsminimumsystemversion)是Mac应用标准的声明最低部署版本的方式，修改为你的机器当前OS版本之后保存，执行
 
@@ -64,7 +64,7 @@ killall Finder
 
 重新尝试双击。不错，这次我们打开了，初看起来不错（直到我们正式开始编译）！
 
-![1648210752322_3d4e9ae78eaab94de9cfc7d1f8eaecf0](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752322_3d4e9ae78eaab94de9cfc7d1f8eaecf0.png)
+![1648210752322_3d4e9ae78eaab94de9cfc7d1f8eaecf0](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752322_3d4e9ae78eaab94de9cfc7d1f8eaecf0.png)
 
 
 # 绕过CLI部分的限制
@@ -73,16 +73,16 @@ killall Finder
 
 但是只要创建一下工程并执行编译，就会发现，各种命令行工具的调用是有问题的，比如我们先通过xcode-select设置为当前的Xcode 13.2，尝试执行：
 
-![1648210752844_f21e111a081ff5dfc61dab7137109a39](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752844_f21e111a081ff5dfc61dab7137109a39.png)
-![1648210752266_e83287242af496cbbec7817b4b60f9f0](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752266_e83287242af496cbbec7817b4b60f9f0.png)
+![1648210752844_f21e111a081ff5dfc61dab7137109a39](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752844_f21e111a081ff5dfc61dab7137109a39.png)
+![1648210752266_e83287242af496cbbec7817b4b60f9f0](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752266_e83287242af496cbbec7817b4b60f9f0.png)
 
 但是我们如果直接找到，执行对应绝对路径的clang，是可以执行的
 
-![1648210752227_fd8cd9f89407475fe62c0489dc61a232](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752227_fd8cd9f89407475fe62c0489dc61a232.png)
+![1648210752227_fd8cd9f89407475fe62c0489dc61a232](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752227_fd8cd9f89407475fe62c0489dc61a232.png)
 
 并且，我们可以直接检查clang这个二进制，是否链接时设置了target，这部分可以使用otool -l读取machO Header查看到：
 
-![1648210752133_02c1257232efb1e2adebcb51ea25ceb0](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752133_02c1257232efb1e2adebcb51ea25ceb0.png)
+![1648210752133_02c1257232efb1e2adebcb51ea25ceb0](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752133_02c1257232efb1e2adebcb51ea25ceb0.png)
 
 好，最低部署版本是macOS 10.14.6；那现在我们有充分的证据说明，一定可以在我当前的电脑运行clang，而上述提示应该是xcrun这个调度器，添加了额外的判断。
 
@@ -173,7 +173,7 @@ loc_282c:
 
 参考苹果的函数说明，它除了常规的打开一个.bundle的文件夹，解析为NSBundle.infoDictionary以外，竟然能打开存在于二进制`__TEXT,__info_plist`中的数据来解析为一个字典。所以我们接下来去找`xcodebuild`的二进制看看。
 
-![1648210752247_62087827de34d7b56eea1e48208b261e](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752247_62087827de34d7b56eea1e48208b261e.png)
+![1648210752247_62087827de34d7b56eea1e48208b261e](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752247_62087827de34d7b56eea1e48208b261e.png)
 
 参考：
 
@@ -296,7 +296,7 @@ loc_100002b7f:
 
 对于我此次跑Xcode 13.3来说，我选择最傻瓜最直观的Hex Editor修改（我用的是开源小工具[HexFiend](https://github.com/HexFiend/HexFiend)），只需要把`12.0`修改为`11.0`即可满足我的需要，并重新codesign一波。
 
-![1648210752222_811d0d800592f601f309e48b732f1194](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752222_811d0d800592f601f309e48b732f1194.png)
+![1648210752222_811d0d800592f601f309e48b732f1194](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752222_811d0d800592f601f309e48b732f1194.png)
 
 codesign：
 
@@ -307,7 +307,7 @@ sudo /Applications/Xcode-13.3.0.app/Contents/Developer/usr/bin/xcodebuild -licen
 
 测试一下CLI，很正常
 
-![1648210752374_0a5d6ef92b0e270d6164a05153565572](http://dreampiggy-image.test.upcdn.net/2022/03/25/1648210752374_0a5d6ef92b0e270d6164a05153565572.png)
+![1648210752374_0a5d6ef92b0e270d6164a05153565572](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-03-25/image/1648210752374_0a5d6ef92b0e270d6164a05153565572.png)
 
 # 最终替换步骤
 

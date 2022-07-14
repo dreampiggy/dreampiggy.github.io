@@ -44,7 +44,7 @@ CMD ["npm", "start"]
 
 我原先的博客是架设在[新浪云](http://www.sinacloud.com)（原先的SAE）上的，使用的是WordPress，用的PHP5.3。自己在别人基础上改进了主题和插件，也写了很多文章。然而，由于新浪云自从2016/3/21开始，对所有用户的数据库征收0.48元/天的租金（无论是否使用），并对应用实例征收0.1元/天/用户的租金，相当于一天0.58元，而一年下来总计211.7元。已经远远超出了一个空间提供商的费用，逼近主机提供商，于是看到Coding承诺对老用户的演示项目永不收费，便打算到Coding上来部署新的博客
 
-![http://www.sinacloud.com/index/price.html](http://dreampiggy-image.test.upcdn.net/image/d/6d/77bd41d3257dc83b3345b8af594af.png)
+![http://www.sinacloud.com/index/price.html](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/d/6d/77bd41d3257dc83b3345b8af594af.png)
 
 而同时我也早已对WordPress不满，落后的管理方式（主题->博客->内容）和不完全的GitHub Markdown和LaTeX支持（也还是要靠插件），过于繁冗，加之新浪云的PHP空间是禁止在线上传代码和写入服务器本地磁盘的，导致很多插件无法正常使用，于是最终还是决定全部迁移到现在流行的Ghost博客上面
 

@@ -29,7 +29,7 @@ QuickLook 是macOS上提供的一项快速展示文档预览的功能，只需�
 
 + 新建Xcode工程，选择这个`Quick Look Plug-In`模板
 
-![屏幕快照 2019-04-16 上午11.45.25](http://dreampiggy-image.test.upcdn.net/image/2019/04/16/屏幕快照 2019-04-16 上午11.45.25.png)
+![屏幕快照 2019-04-16 上午11.45.25](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/04/16/屏幕快照 2019-04-16 上午11.45.25.png)
 
 
 + 打开你的模版，你会发现如下的结构
@@ -177,7 +177,7 @@ PS：对于导入UTI来说，你其实并不需要完整的把别人的声明抄
 5. 将这个`Dummy.app`，放到工程下，直接拖进来当作资源，添加到`Copy Bundle Resource`过程中
 
 
-![未命名3](http://dreampiggy-image.test.upcdn.net/image/2019/04/16/未命名3.png)
+![未命名3](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/04/16/未命名3.png)
 
 这样一波操作以后，你最后构建得到的QuickLook Plugin，就能自带一个导出的UTI，然后被系统识别，最终被真正加载。
 
@@ -281,7 +281,7 @@ QLPreviewRequestSetDataRepresentation(preview, (__bridge CFDataRef)data, kUTType
 
 在Xcode中缩略图如下：
 
-![屏幕快照 2019-04-16 下午1.49.04](http://dreampiggy-image.test.upcdn.net/image/2019/04/16/屏幕快照 2019-04-16 下午1.49.04.png)
+![屏幕快照 2019-04-16 下午1.49.04](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/04/16/屏幕快照 2019-04-16 下午1.49.04.png)
 
 ## 用于Thumbnail的代码绘制实现
 
@@ -324,9 +324,9 @@ qlmanage -d2 -p test.avif -c public.avif
 
 同时，为了能够Debug单步调试，我们使用Xcode的Debug Scheme，通过将`Execulable`改成`/usr/bin/qlmanage`，在Arguments中填写成上述的参数。
 
-![未命名](http://dreampiggy-image.test.upcdn.net/image/2019/04/16/未命名.png)
+![未命名](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/04/16/未命名.png)
 
-![未命名2](http://dreampiggy-image.test.upcdn.net/image/2019/04/16/未命名2.png)
+![未命名2](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/04/16/未命名2.png)
 
 这样，你可以给你的对应代码下上断点，当你再次点击Run来运行时，会自动触发单步调试，检查存在的问题。
 

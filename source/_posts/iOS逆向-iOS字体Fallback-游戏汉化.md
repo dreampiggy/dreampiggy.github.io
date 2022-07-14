@@ -15,11 +15,11 @@ date: 2016-06-05 20:33:54
 
 游戏是基于iOS UIKit以及Cocos游戏引擎写的（动画效果是Cocos的，文本框是定制的UITextField，而Backlog就是个UIScrollView……）本身支持UTF-8，覆盖汉化脚本后运行，却发现字体渲染不正常，出现了两种字体渲染（看图，"喵"明显是黑体-简，即iOS9之前默认的简体中文字体），更会有很多汉字变为日文汉字（"变" -> "変"，"归" -> "帰")
 
-![](http://dreampiggy-image.test.upcdn.net/image/8/2e/d2b034dd2baab3fa03776f8ec9988.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/8/2e/d2b034dd2baab3fa03776f8ec9988.jpg)
 
 起初并没有理解问题，最后查资料才认识到这是iOS字体Fallback所导致的。在查阅资料时候也发现一个异常好用的iOS字体对比渲染网页：[iosfonts](http://iosfonts.com)，直接输入文字，即可查看各种当前固件各种font family的效果（最好用Safari访问，OS X访问的话，相当于查看当前OS X的font family）
 
-![](http://dreampiggy-image.test.upcdn.net/image/1/c5/a3c3555692a29541f2a45c8799323.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/1/c5/a3c3555692a29541f2a45c8799323.png)
 
 经过对比以及反编译搜索，发现渲染正常的是HiraKakuProN-W6，而其它字体会被Fallback到STHeitiSC-Light(黑体-简,细体)，原因自然的，因为HiraKakuProN并不是中文字体，只是支持部分日文汉字的显示，剩下的中文汉字将被Fallback（这是iOS UIKit的自动处理，不会出现[?][?]这种空白字块的效果）（这一些列支持中文的字体也有，就是大名鼎鼎的冬青黑体(Hiragino Sans)，在iOS 9和OS X 10.10.6之后加入）
 
@@ -58,19 +58,19 @@ pop { r4, r5, r6, r7, pc }
 
 通过Hopper全局搜索，发现一个地址为0x002fc50的字串"Not interleaved!"，再通过地址引用，找到调用过程，用伪代码分析一看，是用来做Log的，没有意义，决定用它开刀。
 
-![](http://dreampiggy-image.test.upcdn.net/image/d/a6/20b6c740e08b4ce50c7726931039d.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/d/a6/20b6c740e08b4ce50c7726931039d.png)
 
 既然我们目标是把16Byte替换15Byte，那么只需要删除一个Byte(也就选"!")了，之后，把从该地址开始，到目标地址的所有地址配合Hex Editor，把所有字符串向前一个Byte，然后更新这些常量的被引用地址值（这步骤手工很麻烦，幸好Hopper支持脚本，大工程可以脚本跑）
 
 替换修改后的常量段：
 
-![](http://dreampiggy-image.test.upcdn.net/image/f/b8/2fd8b75defcd753005347e05e3994.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/f/b8/2fd8b75defcd753005347e05e3994.png)
 
 检查没问题，导出可执行文件，测试，结果非常满意，全部被替换为黑体-简(粗体)，相关功能也不受影响（真要说影响，可能就是用户看不到的控制台的Log会输出少个"!"罢了2333）
 
 最终成果（漂亮的黑体-简)：
 
-![](http://dreampiggy-image.test.upcdn.net/image/5/6b/ba2950239095f36f16e57cd593b21.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/5/6b/ba2950239095f36f16e57cd593b21.jpg)
 
 # 感想
 

@@ -104,7 +104,7 @@ WKInterfaceObject的**所有**公开API相关属性设置，比如width height�
 对于每个watchOS App，它实际可以当作一个UIKit App。它的main函数入口是一个叫做WKExtensionMain的方法，里面做了一些Extension的初始化以后，就直接调用了
 有UIApplicationMain。watchOS App有AppDelegate（类名为[SPApplicationDelegate](https://github.com/LeoNatan/Apple-Runtime-Headers/blob/master/watchOS/Frameworks/WatchKit.framework/SPApplicationDelegate.h)），会有一个全屏的root UIWindow当作key window。
 
-![watchkit1](http://dreampiggy-image.test.upcdn.net/2019/12/10/watchkit1.jpg)
+![watchkit1](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2019-12-10/image/watchkit1.jpg)
 
 #### UI初始化
 
@@ -208,7 +208,7 @@ UI创建好以后，实际上我们的Extension代码会触发很多Interface ob
 
 ## 总结流程
 
-![watchkit2](http://dreampiggy-image.test.upcdn.net/2019/12/10/watchkit2.jpg)
+![watchkit2](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2019-12-10/image/watchkit2.jpg)
 
 
 通过这张图，其实完整的流程，我们可以通过调用栈清晰看到，如图各个阶段：
@@ -249,7 +249,7 @@ watchOS除了本身的App功能外，还有一些其他特性，比如这里提�
 
 如果watchOS App未启动，那么会被后台启动（且不触发UserNotification的通知），对应Storyboard中的WKUserNotificationInterfaceController实例会被初始化。加载完成UI后，会调用`willActivate()`方法并自动弹起。
 
-![watchkit4](http://dreampiggy-image.test.upcdn.net/2019/12/10/watchkit4.jpg)
+![watchkit4](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2019-12-10/image/watchkit4.jpg)
 
 
 其实可以看出来，WatchKit主要做的事情，是在于watchOS App未启动时，需要对用户提供的WKUserNotificationInterfaceController，桥接对应的UserNotification接口和生命周期。
@@ -322,7 +322,7 @@ SwiftUI提供的[WKInterfaceObjectRepresentable](https://developer.apple.com/doc
 
 另外，这种使用init注册的WKInterfaceObject，会保留一个对应UIView的weak引用，可以在运行时通过私有的`_interfaceView`拿到。SwiftUI内部在布局的时候也用到了这个Native UIView来实现。
 
-![watchkit-swiftui2](http://dreampiggy-image.test.upcdn.net/2019/12/10/watchkit-swiftui2.png)
+![watchkit-swiftui2](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2019-12-10/image/watchkit-swiftui2.png)
 
 ### SwiftUI与watchOS Native App
 
@@ -332,11 +332,11 @@ SwiftUI提供的[WKInterfaceObjectRepresentable](https://developer.apple.com/doc
 
 每个UIHostingController套在了SPHostingViewController的Child VC中，对应View通过约束定成一样的frame，可以看作是一个容器的关系。
 
-![watchkit3](http://dreampiggy-image.test.upcdn.net/2019/12/10/watchkit3.jpg)
+![watchkit3](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2019-12-10/image/watchkit3.jpg)
 
 当你的SwiftUI View，含有至少一个WatchKit Interface Object之后，这个SPHostingViewController就起到了很大作用。它需要调度和处理上文提到的WatchKit消息。SPHostingViewController内部存储了所有interface的property，Native UIView列表，通过遍历来进行分发，走普通的WatchKit流程。它相当于起到一个转发代理的作用，让这些WatchKit的Interface Object实现不需要修改代码能正常使用。
 
-![watchkit-swiftui1](http://dreampiggy-image.test.upcdn.net/2019/12/10/watchkit-swiftui1.jpeg)
+![watchkit-swiftui1](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2019-12-10/image/watchkit-swiftui1.jpeg)
 
 
 ### SwiftUI与Long-Look Notification
@@ -375,7 +375,7 @@ SPHostingViewController这个类兼容了这种极端Case，它转发所有收�
 
 如果让我来重新设计WatchKit，可能在watchOS 2时代，就会彻底Deprecate目前的WatchKit，而是取而代之采取公开精简的UIKit实现来让开发者最大化利用硬件（类似于目前的UIKit在tvOS上的现状），同时，提供一个新的WatchUIKit来提供所有专为Apple Watch设计的UI和功能，比如Digital Crown，比如Activity Ring。
 
-![watchkit-twitte](http://dreampiggy-image.test.upcdn.net/2019/12/10/watchkit-twitter.jpg)
+![watchkit-twitte](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2019-12-10/image/watchkit-twitter.jpg)
 
 SwiftUI为watchOS App提供了一个新的出路，它可以说是真正的能够发挥开发者能力来实现精致的App，而不再受限于系统提供的基本控件。而WatchKit，也已经完成了它的使命。相信之后的SwiftUI Native App将会为watchOS创造一片新的生态，Apple Watch也能真正摆脱“iPhone外设”这一个尴尬的局面。
 

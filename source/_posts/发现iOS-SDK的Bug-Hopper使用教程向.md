@@ -81,7 +81,7 @@ iOS 系统提的库和二进制，可以简单分以下几类，按照需要选�
 IPSW可以从这个[网页](https://ipsw.me/)上下载，选择你的设备以及iOS版本号，就可以下载对应的IPSW文件。
 
 将下载的IPSW解压（建议使用zip命令行，或者BetterZip之类的解压软件，Mac自带的解压似乎会报错），可以找到一个最大容量的DMG文件，双击即可加载
-![](http://dreampiggy-image.test.upcdn.net/image/2019/06/13/15604236336003.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/06/13/15604236336003.jpg)
 
 加载后就是完整的iOS系统根路径了，从对应路径下找到dyld shared cache。
 
@@ -101,7 +101,7 @@ IPSW可以从这个[网页](https://ipsw.me/)上下载，选择你的设备以�
 4. 我在编译新版本时发现依赖了一个叫做`CommonDigestSPI.h`的私有头文件，这个在下载的CommonCrypto工程中，拖进来改一下引用方式即可
 5. 选择`dsc_extractor`，Archive得到一个产物，叫做`dsc_extractor.bundle`，然而他实际就是一个Mach-O二进制，直接删掉后缀，chmod+x，即可使用
 
-![](http://dreampiggy-image.test.upcdn.net/image/2019/06/13/15604271114928.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/06/13/15604271114928.jpg)
 
 如果上面的编译比较麻烦，可以直接下载我这里编译好的一份二进制，然后放到你的PATH路径下：[dsc_extractor](https://raw.githubusercontent.com/dreampiggy/dsc_extractor/master/bin/dsc_extractor)
 
@@ -118,7 +118,7 @@ dsc_extractor ./dyld_shared_cache_arm64e ./output
 
 现在我们已经有了一个UIKitCore的Mach-O文件了，我们打开Hopper来载入它。我们可以使用Command+Shift+O来选择一个Mach-O文件，也可以将文件拖动到Hopper界面上来打开。
 
-![](http://dreampiggy-image.test.upcdn.net/image/2019/06/13/15604335461822.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/06/13/15604335461822.jpg)
 
 载入Mach-O文件后，Hopper会弹出框来选择具体分析的内容，大部分情况直接确认即可。如果是分析其他类型的文件，可能有特例如下：
 
@@ -135,7 +135,7 @@ dsc_extractor ./dyld_shared_cache_arm64e ./output
 + Proc：子程序，对应C/C++的函数，Objective-C的方法，Block代码段等
 + Str：常量段，包括了所有C/C++Objective-C字面量，即代码中直接用`@"", ""`写的内容
 
-![](http://dreampiggy-image.test.upcdn.net/image/2019/06/13/15592985644004.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/06/13/15592985644004.jpg)
 
 每项内容都支持搜索，一般来说取决于我们要解决的问题，有大概几个场景
 
@@ -160,18 +160,18 @@ class-dump UIKitCore.framework -r -o output -H
 
 当我们了解到需要分析的符号方法后，下一步一般就会进行伪代码分析。在Hopper中，点击到一个子程序入口，然后点击上方的这个像是`if (b)`代码的图标，即可打开伪代码分析框
 
-![](http://dreampiggy-image.test.upcdn.net/image/2019/06/13/15592994457947.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/06/13/15592994457947.jpg)
 
 对于简单的代码，我们基本上能够还原回100%可读的Objective-C代码，由于ARC时便一起，我们可以看到对应的Retain和Realse调用
 
-![](http://dreampiggy-image.test.upcdn.net/image/2019/06/13/15592995793557.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/06/13/15592995793557.jpg)
 
 
 ### 分析调用关系
 
 我们可以通过对应的子程序页面，右键选择"References To Selector"，来查看所有对这个Selector的调用。（由于Objective-C运行时的特点，只能是Selector级别的调用，如果有不同类的同名Selector，可以在弹出的窗口中搜索或者依次检查）
 
-![](http://dreampiggy-image.test.upcdn.net/image/2019/06/13/15593006542887.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/06/13/15593006542887.jpg)
 
 
 ## 常见的分析姿势
@@ -264,7 +264,7 @@ Hopper从v4开始支持了对Swift符号的符号化，我们不再需要使用s
 
 由于Swift支持完整的命名空间，查询符号需要带上完整的符号
 
-![](http://dreampiggy-image.test.upcdn.net/image/2019/06/13/15604313892455.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/06/13/15604313892455.jpg)
 
 
 同时，Swift由于clang的优化，会讲很多编译器检查到的频繁的代码调用，自动转换为一个以`sub`开头的函数，以减少二进制大小。
@@ -273,7 +273,7 @@ Hopper从v4开始支持了对Swift符号的符号化，我们不再需要使用s
 
 对于Swift的会触发运行态的一些语法，需要你对Swift语言实现有了解，比如Protocol Extension Where子句，会生成Protocol Witness，我们可以在Hooper中搜索到它
 
-![](http://dreampiggy-image.test.upcdn.net/image/2019/06/13/15604319451736.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2019/06/13/15604319451736.jpg)
 
 可以看到，目前的Hopper对Swift有相应的支持，但受限于Swift的语言性质很难直观阅读，必要时候还是需要一些汇编，以及传统C++的反编译分析模式去对待它
 

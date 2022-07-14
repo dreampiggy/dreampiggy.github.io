@@ -19,25 +19,25 @@ date: 2016-05-30 15:03:46
 
 使用方法很简单，首先自然得运行项目，然后Run(Command R)，然后切换到Debug栏(Command 6)，点击左边栏最右侧的图表，选择`View UI Hierarchy`即可。
 
-![](http://dreampiggy-image.test.upcdn.net/image/d/b8/3ee5a4bd1289d16d36db566f3bf1e.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/d/b8/3ee5a4bd1289d16d36db566f3bf1e.png)
 
 ### UI列表
 
 进入UI Debugger视图后，App会被lldb暂停，左侧为所有当前的UI对象，以及它们的继承顺序。注意，此时的UIView对象按照由上到下，对应了UIView的层级顺序（即UIView.subviews)，最上方为最底层的View（对应subviews atIndex 0)，最下方即当前的顶层视图。点击对应的UIView可以在右侧的图形化视图中看到。
 
-![](http://dreampiggy-image.test.upcdn.net/image/a/72/a576918da1fc5658bccaab351b669.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/a/72/a576918da1fc5658bccaab351b669.png)
 
 ### 层级预览
 
 右侧的图形化视图，默认下是显示了所有视图以及它们的外边框，并且以实际显示(非3D层次)。点击下方的立方体按钮切换到3D预览（像不像Reveal？）
 
-![](http://dreampiggy-image.test.upcdn.net/image/5/8b/c05da0308cc5f1b90e1ee80e14756.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/5/8b/c05da0308cc5f1b90e1ee80e14756.png)
 
 ### 配合检查器
 
 点击控件也可在左侧标记出对象，可以在右侧的Object Inspector来查看它们的属性，还能看到不同View的约束在真实运行时候的表现状态，对于使用大量Autolayout和约束的应用来说非常方便。
 
-![](http://dreampiggy-image.test.upcdn.net/image/0/4a/c340caefd7bd60c6deb7dd07eef43.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/0/4a/c340caefd7bd60c6deb7dd07eef43.png)
 
 ## 总结
 

@@ -43,7 +43,7 @@ date: 2016-10-26 17:23:28
 	**说明：** reducer函数是纯函数，无副作用，定义为reducer(state, action) => newState，一般可以用 switch(action.type) 来判断不同的action，同时return一个新的state
 	
 # Redux 数据流
-![](http://dreampiggy-image.test.upcdn.net/image/6/ac/b29d443e4577ad15dd62c800c5fc4.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/6/ac/b29d443e4577ad15dd62c800c5fc4.png)
 
 
 1. Component触发一个Action Creator（用来dispatch某个具体的Action的函数），dispatch到Store中	
@@ -76,8 +76,8 @@ function addTodo(input) {
 
 举例：
 
-![](http://dreampiggy-image.test.upcdn.net/image/a/b8/1e6f0b3d3f531817fb9bf7aed7ad3.png)
-![](http://dreampiggy-image.test.upcdn.net/image/2/5c/d3050cfb96161668957d6b51fe00a.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/a/b8/1e6f0b3d3f531817fb9bf7aed7ad3.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2/5c/d3050cfb96161668957d6b51fe00a.png)
 
 # Reducer
 
@@ -111,7 +111,7 @@ export default combineReducers({ todos, counter })
 
 举例：
 
-![](http://dreampiggy-image.test.upcdn.net/image/4/2d/bbcfa2df98958ec1a4c027b7a883e.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/4/2d/bbcfa2df98958ec1a4c027b7a883e.png)
 
 # Store
 
@@ -143,7 +143,7 @@ let createStoreWithMiddleware = applyMiddleware([logger, thunk])(createStore);
 
 举例：
 
-![](http://dreampiggy-image.test.upcdn.net/image/e/c6/3c631d1a7bd31016e1fdf45e63428.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/e/c6/3c631d1a7bd31016e1fdf45e63428.png)
 
 # Component绑定
 
@@ -171,7 +171,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(BusList);
 
 举例：
 
-![](http://dreampiggy-image.test.upcdn.net/image/9/19/10bde796c214db134bb166bbac540.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/9/19/10bde796c214db134bb166bbac540.png)
 
 # State合并和Immutable.js
 
@@ -209,10 +209,10 @@ console.log(g); // { b: { d: 5 } }
 
 举例：ListView简单应用（避免re-render)
 
-![](http://dreampiggy-image.test.upcdn.net/image/e/8c/42c765d2eea6cb90e2eef9dfae949.png)
-![](http://dreampiggy-image.test.upcdn.net/image/b/71/a6d9a50d4ff1c8eebbd462279c073.png)
-![](http://dreampiggy-image.test.upcdn.net/image/7/db/e8fcbe8a12f6d2796e64a37e5c4ae.png)
-![](http://dreampiggy-image.test.upcdn.net/image/9/7f/7b039ac17e7828a2fe4f3d033ad73.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/e/8c/42c765d2eea6cb90e2eef9dfae949.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/b/71/a6d9a50d4ff1c8eebbd462279c073.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/7/db/e8fcbe8a12f6d2796e64a37e5c4ae.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/9/7f/7b039ac17e7828a2fe4f3d033ad73.png)
 
 # 更多思考
 

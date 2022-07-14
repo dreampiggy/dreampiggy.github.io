@@ -23,9 +23,9 @@ reveal.js：http://lab.hakim.se/reveal-js
 
 那么，就轮到我们今天的主角登场：NodePPT
 
-![](http://dreampiggy-image.test.upcdn.net/image/9/7c/5f478c96f02982f6155b5206c40a3.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/9/7c/5f478c96f02982f6155b5206c40a3.png)
 
-![](http://dreampiggy-image.test.upcdn.net/image/9/aa/6c75dff6a7972a25e3d7617b2fdbc.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/9/aa/6c75dff6a7972a25e3d7617b2fdbc.png)
 
 怎么样？Markdown语法支持，完美的响应式设计，多种切换动画随意上，自定义主题（CSS上手的时候到了），炫丽的双屏， 远程控制，你还在等什么？？
 

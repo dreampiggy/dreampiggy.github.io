@@ -21,7 +21,7 @@ tags:
 
 标准的配置下，我们可以直接在Xcode里创建一个Asset Catalog，然后拖入想要的文件。注意我们可以在右侧针对不同的配置设置不同的文件内容。
 
-![1625559957403_29bd9b59c2bbaa1f363122a8276779b6](http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957403_29bd9b59c2bbaa1f363122a8276779b6.png)
+![1625559957403_29bd9b59c2bbaa1f363122a8276779b6](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2021-07-16/image/1625559957403_29bd9b59c2bbaa1f363122a8276779b6.png)
 
 最终一个Data Asset的输入大概的形式是这样子的：
 
@@ -43,7 +43,7 @@ Image.xcassets
 
 在执行Xcode标准的`Copy Bundle Resources`的Build Phase之后，可以看到我们的Data Asset会被编译为一个Assets.car文件，这个格式也是老熟人了。
 
-![1625559957281_7b787078bbae747abaf28cde1a513955](http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957281_7b787078bbae747abaf28cde1a513955.png)
+![1625559957281_7b787078bbae747abaf28cde1a513955](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2021-07-16/image/1625559957281_7b787078bbae747abaf28cde1a513955.png)
 
 # Data Asset获取代码
 
@@ -77,7 +77,7 @@ NSData *data = asset.data;
 
 如图，这是SDK的资源。SDK使用了CocoaPods进行托管，Podspec里面使用了`resource_bundles`来提供对外的资源。这里的Data Asset里面内容是一个WebP文件。
 
-![1625559957352_30cb4a561799eec3da92fa1c607c101e](http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957352_30cb4a561799eec3da92fa1c607c101e.png)
+![1625559957352_30cb4a561799eec3da92fa1c607c101e](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2021-07-16/image/1625559957352_30cb4a561799eec3da92fa1c607c101e.png)
 
 
 ```
@@ -114,7 +114,7 @@ CompileAssetCatalog /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSpl
 
 检索产物Assets.car，也符合预期：
 
-![1625559957323_ceced1da15007185b48893a6eda48754](http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957323_ceced1da15007185b48893a6eda48754.png)
+![1625559957323_ceced1da15007185b48893a6eda48754](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2021-07-16/image/1625559957323_ceced1da15007185b48893a6eda48754.png)
 
 ## 宿主B
 
@@ -142,7 +142,7 @@ CompileAssetCatalog /Users/bytedance/Library/Developer/Xcode/DerivedData/TTAdSpl
 
 此时，在actool的编译结果中，我们发现，原本预期应该在Data Asset的`ad_btn_hand.webp`和`ad_btn_triangle.webp`两个文件，竟然直接拷贝到了.bundle的根路径，而不是Assets.car中！
 
-![1625559957272_fa17b69e9dd37090291bc0a6952baa38](http://dreampiggy-image.test.upcdn.net/2021/07/16/1625559957272_fa17b69e9dd37090291bc0a6952baa38.png)
+![1625559957272_fa17b69e9dd37090291bc0a6952baa38](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2021-07-16/image/1625559957272_fa17b69e9dd37090291bc0a6952baa38.png)
 
 对比两者的命令，只有`--minimum-deployment-target`这一项有差距，宿主A是iOS 10.0，宿主B是iOS 8.0。
 

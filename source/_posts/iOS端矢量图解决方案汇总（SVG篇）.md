@@ -14,7 +14,7 @@ tags:
 
 [矢量图](https://en.wikipedia.org/wiki/Vector_graphics)，指的是通过一系列数学描述，能够进行无损级别的变化和缩放的一种图像。相比于标量图（如JPEG等标量图压缩格式），能够在绘制时进行任意大小伸缩而不产生模糊，甚至能够实现动态着色，动画等等一系列交互。
 
-![intro_raster_to_vecto](http://dreampiggy-image.test.upcdn.net/2020/03/30/intro_raster_to_vector.png)
+![intro_raster_to_vecto](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2020-03-30/image/intro_raster_to_vector.png)
 
 
 在当今移动端设备尺寸越来越复杂，各种操作系统级别的夜间主题（或者Dark Mode）越来越提倡的场景下，如果依旧使用标量图，我们需要针对不同的屏幕大小（如2x，3x），和对应主题场景（Light/Dark），提供NxM数量级的标量图，对于App大小开销是很大的。因此，使用矢量图是一个非常有效的解决方案。这个系列文章，就是主要侧重讲解iOS端上的矢量图解决方案。
@@ -39,7 +39,7 @@ Symbol Image的整体API设计，其实不像是图像，更像是一种字体�
 
 一般来说，从头构建一个Symbol Image会非常复杂，Apple推荐的方式，是通过使用[SF Symbols App](https://developer.apple.com/design/human-interface-guidelines/sf-symbols/overview/)，来导出一个SVG模版，再通过Sketch来进行图层编辑。
 
-![Sketch2](http://dreampiggy-image.test.upcdn.net/2020/03/30/Sketch2.png)
+![Sketch2](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2020-03-30/image/Sketch2.png)
 
 
 从原始的SVG数据来看，每一个Symbol Image包含的所有样式都是一个单独的Path节点，对应了图标的绘制。如果要新建一个Symbol Image，需要完全删除Path节点，重新绘制矢量路径。
@@ -66,12 +66,12 @@ Symbol Image的整体API设计，其实不像是图像，更像是一种字体�
 
 导入Symbol Image的方式非常简单，你只需要将制作好的Symbol Image，向Xcode的Asset Catalog窗口拖动，就可以集成。Xcode可以会展示对应的预览效果。
 
-![截屏2020-03-30下午6.08.56](http://dreampiggy-image.test.upcdn.net/2020/03/30/%E6%88%AA%E5%B1%8F2020-03-30%E4%B8%8B%E5%8D%886.08.56.png)
+![截屏2020-03-30下午6.08.56](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2020-03-30/image/%E6%88%AA%E5%B1%8F2020-03-30%E4%B8%8B%E5%8D%886.08.56.png)
 
 
 另外，实际上产生的文件夹后缀为`.symbolset`，这个不同于普通的Asset Image（后缀名`.imageset`），也就意味着你可以同时引入一个同名的Symbol Image和普通Image。
 
-![截屏2020-03-30下午6.09.18](http://dreampiggy-image.test.upcdn.net/2020/03/30/%E6%88%AA%E5%B1%8F2020-03-30%E4%B8%8B%E5%8D%886.09.18.png)
+![截屏2020-03-30下午6.09.18](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2020-03-30/image/%E6%88%AA%E5%B1%8F2020-03-30%E4%B8%8B%E5%8D%886.09.18.png)
 
 ### 使用Symbol Image
 
@@ -142,7 +142,7 @@ CoreSVG是iOS 13支持Symbol Image的背后的底层SVG渲染引擎，使用C++�
 
 但是我们可以通过一个取巧的方式来实现，Xcode支持PDF矢量图（从iOS 11与Xcode 9开始支持，PDF章会讲解）。因此，我们可以将SVG后缀改成PDF，然后拖动到Xcode中，最后再修改回SVG后缀名，并且同步`.imageset/Contents.json`里面的文件名即可，如下：
 
-![EUR_hKSUwAA1-65](http://dreampiggy-image.test.upcdn.net/2020/03/30/EUR_hKSUwAA1-65.png)
+![EUR_hKSUwAA1-65](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2020-03-30/image/EUR_hKSUwAA1-65.png)
 
 当你添加好SVG图像后，可以通过Name，以和PDF矢量图一样的方式来引入和使用，如下
 
@@ -156,7 +156,7 @@ imageView.frame = CGRectMake(0, 0, 1000, 1000);
 
 从运行时来看，加入Asset Catalog的SVG矢量图的UIImage，含有对应的CGSVGDocumentRef对象，并且也包含了一个标量图的缩略图，可以供缩略图或者其他系统API来调用。并且在Xcode的Interface Builder上也会有明显的SVG标识（类似PDF）
 
-![EUU_DLPU8AM5KHD](http://dreampiggy-image.test.upcdn.net/2020/03/30/EUU_DLPU8AM5KHD.jpeg)
+![EUU_DLPU8AM5KHD](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2020-03-30/image/EUU_DLPU8AM5KHD.jpeg)
 
 
 ### 加载任意SVG数据（网络）
@@ -319,7 +319,7 @@ self.view.addSubview(hammock)
 
 [VectorDrawable](https://developer.android.com/guide/topics/graphics/vector-drawable-resources)是Android平台上官方提供的一套矢量图解决方案，他是以一个类似SVG的XML表达形式，来描述矢量图的绘制方式。
 
-![截屏2020-03-30下午5.44.59](http://dreampiggy-image.test.upcdn.net/2020/03/30/%E6%88%AA%E5%B1%8F2020-03-30%E4%B8%8B%E5%8D%885.44.59.png)
+![截屏2020-03-30下午5.44.59](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2020-03-30/image/%E6%88%AA%E5%B1%8F2020-03-30%E4%B8%8B%E5%8D%885.44.59.png)
 
 
 从整体设计上看，VectorDrawable基本上是对SVG的精简和二次改造，大部分的元素在SVG中都有对应的概念，并且样式属性也一一对应。甚至，Android Studio支持直接将SVG导出成VectorDrawable文件并直接集成。

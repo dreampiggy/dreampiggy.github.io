@@ -40,7 +40,7 @@ $ \begin{bmatrix} \frac{m11x+m21y+m31z+m41}{m14+m24+m34+m44} & \frac{m12x+m22y+m
 
 * iOS设备上，是按照左手系的三维空间，即正面面对设备屏幕，坐标原点从屏幕左上方起，x轴指向右方，y轴指向下方，z轴为屏幕指向眼球。而macOS上是右手系，原点是屏幕左下角，x轴指向右方，y轴指向上方（相反），z轴同样为屏幕指向眼球，要注意
 
-![](http://dreampiggy-image.test.upcdn.net/image/0/07/5c010c6b630ab7aa0892428016d7e.jpeg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/0/07/5c010c6b630ab7aa0892428016d7e.jpeg)
 
 # 平移
 
@@ -116,7 +116,7 @@ transform.m21 = 1.0;
 
 而学过绘画的都知道人的视野并不是平行的，而是有一个透视图的概念，眼睛前有实际平行的两条线段发出（相当于z轴方向的向量），人眼看起来会相交于一点上（焦点，Focal point），这才产生了3D感
 
-![](http://dreampiggy-image.test.upcdn.net/image/7/a9/a7ed0efe4aebcddaef0d090c631b4.jpeg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/7/a9/a7ed0efe4aebcddaef0d090c631b4.jpeg)
 
 而对于变换矩阵，如果要实现透视投影，应该怎么办？这里就用到了前面介绍过但一直忽略的值`m34`
 
@@ -140,7 +140,7 @@ $ \begin{bmatrix} x^{'} & y^{'} & z^{'} \end{bmatrix} = \begin{bmatrix} \frac{x}
 
 为了得到d和w的关系，这里引用一幅图，绿色的点为原始点，红色的点为投影到XoY平面上的点，我们这里推导不需要管具体的值，只是为了更清晰地发现规律：
 
-![7525866072_efebf5cd22.jpg](http://dreampiggy-image.test.upcdn.net/image/1/8e/421990115e6623fdd5a5bec14d03a.jpg)
+![7525866072_efebf5cd22.jpg](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/1/8e/421990115e6623fdd5a5bec14d03a.jpg)
 
 $ \because 由图，依据相似三角形原理 \\\ \therefore \left| \frac{x}{zw+1}: x \right| = d : (\left|z\right|+d) \\\ 去绝对值号，且d\neq0,x\neq0，得 \\\ \frac{1}{zw+1} = \frac{1}{1-\frac{z}{d}} \\\ \therefore w = - \frac{1}{d} $
 
@@ -160,7 +160,7 @@ transform = CATransform3DRotate(transform, M_PI_4, 0, 1, 0);
 self.layerView.layer.transform = transform;
 ```
 
-![5.13.jpeg](http://dreampiggy-image.test.upcdn.net/image/9/12/fa3e96d6a571f355e18899eca3296.jpeg)
+![5.13.jpeg](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/9/12/fa3e96d6a571f355e18899eca3296.jpeg)
 
 # 总结
 

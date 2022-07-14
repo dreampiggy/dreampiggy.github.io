@@ -72,7 +72,7 @@ for(int i = 0;i<arraySize;i++){
 }
 ```
 
-![](http://dreampiggy-image.test.upcdn.net/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png)
 
 试验了一下，才发现，其实arrayPointer[i] 和*(arrayPointer + i) 是等价的，前者是代表从arrayPointer的首地址开始计数，而arrayPointer[0]代表就是arrayPointer指向的地址所对应的值。这一点应该注意一下（其实以前觉得数组和指针挺像的，但是从这一点就知道数组绝对是指针的一小部分子集）。
 

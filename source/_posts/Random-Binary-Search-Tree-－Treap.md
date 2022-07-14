@@ -13,8 +13,8 @@ mathjax: true
 
 众所周知，二查搜索树(BST)的搜索、插入、删除的复杂度等于树高，所以平衡度越高，越接近$ O(nlogn) $，越有序越退化为$ O(n) $
 
-![线性BST](http://dreampiggy-image.test.upcdn.net/image/3/9f/4b2394fd756bcf2edcee109bb18ef.png)
-![随机BST](http://dreampiggy-image.test.upcdn.net/image/e/a2/3419e63d7126ece4996634b3f7dad.png)
+![线性BST](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/3/9f/4b2394fd756bcf2edcee109bb18ef.png)
+![随机BST](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/e/a2/3419e63d7126ece4996634b3f7dad.png)
 
 + 对于左侧的BST来说，只有唯一的构造序列：$ <1,2,\dots,14> $
 + 但对于右侧的BST，可以存在21964800种不同序列
