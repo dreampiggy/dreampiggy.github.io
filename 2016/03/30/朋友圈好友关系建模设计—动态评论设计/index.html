@@ -30,15 +30,15 @@
 <meta property="og:site_name" content="小猪的博客">
 <meta property="og:description" content="接上一篇，我们有了好友关系之后，就又涉及到了怎么样处理“只能看到好友的动态，和好友在好友动态下的评论） 其实关于获取好友状态，已经不成问题，从数据库中读取出来就行了，最后统一出一个好友列表，然后进行查询就行了。关键的地方在于这个好友动态的排序以及评论呈现。  1、关于评论和动态的获取 我们采取的方式是：后端返回全部动态，前端进行排序。这样的好处是大幅减小了后端的压力，因为如果不这样，后端得依次进行">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png">
-<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/2/39/165349718710a96085446deca2c48.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2/39/165349718710a96085446deca2c48.png">
 <meta property="article:published_time" content="2016-03-30T00:44:21.000Z">
 <meta property="article:modified_time" content="2016-03-30T00:46:22.000Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="PHP">
 <meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png">
+<meta name="twitter:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png">
 
 <link rel="canonical" href="http://dreampiggy.com/2016/03/30/%E6%9C%8B%E5%8F%8B%E5%9C%88%E5%A5%BD%E5%8F%8B%E5%85%B3%E7%B3%BB%E5%BB%BA%E6%A8%A1%E8%AE%BE%E8%AE%A1%E2%80%94%E5%8A%A8%E6%80%81%E8%AF%84%E8%AE%BA%E8%AE%BE%E8%AE%A1/">
 
@@ -268,7 +268,7 @@
       
         <p>接上一篇，我们有了好友关系之后，就又涉及到了怎么样处理“只能看到好友的动态，和好友在好友动态下的评论）</p>
 <p>其实关于获取好友状态，已经不成问题，从数据库中读取出来就行了，最后统一出一个好友列表，然后进行查询就行了。关键的地方在于这个好友动态的排序以及评论呈现。</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png"></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png"></p>
 <p>1、关于评论和动态的获取</p>
 <p>我们采取的方式是：后端返回全部动态，前端进行排序。这样的好处是大幅减小了后端的压力，因为如果不这样，后端得依次进行如下操作：</p>
 <p><strong>获取当前用户 -&gt; 获取用户的好友列表 -&gt; 对每个用户的好友选择出所有动态 -&gt; 对所有好友选择出来的动态进行排序 -&gt; 对最后结果只返回前n个（后续的再次发送请求获取）</strong></p>
@@ -276,7 +276,7 @@
 <p>因此，我们将排序做到了前端，后台在进行查询的时候，查询的时候只查询到动态层面，评论在用户点击指定动态之后才会获取，将一步的动作分成两步，用户在下拉浏览的同时发送新的获取评论请求，服务器再返回指定动态的评论，这样就将5000化为50<em>20+n</em>5,n为每页显示的动态数，大大减缓了服务器的压力。同时，通过缓存技术比如Memcached，保存用户的好友动态，防止用户首页快速刷新造成大量的请求。</p>
 <p>2、关于评论的呈现</p>
 <p>仔细一想，评论其实满足了一种树形结构，因为我不但可以评论这条动态，也可以评论之前的评论，所以，在存储评论的时候，我们可以加入一个parentID，再配合messageID（根节点，动态的ID），就可以进行前端的评论的树形结构生成，大概的数据表就是这样：</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/2/39/165349718710a96085446deca2c48.png"></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/2/39/165349718710a96085446deca2c48.png"></p>
 <p>这样，基本的功能就完成了，其实现在想想都是很简单的设计，只不过以前并没有做过和思考，导致当时开发遇到了一点点小问题－ －～</p>
 <p>就到这里吧，最后再次广告：github：<a target="_blank" rel="noopener" href="https://github.com/lizhuoli1126/FriendCircle">https://github.com/lizhuoli1126/FriendCircle</a></p>
 

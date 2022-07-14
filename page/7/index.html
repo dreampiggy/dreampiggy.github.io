@@ -261,7 +261,7 @@
       
           <p>接上一篇，我们有了好友关系之后，就又涉及到了怎么样处理“只能看到好友的动态，和好友在好友动态下的评论）</p>
 <p>其实关于获取好友状态，已经不成问题，从数据库中读取出来就行了，最后统一出一个好友列表，然后进行查询就行了。关键的地方在于这个好友动态的排序以及评论呈现。</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png"></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/1/c6/189c18dfe1efe7c7e93052ad0edf2.png"></p>
 <p>1、关于评论和动态的获取</p>
 <p>我们采取的方式是：后端返回全部动态，前端进行排序。这样的好处是大幅减小了后端的压力，因为如果不这样，后端得依次进行如下操作：</p>
 <p><strong>获取当前用户 -&gt; 获取用户的好友列表 -&gt; 对每个用户的好友选择出所有动态 -&gt; 对所有好友选择出来的动态进行排序 -&gt; 对最后结果只返回前n个（后续的再次发送请求获取）</strong></p>
@@ -420,7 +420,7 @@
 
       
           <p>上周学院举办了一个建模比赛中：<a target="_blank" rel="noopener" href="http://www.ippclub.org/index.php/archives/33/">http://www.ippclub.org/index.php/archives/33/</a></p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/3/96/05ea1626712a1db418daf7b65050c.png"></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/3/96/05ea1626712a1db418daf7b65050c.png"></p>
 <p>最后成品放在了github上面：<a target="_blank" rel="noopener" href="https://github.com/lizhuoli1126/FriendCircle">https://github.com/lizhuoli1126/FriendCircle</a></p>
 <p>为了实现这个朋友圈的关系，确实有很多值得思考的地方。</p>
 <p>第一个难点就在于这种朋友关系的设计。</p>

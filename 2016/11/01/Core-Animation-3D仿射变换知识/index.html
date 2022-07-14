@@ -30,17 +30,17 @@
 <meta property="og:site_name" content="小猪的博客">
 <meta property="og:description" content="Core Animation 3D 仿射变换知识 之前写的Core Graphics是2D平面上的坐标变换，而iOS开发中，为了实现复杂的动画效果，视图切换效果，会用到很多3D变换，这就是Core Animation提供的CATransform3D，其中大部分API都和2D情况类似，但这里需要详细解释一下透视投影这个概念，和m34这个值的真实来源，一些博客抄来抄去却没有点到点子上，让人看不下去……">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/0/07/5c010c6b630ab7aa0892428016d7e.jpeg">
-<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/7/a9/a7ed0efe4aebcddaef0d090c631b4.jpeg">
-<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/1/8e/421990115e6623fdd5a5bec14d03a.jpg">
-<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/9/12/fa3e96d6a571f355e18899eca3296.jpeg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/0/07/5c010c6b630ab7aa0892428016d7e.jpeg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/7/a9/a7ed0efe4aebcddaef0d090c631b4.jpeg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/1/8e/421990115e6623fdd5a5bec14d03a.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/9/12/fa3e96d6a571f355e18899eca3296.jpeg">
 <meta property="article:published_time" content="2016-11-01T19:04:10.000Z">
 <meta property="article:modified_time" content="2016-11-02T11:21:22.000Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="iOS">
 <meta property="article:tag" content="CoreAnimation">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/image/0/07/5c010c6b630ab7aa0892428016d7e.jpeg">
+<meta name="twitter:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/0/07/5c010c6b630ab7aa0892428016d7e.jpeg">
 
 <link rel="canonical" href="http://dreampiggy.com/2016/11/01/Core-Animation-3D%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%9F%A5%E8%AF%86/">
 
@@ -291,7 +291,7 @@
 <ul>
 <li>iOS设备上，是按照左手系的三维空间，即正面面对设备屏幕，坐标原点从屏幕左上方起，x轴指向右方，y轴指向下方，z轴为屏幕指向眼球。而macOS上是右手系，原点是屏幕左下角，x轴指向右方，y轴指向上方（相反），z轴同样为屏幕指向眼球，要注意</li>
 </ul>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/0/07/5c010c6b630ab7aa0892428016d7e.jpeg"></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/0/07/5c010c6b630ab7aa0892428016d7e.jpeg"></p>
 <h1 id="平移"><a href="#平移" class="headerlink" title="平移"></a>平移</h1><p>类似二维空间的平移，变换矩阵第四行的m41,m42,m43对应的就是x、y、z的平移量，因此矩阵变换很简单，比如将[x,y]向量平移到[x+a,y+b,z+c]：</p>
 <p>平移矩阵：<br>$ \begin{bmatrix} x &amp; y &amp; z &amp; 1 \end{bmatrix} \times \begin{bmatrix} 1 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 1 &amp; 0 \\ a &amp; b &amp; c &amp; 1 \end{bmatrix} = \begin{bmatrix} x+a &amp; y+b &amp; z+c &amp; 1 \end{bmatrix} $</p>
 <p>对应构造API：</p>
@@ -322,7 +322,7 @@
 
 <h1 id="透视投影"><a href="#透视投影" class="headerlink" title="透视投影"></a>透视投影</h1><p>实际中你如果直接使用旋转，会注意到旋转前后，结果看起来竟然和普通的缩放一模一样，这是为什么呢？原因其实很简单，假如绕y轴旋转，空间中的图层虽然旋转了，但是显示到XoY平面（也就是iPhone的屏幕上）的时候，会把3D的物体进行正投影，这样子看上去就像是左右压缩一样</p>
 <p>而学过绘画的都知道人的视野并不是平行的，而是有一个透视图的概念，眼睛前有实际平行的两条线段发出（相当于z轴方向的向量），人眼看起来会相交于一点上（焦点，Focal point），这才产生了3D感</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/7/a9/a7ed0efe4aebcddaef0d090c631b4.jpeg"></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/7/a9/a7ed0efe4aebcddaef0d090c631b4.jpeg"></p>
 <p>而对于变换矩阵，如果要实现透视投影，应该怎么办？这里就用到了前面介绍过但一直忽略的值<code>m34</code></p>
 <h2 id="原理和推导："><a href="#原理和推导：" class="headerlink" title="原理和推导："></a>原理和推导：</h2><p>为什么单单修改一个<code>m34</code>的值，就能达到这种透视3D的效果呢？我简单看了很多类似的博客都没有正面回答这个问题，其实这是变换矩阵的透视投影结论，可以通过简单的数学推导得到</p>
 <p>Core Animation已经定义了焦点的x,y坐标，就是这个图层的anchorPoint（锚点），同时取z=0的XoY平面作为图像平面（也就是iPhone的屏幕平面），那么假如我希望投影中心到图像平面的距离是d，可以假设焦点坐标为(0,0,d)，现在对<code>m34</code>的值进行赋值为w，初始向量坐标为(x,y,z)，开始推导：</p>
@@ -333,14 +333,14 @@
 <p>最后对XoY平面进行投影，则最终看到的二维向量应该为$ (\frac{x}{zw+1}, \frac{y}{zw+1}) $</p>
 <p>现在考虑x轴的情况（y轴同理），我们知道真实三维空间的x坐标是x，<br>现在得到透视投影下的x坐标是x/(zw+1)</p>
 <p>为了得到d和w的关系，这里引用一幅图，绿色的点为原始点，红色的点为投影到XoY平面上的点，我们这里推导不需要管具体的值，只是为了更清晰地发现规律：</p>
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/1/8e/421990115e6623fdd5a5bec14d03a.jpg" alt="7525866072_efebf5cd22.jpg"></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/1/8e/421990115e6623fdd5a5bec14d03a.jpg" alt="7525866072_efebf5cd22.jpg"></p>
 <p>$ \because 由图，依据相似三角形原理 \\ \therefore \left| \frac{x}{zw+1}: x \right| = d : (\left|z\right|+d) \\ 去绝对值号，且d\neq0,x\neq0，得 \\ \frac{1}{zw+1} = \frac{1}{1-\frac{z}{d}} \\ \therefore w = - \frac{1}{d} $</p>
 <p>这样就得到重要的结论：<code>w=-(1/d)</code>，即，假定焦点（就是人眼）距离原点距离为d，则<code>m34</code>应当填写<code>-(1/d)</code></p>
 <p>默认初始变换矩阵的<code>m34</code>都是0，也就是说认为焦点无限远，因此看起来没有任何3D感。同时，我们也知道，假如我们取d越大，则看起来越没有投射和3D感；取d越小，则3D感和失真感越强烈，一般推荐的d值在500~1000之间，也就是说<code>m34</code>填写-1/500即可</p>
 <p>设置变换矩阵的<code>m34</code>：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CATransform3D</span> transform = <span class="built_in">CATransform3DIdentity</span>;</span><br><span class="line"><span class="comment">//apply perspective</span></span><br><span class="line">transform.m34 = - <span class="number">1.0</span> / <span class="number">500.0</span>;</span><br><span class="line"><span class="comment">//rotate by 45 degrees along the Y axis</span></span><br><span class="line">transform = <span class="built_in">CATransform3DRotate</span>(transform, M_PI_4, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="comment">//apply to layer</span></span><br><span class="line"><span class="keyword">self</span>.layerView.layer.transform = transform;</span><br></pre></td></tr></table></figure>
 
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/9/12/fa3e96d6a571f355e18899eca3296.jpeg" alt="5.13.jpeg"></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/9/12/fa3e96d6a571f355e18899eca3296.jpeg" alt="5.13.jpeg"></p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>Core Animation提供的CATransform3D主要的几个变换都在这里介绍了，尤其是透视投影，一定要理解原理，知道为什么需要修改<code>m34</code>来控制透视焦点。</p>
 <p>当然，实际上CATransform3D主要用来作各种3D动画效果，比如你可以自定义一个View的转场效果，搞个3D相册，甚至可以在不需要接触OpenGL的情况下写个小游戏（比如魔方啊之类），对于iOS进阶非常有帮助。最近有点忙没太关注，感觉自己还是需要学习一个。</p>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://github.com/AttackOnDobby/iOS-Core-Animation-Advanced-Techniques/blob/master/5-%E5%8F%98%E6%8D%A2/%E5%8F%98%E6%8D%A2.md">iOS Core Animation Techniques</a></p>

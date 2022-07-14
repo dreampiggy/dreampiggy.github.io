@@ -30,13 +30,13 @@
 <meta property="og:site_name" content="小猪的博客">
 <meta property="og:description" content="C++的指针是大一时期一直觉得头疼的一个东西。当年一直对指针敬而远之。一旦不小心，指针越界的后果就是程序崩溃……&gt; &lt; 然而，偶然一次学妹问到关于动态数组的问题的时候……才偶然发现当年自己学指针似乎一直没有搞清楚这两者的关系： pointer和pointer[i] 比如实现一个简单的动态数组，举例就是看如下代码： 第一种方法： 1234567891011121314151617#inc">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://dreampiggy-image.test.upcdn.net/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png">
 <meta property="article:published_time" content="2016-03-30T00:38:49.000Z">
 <meta property="article:modified_time" content="2016-03-30T00:41:01.000Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://dreampiggy-image.test.upcdn.net/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png">
+<meta name="twitter:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png">
 
 <link rel="canonical" href="http://dreampiggy.com/2016/03/30/%E5%81%B6%E7%84%B6%E5%8F%91%E7%8E%B0%E7%9A%84%EF%BC%8C%E5%85%B3%E4%BA%8EC-%E6%8C%87%E9%92%88%E7%9A%84%E4%B8%80%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
 
@@ -277,7 +277,7 @@
 <p>直到写完了，才发现自己其实一直没有搞懂，这种arrayPointer[i]表示什么。于是做了一个测试～</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cout&lt;&lt;<span class="string">&quot;现在输出数组中元素\n第一种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;arrayPointer[i]&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">cout&lt;&lt;<span class="string">&quot;\n第二种：&quot;</span>&lt;&lt;endl;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>;i&lt;arraySize;i++)&#123;</span><br><span class="line">	cout&lt;&lt;i&lt;&lt;<span class="string">&quot;元素: &quot;</span>&lt;&lt;*(arrayPointer + i)&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="http://dreampiggy-image.test.upcdn.net/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png"></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-07-14/image/c/b8/7d8680b175f4e74b2de45bd2733e2.png"></p>
 <p>试验了一下，才发现，其实arrayPointer[i] 和*(arrayPointer + i) 是等价的，前者是代表从arrayPointer的首地址开始计数，而arrayPointer[0]代表就是arrayPointer指向的地址所对应的值。这一点应该注意一下（其实以前觉得数组和指针挺像的，但是从这一点就知道数组绝对是指针的一小部分子集）。</p>
 <p>给自己提个醒吧－ －顺便怀念一下远去的C++。</p>
 
