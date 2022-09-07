@@ -211,6 +211,84 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2022/09/07/Xcode%20LLDB%E8%80%97%E6%97%B6%E7%9B%91%E6%8E%A7%E7%BB%9F%E8%AE%A1%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/07/Xcode%20LLDB%E8%80%97%E6%97%B6%E7%9B%91%E6%8E%A7%E7%BB%9F%E8%AE%A1%E6%96%B9%E6%A1%88/" class="post-title-link" itemprop="url">Xcode LLDB耗时监控统计方案</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-09-07 20:12:00 / 修改时间：12:12:57" itemprop="dateCreated datePublished" datetime="2022-09-07T20:12:00+00:00">2022-09-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h1><p>此篇文章在字节跳动的技术公众号已经刊登：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/4DgbZosBit-kTVhYMwRlHw">《字节跳动DanceCC工具链系列之Xcode LLDB耗时监控统计方案》</a></p>
+<h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>在<a href="https://dreampiggy.com/2022/05/07/Swift-%E8%B0%83%E8%AF%95%E6%80%A7%E8%83%BD%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/">《Swift 调试性能的优化方案 》</a>一文中，我们介绍了如何使用自定义的工具链，来针对性优化调试器的性能，解决大型Swift项目的调试痛点。</p>
+<p>在经过内部项目的接入以及一段时间的试用之后，为了精确测量经过优化后的LLDB调试Xcode项目效率提升效果，衡量项目收益，需要开发一套能够同时获取Xcode官方工具链与DanceCC工具链调试耗时的耗时监控方案。</p>
+<p>一般来说，LLDB内置的工作耗时，可以通过输入log timers dump来获取粗略的累计耗时，但是这个耗时只包括了源代码中插入了LLDB_SCOPED_TIMER()宏的函数，并不代表完整的真实耗时。并且这个耗时统计需要用户手动触发，如果要单独获取某次操作的耗时还需要先进行reset操作清空之前的耗时记录；对于我们目前的需求而言不够精确也不够自动。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/07/Xcode%20LLDB%E8%80%97%E6%97%B6%E7%9B%91%E6%8E%A7%E7%BB%9F%E8%AE%A1%E6%96%B9%E6%A1%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2022/05/07/Swift-%E8%B0%83%E8%AF%95%E6%80%A7%E8%83%BD%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -242,7 +320,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-14 10:02:19" itemprop="dateModified" datetime="2022-07-14T10:02:19+00:00">2022-07-14</time>
+                <time title="修改时间：2022-09-07 12:12:57" itemprop="dateModified" datetime="2022-09-07T12:12:57+00:00">2022-09-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -326,7 +404,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-14 10:02:19" itemprop="dateModified" datetime="2022-07-14T10:02:19+00:00">2022-07-14</time>
+                <time title="修改时间：2022-09-07 12:12:57" itemprop="dateModified" datetime="2022-09-07T12:12:57+00:00">2022-09-07</time>
               </span>
 
           
@@ -408,7 +486,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-14 10:02:19" itemprop="dateModified" datetime="2022-07-14T10:02:19+00:00">2022-07-14</time>
+                <time title="修改时间：2022-09-07 12:12:57" itemprop="dateModified" datetime="2022-09-07T12:12:57+00:00">2022-09-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -493,7 +571,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-14 10:02:19" itemprop="dateModified" datetime="2022-07-14T10:02:19+00:00">2022-07-14</time>
+                <time title="修改时间：2022-09-07 12:12:57" itemprop="dateModified" datetime="2022-09-07T12:12:57+00:00">2022-09-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -577,7 +655,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-14 10:02:19" itemprop="dateModified" datetime="2022-07-14T10:02:19+00:00">2022-07-14</time>
+                <time title="修改时间：2022-09-07 12:12:57" itemprop="dateModified" datetime="2022-09-07T12:12:57+00:00">2022-09-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -661,7 +739,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-14 10:02:19" itemprop="dateModified" datetime="2022-07-14T10:02:19+00:00">2022-07-14</time>
+                <time title="修改时间：2022-09-07 12:12:57" itemprop="dateModified" datetime="2022-09-07T12:12:57+00:00">2022-09-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -745,7 +823,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-14 10:02:19" itemprop="dateModified" datetime="2022-07-14T10:02:19+00:00">2022-07-14</time>
+                <time title="修改时间：2022-09-07 12:12:57" itemprop="dateModified" datetime="2022-09-07T12:12:57+00:00">2022-09-07</time>
               </span>
 
           
@@ -767,96 +845,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2019/04/16/%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%B8%A6%E4%BD%A0%E5%BC%80%E5%8F%91macOS-QuickLook-Plugin/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88/" class="post-title-link" itemprop="url">主流图片加载库所使用的预解码究竟干了什么</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-01-18 14:09:27" itemprop="dateCreated datePublished" datetime="2019-01-18T14:09:27+00:00">2019-01-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-14 10:02:19" itemprop="dateModified" datetime="2022-07-14T10:02:19+00:00">2022-07-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="主流图片加载库所使用的预解码究竟干了什么"><a href="#主流图片加载库所使用的预解码究竟干了什么" class="headerlink" title="主流图片加载库所使用的预解码究竟干了什么"></a>主流图片加载库所使用的预解码究竟干了什么</h1><blockquote>
-<p>很多图片库，都会有一个类似叫做Force-Decode，Decode For Display之类的感念，很多人可能对这个过程到底是为了解决什么问题不清楚，这里写一个文章来说明它。</p>
-</blockquote>
-<p>这里列举了各个图片库各自的说法，其实讲的都是完全相同的一个概念。</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage/">SDWebImage</a>：使用了<code>forceDecode</code>, <code>decompressImages</code>的概念</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/ibireme/YYWebImage">YYWebImage</a>：使用了<code>decodeForDisplay</code>的概念</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/onevcat/Kingfisher">Kingfisher</a>：使用了<code>backgroundDecode</code>的概念</li>
-</ul>
-<h1 id="为什么需要这个过程，解决了什么问题"><a href="#为什么需要这个过程，解决了什么问题" class="headerlink" title="为什么需要这个过程，解决了什么问题"></a>为什么需要这个过程，解决了什么问题</h1><p>为了解释这个过程具体的解决问题，需要至少了解苹果的系统解码器的工作流程。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -947,7 +935,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

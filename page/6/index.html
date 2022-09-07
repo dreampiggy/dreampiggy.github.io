@@ -211,6 +211,86 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Swift%E6%9D%A5%E5%AE%8C%E6%88%90%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/03/30/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Swift%E6%9D%A5%E5%AE%8C%E6%88%90%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6/" class="post-title-link" itemprop="url">iOS开发中使用Swift来完成异步事件</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2016-03-30 01:44:12 / 修改时间：02:44:10" itemprop="dateCreated datePublished" datetime="2016-03-30T01:44:12+00:00">2016-03-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>异步事件编程，其实并不是什么新东西了，基本所有涉及到GUI的，网络请求的，数据库读写的，都会有它的身影。</p>
+<p>异步事件，就是说这一个代码或者代码块，并不会阻塞程序的运行，程序会立即执行下一条语句，而这条语句，会在相应的方法调用结束之后，执行它自身的回调函数发送一些信号，来表明这个异步事件完成。就像你约会提前1小时到见面地点，先去买点东西踩点什么的（……），等GF/BF到了之后短信通知你，你就立即回来。而不是一直在原地等到对方过来（……）</p>
+<p>最早使用异步开发，是在使用JavaScript来开发Web前端的时候，<strong>XMLHttpRequest</strong>或者<strong>jQuery</strong>的**$.ajax**中，都会用到回调函数，来指明成功或者失败之后的处理方法。当对应的网络请求得到响应之后，会调用响应的成功或者失败的回调函数，然后执行里面相应的方法，这大大提升了前端的效率，不会在网络请求时整个页面卡住，而且也不需要一次次轮询看是否有响应，简化了代码的复杂性。</p>
+<p>这点Node.js中更为常见，不过也更能表现中滥用异步事件编程的问题。新人使用Node.js总会发现基本任何东西都是异步的，数据库是异步的，IO文件操作是异步的，Session读写是异步的，甚至获得Request对象都是异步的。这就导致很多人一直在嵌套回调函数，导致了著名的<a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/Ur2EfmZ">Callback Hell</a></p>
+<p>在Node.js中，解决方案有非常成熟的<a target="_blank" rel="noopener" href="https://github.com/caolan/async">Async</a>，更有号称能用同步思维写异步的<a target="_blank" rel="noopener" href="https://github.com/then/promise">Promises</a>，都是非常棒的解决方案。前者的本质就是一个自动生成回调的封装……，后者则是一个真正意义上的全新的解决方案。</p>
+<p>而在Swift和iOS开发中，也有必须用到异步事件编程的地方。除了View层的简单UI和Controller之间的交互以外（这部分一般不需要手写代码处理异步交互或者顺序），其他很多地方需要这些知识。例如网络请求的异步调用，请求队列的处理（虽然可以一个网络请求就是一个线程，但这种方法的效率不高，而且容易导致线程间冲突），SQLite数据库大量数据的读写，本地存储的大量数据读写，复杂UI的渲染顺序等等……这些都是需要进行异步编程的，而不能让同步的代码阻塞住整个应用或者UI。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/03/30/iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E4%BD%BF%E7%94%A8Swift%E6%9D%A5%E5%AE%8C%E6%88%90%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/Autolayout%E5%B0%8F%E6%8A%80%E5%B7%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -796,86 +876,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/Web%E5%B9%BB%E7%81%AF%E7%89%87%E5%88%A9%E5%99%A8%EF%BC%88%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%A6%8F%E5%88%A9%EF%BC%89%E2%80%94%E2%80%94NodePPT/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/03/30/Web%E5%B9%BB%E7%81%AF%E7%89%87%E5%88%A9%E5%99%A8%EF%BC%88%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%A6%8F%E5%88%A9%EF%BC%89%E2%80%94%E2%80%94NodePPT/" class="post-title-link" itemprop="url">Web幻灯片利器（前端工程师福利）——NodePPT</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2016-03-30 00:47:17 / 修改时间：01:31:09" itemprop="dateCreated datePublished" datetime="2016-03-30T00:47:17+00:00">2016-03-30</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>提到幻灯片，人人第一直觉就想到一个东西：PPT（Microsoft Office PowerPoint），也许还有人可能会小声说到 Keynote，或者Prezi，能提到reveal.js的基本少之又少……</p>
-<p>PowerPoint：<a target="_blank" rel="noopener" href="http://products.office.com/zh-CN/powerpoint">http://products.office.com/zh-CN/powerpoint</a></p>
-<p>Keynote：<a target="_blank" rel="noopener" href="http://www.apple.com/cn/mac/keynote">http://www.apple.com/cn/mac/keynote</a></p>
-<p>Prezi：<a target="_blank" rel="noopener" href="http://prezi.com/">http://prezi.com</a></p>
-<p>reveal.js：<a target="_blank" rel="noopener" href="http://lab.hakim.se/reveal-js">http://lab.hakim.se/reveal-js</a></p>
-<p>不过，常年用这些东西，未免也太”Low”了，我们需要追求更Fasion的幻灯片制方法。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/03/30/Web%E5%B9%BB%E7%81%AF%E7%89%87%E5%88%A9%E5%99%A8%EF%BC%88%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%A6%8F%E5%88%A9%EF%BC%89%E2%80%94%E2%80%94NodePPT/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -947,7 +947,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
