@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-185536.png">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-202706.png">
 <meta property="article:published_time" content="2022-11-07T23:45:00.000Z">
-<meta property="article:modified_time" content="2022-11-07T15:46:25.069Z">
+<meta property="article:modified_time" content="2022-11-07T15:55:29.090Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="Image">
 <meta property="article:tag" content="AVIF">
@@ -250,7 +250,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-11-07 23:45:00 / 修改时间：15:46:25" itemprop="dateCreated datePublished" datetime="2022-11-07T23:45:00+00:00">2022-11-07</time>
+              <time title="创建时间：2022-11-07 23:45:00 / 修改时间：15:55:29" itemprop="dateCreated datePublished" datetime="2022-11-07T23:45:00+00:00">2022-11-07</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -281,7 +281,7 @@
 <p>实话说，自从重心从iOS开发，转移到做LLVM工具链相关工作之后，我本以为不会再写这些上层iOS框架的文章了，但是<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage">SDWebImage</a>这个开源库依旧没有合我预期的新Maintainer，来作为交接，因此现在还是忍不住先写这一篇吐槽和说明文章。</p>
 <p>这篇文章会介绍，自iOS 13时代之后，苹果在ImageIO上做的一系列优化（“机制变化”），以及对开发者生态带来的影响。</p>
 <h3 id="WebP-AVIF新兴图像格式支持"><a href="#WebP-AVIF新兴图像格式支持" class="headerlink" title="WebP/AVIF新兴图像格式支持"></a>WebP/AVIF新兴图像格式支持</h3><blockquote>
-<p>在HEVC/HEIF在苹果高调提供支持之后，由于硬件解码器的加持，本以为苹果会对其他竞争的媒体格式不再抱有兴趣，但实际上并非如此</p>
+<p>自从HEVC/HEIF在苹果高调提供支持之后，由于硬件解码器的加持，本以为苹果会对其他竞争的媒体格式不再抱有兴趣，但实际上并非如此</p>
 </blockquote>
 <h4 id="WebP"><a href="#WebP" class="headerlink" title="WebP"></a>WebP</h4><p>WebP作为Google主导的无专利费的图像格式，其诞生后就一直跟随Chrome推广到各大Web站点，如今已经占据了互联网的一大部分（虽然其兄弟的WebM视频编码并没有这么热门）。</p>
 <p>早在iOS 11时代，我就呼吁并提Radar希望Apple的ImageIO能够支持原生的WebP，而最终，时隔3年，在iOS 14上，ImageIO终于迎来了其内置的WebP支持，并且能够在Mac，iPhone上的各种原生系统应用中，预览WebP图像了。</p>
@@ -290,7 +290,7 @@
 <p>换言之，使用这个ImageIO的系统解码器解码WebP，和使用我写的<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImageWebPCoder">SDWebImageWebPCoder</a>没有本质上的巨大差异（最多是一些编译器优化导致的差异），而后者还支持WebP编码（虽然耗时很慢）</p>
 <h4 id="AVIF"><a href="#AVIF" class="headerlink" title="AVIF"></a>AVIF</h4><p><a target="_blank" rel="noopener" href="https://aomediacodec.github.io/av1-avif/v1.1.0.html">AVIF</a>是基于AV1视频编码的新兴图像格式，作为HEVC的无专利费的竞争对手。AVIF与AV1，HEIF和HEVC，这两大阵营的关系一直是在相互竞争中不断发展的。而各大视频站如YouTube，Netflix，以及国内的Bilibli都在积极的推广这一视频格式，减少CDN带宽和专利费的成本。</p>
 <p>而随着Apple在2018年加入<a target="_blank" rel="noopener" href="https://aomedia.org/">AOM-Alliance for Open Media</a>之后，我就预测有朝一日能够看到苹果拥抱这一开源标准。在2021年WebKit的开源部分曾经接受了<a target="_blank" rel="noopener" href="https://bugs.webkit.org/show_bug.cgi?id=207750">PR并支持AVIF软件解码</a>。而在2022的今年，iOS 16/macOS 13搭载的Safari 16，已经正式宣布<a target="_blank" rel="noopener" href="https://webkit.org/blog/13152/webkit-features-in-safari-16-0/">支持了AVIF</a></p>
-<p>虽然目前没有在其他系统应用中可以直接预览AVIF，但是我们已经看到这一趋势。在ImageIO的反编译结果中也看到了对<code>.avif</code>的处理和UTI的识别，虽然目前其本身只是会fallback到AVCI（<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/H.264/MPEG-4_AVC">AVC编码</a>的HEIF，并不是AV1），但是我详细后续版本一定会带来其对应的原生SDK和应用层的整体支持，甚至未来可以看到AV1的硬件解码器。</p>
+<p>虽然目前没有在其他系统应用中可以直接预览AVIF，但是我们已经看到这一趋势。在ImageIO的反编译结果中也看到了对<code>.avif</code>的处理和UTI的识别，虽然目前其本身只是会fallback到AVCI（<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/H.264/MPEG-4_AVC">AVC编码</a>的HEIF，并不是AV1），但是我相信，后续OS版本一定会带来其对应的原生SDK和应用层的整体支持，甚至未来可以看到新iPhone搭载AV1的硬件解码器。</p>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-211812.png" alt="screenshot-20221107-211812"></p>
 <p>PS：广告时间，我之前也尝试过一些利用开源AV1解码器实现的<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImageAVIFCoder">AVIF解码库</a>，以及macOS专用的<a target="_blank" rel="noopener" href="https://github.com/dreampiggy/AVIFQuickLook">Finder QuickLook插件</a>，在未来到来之前，依旧可以发挥其最后的功用：）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install avifquicklook</span><br></pre></td></tr></table></figure>
@@ -300,28 +300,29 @@
 </blockquote>
 <p>而从iOS 13之后，苹果对硬件解码的支持的图像格式的上屏渲染，大量使用了IOSurface，抛弃了原有的“主线程触发CGImage的惰性解码”的模式。</p>
 <p>也就是说，《主流图片加载库所使用的预解码究竟干了什么》这篇文章关于ImageIO的部分已经彻底过时了，至少对于JPEG/HEIF而言是这样。</p>
-<p>如何验证这一点呢？可以从一个简单的Demo，我们这里有一个<code>4912*7360</code>分辨率的JPEG和HEIC图（<a target="_blank" rel="noopener" href="https://p11.douyinpic.com/img/douyin-admin-obj/a67f70f5b8c681b25e768cf5ecde0b9b~noop.heic">链接</a>），使用UIImageView渲染上屏，开启Instruments，对比内存占用一目了然</p>
+<p>如何验证这一点呢？可以从一个简单的Demo，我们这里有一个<code>4912*7360</code>分辨率的JPEG和HEIC图（<a target="_blank" rel="noopener" href="https://p11.douyinpic.com/img/douyin-admin-obj/a67f70f5b8c681b25e768cf5ecde0b9b~noop.heic">链接</a>），使用UIImageView渲染上屏，开启Instruments，对比内存占用</p>
+<p>IOSurface：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JPEG/HEIF格式限定，iOS 13，arm64真机限定</span></span><br><span class="line"><span class="keyword">let</span> data <span class="operator">=</span> <span class="keyword">try!</span> <span class="type">Data</span>(contentsOf: largeJpegUrl)</span><br><span class="line"><span class="keyword">let</span> image <span class="operator">=</span> <span class="type">UIImage</span>(data: data)<span class="operator">!</span></span><br><span class="line"><span class="keyword">self</span>.imageView.image <span class="operator">=</span> image</span><br></pre></td></tr></table></figure>
 
-<p>vs</p>
+<p>CGImage：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JPEG/HEIF格式限定，iOS 13，arm64真机限定</span></span><br><span class="line"><span class="keyword">let</span> data <span class="operator">=</span> <span class="keyword">try!</span> <span class="type">Data</span>(contentsOf: largeJpegUrl)</span><br><span class="line"><span class="keyword">let</span> source <span class="operator">=</span> <span class="type">CGImageSourceCreateWithData</span>(data <span class="keyword">as</span> <span class="type">CFData</span>, <span class="literal">nil</span>)<span class="operator">!</span></span><br><span class="line"><span class="keyword">let</span> cgImage <span class="operator">=</span> <span class="type">CGImageSourceCreateImageAtIndex</span>(source, <span class="number">0</span>, <span class="literal">nil</span>)<span class="operator">!</span></span><br><span class="line"><span class="keyword">let</span> image <span class="operator">=</span> <span class="type">UIImage</span>(cgImage: cgImage)</span><br><span class="line"><span class="keyword">self</span>.imageView.image <span class="operator">=</span> image</span><br></pre></td></tr></table></figure>
 
-<p>就可以发现这个神奇的内存占用，除了峰值上HEIC出现了翻倍，最终稳定占用都为<strong>51.72MB</strong></p>
-<p>而直接用ImageIO（或者你换用模拟器而不是真机），则结果为<strong>137.9MB</strong>（RGBA8888）</p>
+<p>数据较多，直接看IOSurface的结果，可以发现，除了峰值上HEIC出现了翻倍，最终稳定占用都为<strong>51.72MB</strong></p>
+<p>而直接用CGImage（或者你换用模拟器而不是真机），则结果为<strong>137.9MB</strong>（RGBA8888）</p>
 <ul>
-<li>JPEG</li>
+<li>JPEG（IOSurface）</li>
 </ul>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-220103.png" alt="screenshot-20221107-220103.png"></p>
 <ul>
-<li>HEIC</li>
+<li>HEIC（IOSurface）</li>
 </ul>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-220104.png" alt="screenshot-20221107-220104.png"></p>
-<h4 id="50-内存开销的奥秘"><a href="#50-内存开销的奥秘" class="headerlink" title="50%内存开销的奥秘"></a>50%内存开销的奥秘</h4><p>从中可以看到，苹果系统库的内部流程，已经废弃了CGImage来传递这种硬件解码器的数据Buffer，而直接使用IOSurface，以换取更小的内存开销，达到同分辨率下RGBA8888的内存占用的<strong>37.5%（即3/8）</strong>，同分辨率下RGB888的内存占用的<strong>50%（即1/2）</strong></p>
+<h4 id="50-内存开销的奥秘"><a href="#50-内存开销的奥秘" class="headerlink" title="50%内存开销的奥秘"></a>50%内存开销的奥秘</h4><p>反编译可以发现，苹果系统库的内部流程，已经废弃了CGImage来传递这种硬件解码器的数据Buffer，而直接使用IOSurface，以换取更小的内存开销，达到同分辨率下RGBA8888的内存占用的<strong>37.5%（即3/8）</strong>，同分辨率下RGB888的内存占用的<strong>50%（即1/2）</strong></p>
 <p>你可能会表示很震惊，因为数学公式告诉我们，一个Bitmap Buffer的内存占用为：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Bytes = BytesPerPixel * Width * Height</span><br></pre></td></tr></table></figure>
 
 <p>而要实现这个无Alpha通道的50%内存占用，简单计算就知道，意味着<code>BytesPerPixel</code>只有1.5，也就是说12个Bit，存储了3个256（2^8）色彩信息，换句话说0-255的数字用4个Bit表示！</p>
-<p>你觉得数学上可能吗？答案是否定的，答案是用了<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Chroma_subsampling">色度采样</a>，学过数字图像处理的同学都应该有所了解。</p>
+<p>你觉得数学上可能吗？答案是否定的，因为实际上是用了<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Chroma_subsampling">色度采样</a>，并不是完整的0-255的数字，学过数字图像处理的同学都应该有所了解。</p>
 <p>打开调试器，给IOSurface的<code>initWithProperties:</code>下断点，发现这个创建的IOSurface很有意思，<code>PixelFormat = 875704438(&#39;420v&#39;)</code>，即<code>kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange</code>，看来使用了<a target="_blank" rel="noopener" href="https://markrepo.github.io/avcodec/2018/06/28/YUV/">YUV 4:2:0的采样方式</a></p>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-215148.png" alt="screenshot-20221107-215148"></p>
 <p>因此，这里应该对应有两个Plane，分别对应了Y和CbCr两个采样的平面，最终由GPU渲染时进行处理。这里不采取YUV 4:4:4的原因是，大多数JPEG/HEIF的无透明度的图像，在肉眼来看，采样损失的色度人眼差异不大，这一优化能节省50%内存占用，无疑是值得的。</p>
