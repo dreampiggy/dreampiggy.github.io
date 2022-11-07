@@ -187,11 +187,13 @@ defer { surface.unlock(options: .readOnly, seed: nil) }
 
 #### Workaround方案
 
-最终，针对这个问题，SDWebImage提供了两套解决思路，第一个思路是直接通过CGContext提取得到自己的Bitmap Buffer，得到一个新的CGImage，切断整个持有链，最简单粗暴的修复，代码是全量关闭惰性解码带来的高内存占用（#3387修复在5.13.4版本上）
+最终，针对这个问题，SDWebImage提供了两套解决思路，第一个思路是直接通过CGContext提取得到自己的Bitmap Buffer，得到一个新的CGImage，切断整个持有链，最简单粗暴的修复，代码是全量关闭惰性解码带来的高内存占用（[#3387](https://github.com/SDWebImage/SDWebImage/pull/3387)，修复在5.13.4版本上）
 
-第二个思路是，通过抹除掉CGImage持有的这些额外信息，采取通过CGImageCreate重新创建一个复制的CGImage，但是依旧保留了惰性解码的可选能力（#3425方案在5.14.0版本上）。顺便提一句，通常动图（GIF/AWebP）都不支持硬件解码且切换帧频率较高，关闭惰性解码依旧是小图的推荐行为。
+第二个思路是，通过抹除掉CGImage持有的这些额外信息，采取通过CGImageCreate重新创建一个复制的CGImage，但是依旧保留了惰性解码的可选能力（[#3425](https://github.com/SDWebImage/SDWebImage/pull/3425)，方案在5.14.0版本上）。顺便提一句，通常动图（GIF/AWebP）都不支持硬件解码且切换帧频率较高，关闭惰性解码依旧是小图的推荐行为。
 
-PS：对感兴趣的小伙伴详细解释一下，第二个思路利用了CGImageProperty（类似于CGImage上存储的一个字典，按Key-Value形式存取）的时机特性，使用`CGImageCreate`重建CGImage时会完全丢失所有CGImageProperty（只有`CGImageCreateCopy`能够保留）。而上文提到的`CGImageGetImageSource/CGImageSetImageSource`这些私有接口，本质上是操作这个`com.apple.ImageIO.imageSourceReadRef`的Key（全局变量`kImageIO_imageSourceReadRef`），Value存储了ImageIO的C++对象，并可以还原回一个CGImageSourceRef指针。一旦我们把CGImageProperty丢失掉，那么就能打断这个持有链条。
+PS：对感兴趣的小伙伴详细解释一下，第二个解决思路利用了CGImageProperty（类似于CGImage上存储的一个字典，按Key-Value形式存取）的时机特性，使用`CGImageCreate`重建CGImage时会完全丢失所有CGImageProperty（只有`CGImageCreateCopy`能够保留）。
+
+而上文提到的`CGImageGetImageSource/CGImageSetImageSource`这些私有接口，本质上是操作这个`com.apple.ImageIO.imageSourceReadRef`的Key（全局变量`kImageIO_imageSourceReadRef`），Value存储了ImageIO的C++对象，并可以还原回一个CGImageSourceRef指针。一旦我们把CGImageProperty丢失掉，那么就能打断这个持有链条。
 
 ![screenshot-20221107-202706](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-202706.png)
 
