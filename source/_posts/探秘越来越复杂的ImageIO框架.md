@@ -21,7 +21,7 @@ ImageIO定位是上层框架，封装了诸多的苹果的底层解码器，开�
 
 ### WebP/AVIF新兴图像格式支持
 
-> 在HEVC/HEIF在苹果高调提供支持之后，由于硬件解码器的加持，本以为苹果会对其他竞争的媒体格式不再抱有兴趣，但实际上并非如此
+> 自从HEVC/HEIF在苹果高调提供支持之后，由于硬件解码器的加持，本以为苹果会对其他竞争的媒体格式不再抱有兴趣，但实际上并非如此
 
 #### WebP
 
@@ -41,7 +41,7 @@ WebP作为Google主导的无专利费的图像格式，其诞生后就一直跟�
 
 而随着Apple在2018年加入[AOM-Alliance for Open Media](https://aomedia.org/)之后，我就预测有朝一日能够看到苹果拥抱这一开源标准。在2021年WebKit的开源部分曾经接受了[PR并支持AVIF软件解码](https://bugs.webkit.org/show_bug.cgi?id=207750)。而在2022的今年，iOS 16/macOS 13搭载的Safari 16，已经正式宣布[支持了AVIF](https://webkit.org/blog/13152/webkit-features-in-safari-16-0/)
 
-虽然目前没有在其他系统应用中可以直接预览AVIF，但是我们已经看到这一趋势。在ImageIO的反编译结果中也看到了对`.avif`的处理和UTI的识别，虽然目前其本身只是会fallback到AVCI（[AVC编码](https://en.wikipedia.org/wiki/H.264/MPEG-4_AVC)的HEIF，并不是AV1），但是我详细后续版本一定会带来其对应的原生SDK和应用层的整体支持，甚至未来可以看到AV1的硬件解码器。
+虽然目前没有在其他系统应用中可以直接预览AVIF，但是我们已经看到这一趋势。在ImageIO的反编译结果中也看到了对`.avif`的处理和UTI的识别，虽然目前其本身只是会fallback到AVCI（[AVC编码](https://en.wikipedia.org/wiki/H.264/MPEG-4_AVC)的HEIF，并不是AV1），但是我相信，后续OS版本一定会带来其对应的原生SDK和应用层的整体支持，甚至未来可以看到新iPhone搭载AV1的硬件解码器。
 
 ![screenshot-20221107-211812](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-211812.png)
 
@@ -59,7 +59,9 @@ brew install avifquicklook
 
 也就是说，《主流图片加载库所使用的预解码究竟干了什么》这篇文章关于ImageIO的部分已经彻底过时了，至少对于JPEG/HEIF而言是这样。
 
-如何验证这一点呢？可以从一个简单的Demo，我们这里有一个`4912*7360`分辨率的JPEG和HEIC图（[链接](https://p11.douyinpic.com/img/douyin-admin-obj/a67f70f5b8c681b25e768cf5ecde0b9b~noop.heic)），使用UIImageView渲染上屏，开启Instruments，对比内存占用一目了然
+如何验证这一点呢？可以从一个简单的Demo，我们这里有一个`4912*7360`分辨率的JPEG和HEIC图（[链接](https://p11.douyinpic.com/img/douyin-admin-obj/a67f70f5b8c681b25e768cf5ecde0b9b~noop.heic)），使用UIImageView渲染上屏，开启Instruments，对比内存占用
+
+IOSurface：
 
 ```swift
 // JPEG/HEIF格式限定，iOS 13，arm64真机限定
@@ -68,7 +70,7 @@ let image = UIImage(data: data)!
 self.imageView.image = image
 ```
 
-vs
+CGImage：
 
 ```swift
 // JPEG/HEIF格式限定，iOS 13，arm64真机限定
@@ -79,23 +81,23 @@ let image = UIImage(cgImage: cgImage)
 self.imageView.image = image
 ```
 
-就可以发现这个神奇的内存占用，除了峰值上HEIC出现了翻倍，最终稳定占用都为**51.72MB**
+数据较多，直接看IOSurface的结果，可以发现，除了峰值上HEIC出现了翻倍，最终稳定占用都为**51.72MB**
 
-而直接用ImageIO（或者你换用模拟器而不是真机），则结果为**137.9MB**（RGBA8888）
+而直接用CGImage（或者你换用模拟器而不是真机），则结果为**137.9MB**（RGBA8888）
 
-+ JPEG
++ JPEG（IOSurface）
 
 ![screenshot-20221107-220103.png](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-220103.png)
 
 
-+ HEIC
++ HEIC（IOSurface）
 
 ![screenshot-20221107-220104.png](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-220104.png)
 
 
 #### 50%内存开销的奥秘
 
-从中可以看到，苹果系统库的内部流程，已经废弃了CGImage来传递这种硬件解码器的数据Buffer，而直接使用IOSurface，以换取更小的内存开销，达到同分辨率下RGBA8888的内存占用的**37.5%（即3/8）**，同分辨率下RGB888的内存占用的**50%（即1/2）**
+反编译可以发现，苹果系统库的内部流程，已经废弃了CGImage来传递这种硬件解码器的数据Buffer，而直接使用IOSurface，以换取更小的内存开销，达到同分辨率下RGBA8888的内存占用的**37.5%（即3/8）**，同分辨率下RGB888的内存占用的**50%（即1/2）**
 
 你可能会表示很震惊，因为数学公式告诉我们，一个Bitmap Buffer的内存占用为：
 
@@ -105,7 +107,7 @@ Bytes = BytesPerPixel * Width * Height
 
 而要实现这个无Alpha通道的50%内存占用，简单计算就知道，意味着`BytesPerPixel`只有1.5，也就是说12个Bit，存储了3个256（2\^8）色彩信息，换句话说0-255的数字用4个Bit表示！
 
-你觉得数学上可能吗？答案是否定的，答案是用了[色度采样](https://en.wikipedia.org/wiki/Chroma_subsampling)，学过数字图像处理的同学都应该有所了解。
+你觉得数学上可能吗？答案是否定的，因为实际上是用了[色度采样](https://en.wikipedia.org/wiki/Chroma_subsampling)，并不是完整的0-255的数字，学过数字图像处理的同学都应该有所了解。
 
 打开调试器，给IOSurface的`initWithProperties:`下断点，发现这个创建的IOSurface很有意思，`PixelFormat = 875704438('420v')`，即`kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange`，看来使用了[YUV 4:2:0的采样方式](https://markrepo.github.io/avcodec/2018/06/28/YUV/)
 
