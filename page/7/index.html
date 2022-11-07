@@ -211,6 +211,87 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/Web%E5%85%A5%E9%97%A8%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%9C%89%E6%84%9F%E2%80%94%E2%80%94Node-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/03/30/Web%E5%85%A5%E9%97%A8%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%9C%89%E6%84%9F%E2%80%94%E2%80%94Node-js/" class="post-title-link" itemprop="url">Web入门后端架构有感——Node.js</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2016-03-30 00:56:15 / 修改时间：00:59:35" itemprop="dateCreated datePublished" datetime="2016-03-30T00:56:15+00:00">2016-03-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>说来也是惭愧，从大一暑假接触到第一门Web后端语言——PHP之后，自己对Web应用程序的认识却一直没有多大改变，对整个Web服务器的运行也没有清晰的概念。不过，这个大二的寒假里面，由于需要架设一个Web多人协作编辑平台，我接触到了这个非常热门尽管国内应用不多的后端架设方式——<code>Node.js</code></p>
+<p>说到Node.js，其实很多人也都知道，一个JavaScript在本地的运行时，基于Google的V8引擎。很可惜，由于自己当时学习Web主要走的后端路线，自己对JavaScript的认识也就靠的是w3school的简单说明和了解以及简单的jQuery用法罢了。学Node.js对我印象最大的，就是事件驱动的回调函数。（其实还是与自己并未真正接触到函数式编程有关）</p>
+<p>举个例子，就是最简单的Hello World Web应用程序。 </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">&quot;http&quot;</span>);</span><br><span class="line"></span><br><span class="line">http.<span class="title function_">createServer</span>(<span class="keyword">function</span>(<span class="params">request, response</span>) &#123;</span><br><span class="line">  response.<span class="title function_">writeHead</span>(<span class="number">200</span>, &#123;<span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;text/plain&quot;</span>&#125;);</span><br><span class="line">  response.<span class="title function_">write</span>(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">  response.<span class="title function_">end</span>();</span><br><span class="line">&#125;).<span class="title function_">listen</span>(<span class="number">8888</span>);</span><br></pre></td></tr></table></figure>
+
+<p>在JavaScript里面，函数是和变量同地位的一等公民，它可以被传递进当为参数，这种写法初次接触JavaScript的人肯定感觉非常不适应（尤其从Java,PHP转来的），不过习惯之后便发现这样带来了不错的易读性。这里面，那个匿名函数function(request,response)就是一个回调函数，Node.js内置的http对象通过listen进行8888端口的监听，一旦有任何访问便会调用这个回调函数，执行那三行来发送一个Hello World的HTML文本回去</p>
+<p>Node.js编写Web程序的体验绝对是Java和PHP很难达到的，因为你不仅要写一个Web应用程序，必须自己写一个HTTP服务器程序。不过这也意味着你可以干更多的事而不用局限于PHP这种解释器一样执行的代码，很多人甚至不知道在一行简单的echo “Hello World!” 的背后的Web应用程序究竟是怎样工作的，你也可以不用再和Apache，Nginx这种Web应用程序的使用打交道，你可以自己写一个类似的出来，定制化更高。   上面关于Node.js的简单认识也就先这样，下面我想说说关于Web应用程序的非常简单的架构组织。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/03/30/Web%E5%85%A5%E9%97%A8%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84%E6%9C%89%E6%84%9F%E2%80%94%E2%80%94Node-js/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/Web%E5%B9%BB%E7%81%AF%E7%89%87%E5%88%A9%E5%99%A8%EF%BC%88%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%A6%8F%E5%88%A9%EF%BC%89%E2%80%94%E2%80%94NodePPT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -788,87 +869,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/29/%E6%88%91%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E5%BB%BA%E6%88%90%E5%95%A6%EF%BC%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/03/29/%E6%88%91%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E5%BB%BA%E6%88%90%E5%95%A6%EF%BC%81/" class="post-title-link" itemprop="url">我的个人博客建成啦！^^</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2016-03-29 23:40:12" itemprop="dateCreated datePublished" datetime="2016-03-29T23:40:12+00:00">2016-03-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2016-03-30 00:36:30" itemprop="dateModified" datetime="2016-03-30T00:36:30+00:00">2016-03-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>首先，欢迎大家来到我的博客～</p>
-<p>本人想着，作为一个软件工程专业的学生，怎么也得有属于自己的一个网站或者博客吧？于是，趁着有空，抽出时间做出了这个博客。</p>
-<p>博客主要用于记录个人的生活感想，编程方面的知识，设计方面的想法以及其他杂谈，希望大家能够多多提出意见，与我进行交流，来者不拒。</p>
-<p>博客采用了WordPress开发，借用了他人的第三方主题并加以修改（大一学到的PHP终于有了一点用武之地了T.T），服务器为新浪云（SAE），并购买了<a target="_blank" rel="noopener" href="http://www.dreampiggy.com域名,大家以后要多多来看哦./">www.dreampiggy.com域名，大家以后要多多来看哦。</a></p>
-<p>博客可以在电脑浏览器上浏览，也可以手机浏览（虽然暂时的响应式设计是根据分辨率判断的，可能高分辨率设备会被误认为电脑……以后再改进为UA判断，先让我休息一会……）。</p>
-<p>博客允许用多说评论，大家可能不知道多说，这是一个广泛采用的论坛或者博客的评论系统，可以使用第三方，包括微博，QQ，人人等主流平台账号登陆，并且自动更新头像，还可以获取通知，甚至在其他网页上采用多说的评论时会自动同步。希望大家尽量不要游客评论（游客我也分不清呀……用第三方平台账号登陆很快滴）</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/03/29/%E6%88%91%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E5%BB%BA%E6%88%90%E5%95%A6%EF%BC%81/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -936,7 +940,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-count">57</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -949,7 +953,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

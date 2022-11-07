@@ -234,10 +234,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-09-07 20:12:00 / 修改时间：12:39:43" itemprop="dateCreated datePublished" datetime="2022-09-07T20:12:00+00:00">2022-09-07</time>
+              <time title="创建时间：2022-09-07 20:12:00" itemprop="dateCreated datePublished" datetime="2022-09-07T20:12:00+00:00">2022-09-07</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -266,6 +272,94 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/09/07/Xcode-LLDB%E8%80%97%E6%97%B6%E7%9B%91%E6%8E%A7%E7%BB%9F%E8%AE%A1%E6%96%B9%E6%A1%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2022/09/07/%E6%8E%A2%E7%A7%98%E8%B6%8A%E6%9D%A5%E8%B6%8A%E5%A4%8D%E6%9D%82%E7%9A%84ImageIO%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/07/%E6%8E%A2%E7%A7%98%E8%B6%8A%E6%9D%A5%E8%B6%8A%E5%A4%8D%E6%9D%82%E7%9A%84ImageIO%E6%A1%86%E6%9E%B6/" class="post-title-link" itemprop="url">探秘越来越复杂的ImageIO框架</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-09-07 20:12:00" itemprop="dateCreated datePublished" datetime="2022-09-07T20:12:00+00:00">2022-09-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码，以抽象的Source-Destination设计来提供了诸如从图像压缩数据解析得到CGImage，从CGImage编码得到压缩数据，甚至是从一个图像格式（JPEG）转码到另一个图像格式（HEIF）的能力</p>
+</blockquote>
+<p>ImageIO定位是上层框架，封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC/ProRes加速器等等底层细节，致力于提供和上层UI框架（如UIKit）的可交互性</p>
+<p>在早些年的时候，我写过一系列文章，介绍了其API使用的基本流程（参考：<a href="https://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89">《iOS平台图片编解码入门教程（Image/IO篇）》</a>），以及有关其惰性解码的机制（参考：<a href="https://dreampiggy.com/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88">《主流图片加载库所使用的预解码究竟干了什么》</a>）。</p>
+<p>实话说，自从重心从iOS开发，转移到做LLVM工具链相关工作之后，我本以为不会再写这些上层iOS框架的文章了，但是<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage">SDWebImage</a>这个开源库依旧没有合我预期的新Maintainer，来作为交接，因此现在还是忍不住先写这一篇吐槽和说明文章。</p>
+<p>这篇文章会介绍，自iOS 13时代之后，苹果在ImageIO上做的一系列优化（“机制变化”），以及对开发者生态带来的影响。</p>
+<h3 id="WebP-AVIF新兴图像格式支持"><a href="#WebP-AVIF新兴图像格式支持" class="headerlink" title="WebP/AVIF新兴图像格式支持"></a>WebP/AVIF新兴图像格式支持</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/07/%E6%8E%A2%E7%A7%98%E8%B6%8A%E6%9D%A5%E8%B6%8A%E5%A4%8D%E6%9D%82%E7%9A%84ImageIO%E6%A1%86%E6%9E%B6/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -320,7 +414,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -404,7 +498,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
               </span>
 
           
@@ -486,7 +580,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -571,7 +665,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -655,7 +749,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -739,7 +833,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -788,86 +882,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2019/04/16/%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%B8%A6%E4%BD%A0%E5%BC%80%E5%8F%91macOS-QuickLook-Plugin/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/04/16/%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%B8%A6%E4%BD%A0%E5%BC%80%E5%8F%91macOS-QuickLook-Plugin/" class="post-title-link" itemprop="url">一步步带你开发macOS QuickLook Plugin</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-04-16 15:02:11" itemprop="dateCreated datePublished" datetime="2019-04-16T15:02:11+00:00">2019-04-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="QuickLook简介"><a href="#QuickLook简介" class="headerlink" title="QuickLook简介"></a>QuickLook简介</h2><p>QuickLook 是macOS上提供的一项快速展示文档预览的功能，只需要按下空格就可以快速查看各种文件格式的信息，包括文本，代码，图片，音频，视频等等。</p>
-<p>由于QuickLook需要支持不断扩展的文件格式，因此macOS专门提供了一个QuickLook Plugin，能让开发者对自己的文件格式提供一个自定义的完整的UI显示，不必依赖macOS系统更新来支持缤纷复杂的格式。</p>
-<p>之前一段时间，出于兴趣做了一个<a target="_blank" rel="noopener" href="https://aomediacodec.github.io/av1-avif/">AVIF (AV1 Image File Format)</a>的解码器封装，AV1作为现在流行的HEVC(H.265)潜在未来竞争者，有着开源，无专利限制，更高的压缩比等等优势，比起HEVC晚诞生了5年。</p>
-<p>目前AVIF虽然发布了第一版规范，但是缺少相应的周边工具链的支持，在macOS上想要找一个简单的Image Viewer都没找到，调试起来异常困难，因此抽空顺便做了一个简单的Quick Look Plugin，来让自己能直接空格预览AVIF图像。</p>
-<p>在做QuickLook Plugin的过程中，感觉有一些小坑需要记下来，因此这篇文章，目标就是一个简单的入门教程，讲解如何做一个QuickLook Plugin，来对自己喜爱但又不被系统支持的文件格式，提供更好的用户体验支持。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/04/16/%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%B8%A6%E4%BD%A0%E5%BC%80%E5%8F%91macOS-QuickLook-Plugin/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -935,7 +953,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-count">57</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -948,7 +966,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

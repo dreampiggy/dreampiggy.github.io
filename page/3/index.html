@@ -211,6 +211,93 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" class="post-title-link" itemprop="url">客户端上动态图格式对比和解决方案</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-06 14:51:04" itemprop="dateCreated datePublished" datetime="2017-03-06T14:51:04+00:00">2017-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>对各种客户端来说，无论是Web还是移动端，图片占据的容量和传输资源一定是非常大的。对于静态图，我们常见的PNG和JPEG格式在压缩率和画质无损上都存在着不尽如人意的地方，而动图格式的GIF更是存在着很多问题，比如因此，在很多情况下，我们需要迁移到新的图片格式。</p>
+</blockquote>
+<h1 id="GIF"><a href="#GIF" class="headerlink" title="GIF"></a>GIF</h1><p>为什么我们不用GIF呢，GIF由于时代限制，存在的天生的问题。GIF的规范最新版本是在1989年制定的，一个24位色都没有普及的时代，因此，GIF规范只支持256色索引颜色，并且只能通过抖动、差值等方式模拟较多丰富的颜色。更为悲剧的是，它的alpha通道只有1bit，换言之，一个像素要么完全透明，要么完全不透明，而不像现在PNG的RGBA的8bit alpha通道，alpha值也可以和RGB一样都有255个透明值。这导致了所有GIF的图片带上透明度以后，边缘会出现明显的锯齿。所以如果你的客户端需要展示带透明度的动图，GIF基本上可以不考虑</p>
+<p><img src="http://blog.ibireme.com/wp-content/uploads/2015/11/gif_apng_demo.gif" title="GIF和APNG对比"></p>
+<p>实际的在线Demo，建议用Safari或者Chrome+插打开：<a target="_blank" rel="noopener" href="http://apng.onevcat.com/demo">http://apng.onevcat.com/demo</a></p>
+<h1 id="APNG"><a href="#APNG" class="headerlink" title="APNG"></a>APNG</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/03/06/%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E5%8A%A8%E6%80%81%E5%9B%BE%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/12/31/2016%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93%E5%92%8C%E8%BF%91%E6%9C%9F%E6%84%9F%E6%83%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -242,7 +329,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -329,7 +416,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -415,7 +502,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-07 12:39:43" itemprop="dateModified" datetime="2022-09-07T12:39:43+00:00">2022-09-07</time>
+                <time title="修改时间：2022-11-07 15:44:34" itemprop="dateModified" datetime="2022-11-07T15:44:34+00:00">2022-11-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -818,92 +905,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/06/17/Objective-C-ARC%E4%B8%8Bblock%E8%A1%A8%E7%8E%B0%E5%92%8C%E5%85%B3%E9%94%AE%E5%AD%97%E5%BD%B1%E5%93%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/06/17/Objective-C-ARC%E4%B8%8Bblock%E8%A1%A8%E7%8E%B0%E5%92%8C%E5%85%B3%E9%94%AE%E5%AD%97%E5%BD%B1%E5%93%8D/" class="post-title-link" itemprop="url">Objective-C ARC下block表现和关键字影响</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2016-06-17 00:58:03 / 修改时间：01:34:07" itemprop="dateCreated datePublished" datetime="2016-06-17T00:58:03+00:00">2016-06-17</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>Objective-C中的block是一种特别的结构，block与普通的instance不同的地方，不止更在于它的语法，更在于它的不同表现以及内存分配。</p>
-</blockquote>
-<p>虽然block对于Objective-C来说已经早不新鲜了，但现如今很多博文讲述的block行为是基于MRC的，这与ARC下的表现是不同的。现代Objective-C也应该渐渐淘汰MRC和GC（其实GC已经淘汰了，在<code>macOS Sierra已经无法使用，iOS从来不支持</code>）本文所提及情况均限于ARC</p>
-<h1 id="ARC下不同类型的block表现"><a href="#ARC下不同类型的block表现" class="headerlink" title="ARC下不同类型的block表现"></a>ARC下不同类型的block表现</h1><p>很多博文都提到过，block通过llvm编译后，会生成对应的三种Class的实例变量，分别是：<code>NSStackBlock</code>、<code>NSGlobalBlock</code>、<code>NSMallocBlock</code>，分配区域分别位于进程的栈，TEXT段，堆。ARC下为了简化block的内存管理，以及性能优化，llvm会对不同情形下的block进行不同的类型变化，</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">NSString</span> *string = <span class="string">@&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([^()&#123;&#125; <span class="keyword">class</span>]));</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([^()&#123;</span><br><span class="line">	<span class="type">int</span> b = a;</span><br><span class="line">&#125; <span class="keyword">class</span>]));</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> (^block1)(<span class="type">void</span>) = ^&#123;</span><br><span class="line">	<span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([block1 <span class="keyword">class</span>]));</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> (^block2)(<span class="type">void</span>) = ^&#123;</span><br><span class="line">	<span class="built_in">NSString</span> *b = string;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, <span class="built_in">NSStringFromClass</span>([block2 <span class="keyword">class</span>]));</span><br></pre></td></tr></table></figure>
-
-<p>猜猜输出是什么？</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/06/17/Objective-C-ARC%E4%B8%8Bblock%E8%A1%A8%E7%8E%B0%E5%92%8C%E5%85%B3%E9%94%AE%E5%AD%97%E5%BD%B1%E5%93%8D/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -971,7 +976,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-count">57</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -984,7 +989,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
