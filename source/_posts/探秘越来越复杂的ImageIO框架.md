@@ -9,9 +9,9 @@ tags:
 - WebP
 ---
 
-> ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码，以抽象的Source-Destination设计来提供了诸如从图像压缩数据解析得到CGImage，从CGImage编码得到压缩数据，甚至是从一个图像格式（JPEG）转码到另一个图像格式（HEIF）的能力
+> ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码支持。这篇文章主要讲述了三个子话题：WebP/AVIF的支持进展，IOSurafce和硬件解码优化50%内存开销，以及CGImageSource机制变化导致的线程安全问题
 
-ImageIO定位是上层框架，封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC/ProRes加速器等等底层细节，致力于提供和上层UI框架（如UIKit）的可交互性
+ImageIO的定位是上层的支持框架，其封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC/ProRes加速器等等底层细节，致力于提供和上层UI框架（如UIKit/CoreGraphics）的可交互性。
 
 在早些年的时候，我写过一系列文章，介绍了其API使用的基本流程（参考：[《iOS平台图片编解码入门教程（Image/IO篇）》](https://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89)），以及有关其惰性解码的机制（参考：[《主流图片加载库所使用的预解码究竟干了什么》](https://dreampiggy.com/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88)）。
 
@@ -187,9 +187,9 @@ defer { surface.unlock(options: .readOnly, seed: nil) }
 
 #### Workaround方案
 
-最终，针对这个问题，SDWebImage提供了两套解决思路，第一个思路是直接通过CGContext提取得到自己的Bitmap Buffer，得到一个新的CGImage，切断整个持有链，最简单粗暴的修复，代码是全量关闭惰性解码带来的高内存占用（[#3387](https://github.com/SDWebImage/SDWebImage/pull/3387)，修复在5.13.4版本上）
+最终，针对这个问题，SDWebImage提供了两套解决思路，第一个思路是直接通过CGContext提取得到自己的Bitmap Buffer，得到一个新的CGImage，切断整个持有链，最简单粗暴的修复，代价是全量关闭惰性解码无法用户控制，可能带来更高的内存占用（[#3387](https://github.com/SDWebImage/SDWebImage/pull/3387)，修复在5.13.4版本上）
 
-第二个思路是，通过抹除掉CGImage持有的这些额外信息，采取通过CGImageCreate重新创建一个复制的CGImage，但是依旧保留了惰性解码的可选能力（[#3425](https://github.com/SDWebImage/SDWebImage/pull/3425)，方案在5.14.0版本上）。顺便提一句，通常动图（GIF/AWebP）都不支持硬件解码且切换帧频率较高，关闭惰性解码依旧是小图的推荐行为。
+第二个思路是，通过抹除掉CGImage持有的这些额外信息，采取通过CGImageCreate重新创建一个复制的CGImage，但是依旧保留了惰性解码的可选能力（[#3425](https://github.com/SDWebImage/SDWebImage/pull/3425)，方案在5.14.0版本上）。顺便提一句，通常动图（GIF/AWebP）都不支持硬件解码且切换帧频率较高，关闭惰性解码依旧是小动图的最佳实践。
 
 PS：对感兴趣的小伙伴详细解释一下，第二个解决思路利用了CGImageProperty（类似于CGImage上存储的一个字典，按Key-Value形式存取）的时机特性，使用`CGImageCreate`重建CGImage时会完全丢失所有CGImageProperty（只有`CGImageCreateCopy`能够保留）。
 
@@ -202,7 +202,7 @@ PS：对感兴趣的小伙伴详细解释一下，第二个解决思路利用了
 
 ### 总结
 
-这篇文章讲了三个话题，其实背后有着相似的背景：
+这篇文章看似讲了三个话题，其实背后有着一贯的缘由背景：
 
 早期的ImageIO和各种上层框架的设计，是针对iPhone的低内存的机型做了深入优化，希望能尽量利用惰性解码，mmap缓存，换取较低内存开消，并且对各种无硬件解码的开源格式完全不感兴趣。
 
