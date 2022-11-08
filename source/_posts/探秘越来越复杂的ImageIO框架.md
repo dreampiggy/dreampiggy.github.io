@@ -113,7 +113,7 @@ Bytes = BytesPerPixel * Width * Height
 
 ![screenshot-20221107-215148](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-215148.png)
 
-因此，这里应该对应有两个Plane，分别对应了Y和CbCr两个采样的平面，最终由GPU渲染时进行处理。这里不采取YUV 4:4:4的原因是，大多数JPEG/HEIF的无透明度的图像，在肉眼来看，采样损失的色度人眼差异不大，这一优化能节省50%内存占用，无疑是值得的。
+因此，这里应该对应有两个Plane，分别对应了Y和U两个采样的平面，最终由GPU渲染时进行处理。这里不采取YUV 4:4:4的原因是，大多数JPEG/HEIF的无透明度的图像，在肉眼来看，采样损失的色度人眼差异不大，这一优化能节省50%内存占用，无疑是值得的。
 
 值得注意的是，这里苹果处理具体采样的逻辑也是和原图像编码有关的，如果YUV 4:4:4编码的，则最终CMPhoto可能依旧会采取YUV 4:4:4进行解码并直接上屏，苹果专门的策略类来进行处理。
 
