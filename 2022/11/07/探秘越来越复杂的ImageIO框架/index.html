@@ -23,12 +23,12 @@
     var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码，以抽象的Source-Destination设计来提供了诸如从图像压缩数据解析得到CGImage，从CGImage编码得到压缩数据，甚至是从一个图像格式（JPEG）转码到另一个图像格式（HEIF）的能力  ImageIO定位是上层框架，封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC&#x2F;ProRes加速器等等底层细节，">
+  <meta name="description" content="ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码支持。这篇文章主要讲述了三个子话题：WebP&#x2F;AVIF的支持进展，IOSurafce和硬件解码优化50%内存开销，以及CGImageSource机制变化导致的线程安全问题  ImageIO的定位是上层的支持框架，其封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC&#x2F;ProRes加速器等等底层细节，致力于提供和上层UI框架">
 <meta property="og:type" content="article">
 <meta property="og:title" content="探秘越来越复杂的ImageIO框架">
 <meta property="og:url" content="http://dreampiggy.com/2022/11/07/%E6%8E%A2%E7%A7%98%E8%B6%8A%E6%9D%A5%E8%B6%8A%E5%A4%8D%E6%9D%82%E7%9A%84ImageIO%E6%A1%86%E6%9E%B6/index.html">
 <meta property="og:site_name" content="小猪的博客">
-<meta property="og:description" content="ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码，以抽象的Source-Destination设计来提供了诸如从图像压缩数据解析得到CGImage，从CGImage编码得到压缩数据，甚至是从一个图像格式（JPEG）转码到另一个图像格式（HEIF）的能力  ImageIO定位是上层框架，封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC&#x2F;ProRes加速器等等底层细节，">
+<meta property="og:description" content="ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码支持。这篇文章主要讲述了三个子话题：WebP&#x2F;AVIF的支持进展，IOSurafce和硬件解码优化50%内存开销，以及CGImageSource机制变化导致的线程安全问题  ImageIO的定位是上层的支持框架，其封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC&#x2F;ProRes加速器等等底层细节，致力于提供和上层UI框架">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-210603.png">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-211812.png">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-185536.png">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-202706.png">
 <meta property="article:published_time" content="2022-11-07T23:45:00.000Z">
-<meta property="article:modified_time" content="2022-11-07T15:58:23.499Z">
+<meta property="article:modified_time" content="2022-11-08T03:57:04.505Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="Image">
 <meta property="article:tag" content="AVIF">
@@ -248,10 +248,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-11-07 23:45:00 / 修改时间：15:58:23" itemprop="dateCreated datePublished" datetime="2022-11-07T23:45:00+00:00">2022-11-07</time>
+              <time title="创建时间：2022-11-07 23:45:00" itemprop="dateCreated datePublished" datetime="2022-11-07T23:45:00+00:00">2022-11-07</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-08 03:57:04" itemprop="dateModified" datetime="2022-11-08T03:57:04+00:00">2022-11-08</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -274,9 +280,9 @@
 
       
         <blockquote>
-<p>ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码，以抽象的Source-Destination设计来提供了诸如从图像压缩数据解析得到CGImage，从CGImage编码得到压缩数据，甚至是从一个图像格式（JPEG）转码到另一个图像格式（HEIF）的能力</p>
+<p>ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码支持。这篇文章主要讲述了三个子话题：WebP/AVIF的支持进展，IOSurafce和硬件解码优化50%内存开销，以及CGImageSource机制变化导致的线程安全问题</p>
 </blockquote>
-<p>ImageIO定位是上层框架，封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC/ProRes加速器等等底层细节，致力于提供和上层UI框架（如UIKit）的可交互性</p>
+<p>ImageIO的定位是上层的支持框架，其封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC/ProRes加速器等等底层细节，致力于提供和上层UI框架（如UIKit/CoreGraphics）的可交互性。</p>
 <p>在早些年的时候，我写过一系列文章，介绍了其API使用的基本流程（参考：<a href="https://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89">《iOS平台图片编解码入门教程（Image/IO篇）》</a>），以及有关其惰性解码的机制（参考：<a href="https://dreampiggy.com/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88">《主流图片加载库所使用的预解码究竟干了什么》</a>）。</p>
 <p>实话说，自从重心从iOS开发，转移到做LLVM工具链相关工作之后，我本以为不会再写这些上层iOS框架的文章了，但是<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage">SDWebImage</a>这个开源库依旧没有合我预期的新Maintainer，来作为交接，因此现在还是忍不住先写这一篇吐槽和说明文章。</p>
 <p>这篇文章会介绍，自iOS 13时代之后，苹果在ImageIO上做的一系列优化（“机制变化”），以及对开发者生态带来的影响。</p>
@@ -362,13 +368,13 @@
 <p>主要原因是，CGImageSource支持渐进式解码，而第三方自定义UIImage的子类时，有可能自己创建并持有这个渐进式解码的CGImageSource，并不断更新数据。在SDWebImage本身的设计中，我们通过加锁来保证，所有的对渐进式解码的调用，以及更新数据的方法，均能被同一把锁保护。</p>
 <p>而当我们产出的CGImage，传递给了Core Animation，它无法访问这一把锁，而直接获取CGImageSource，并调用其相关的解码调用，就会出现多线程不安全的崩溃问题。</p>
 <p>总而言之，这一设计模式的打破，即把Product和本不应该关心的Producer一起交给了外部用户，但是外部用户无法保障Producer的生命周期和调用，最终导致了这样的问题。</p>
-<h4 id="Workaround方案"><a href="#Workaround方案" class="headerlink" title="Workaround方案"></a>Workaround方案</h4><p>最终，针对这个问题，SDWebImage提供了两套解决思路，第一个思路是直接通过CGContext提取得到自己的Bitmap Buffer，得到一个新的CGImage，切断整个持有链，最简单粗暴的修复，代码是全量关闭惰性解码带来的高内存占用（<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage/pull/3387">#3387</a>，修复在5.13.4版本上）</p>
-<p>第二个思路是，通过抹除掉CGImage持有的这些额外信息，采取通过CGImageCreate重新创建一个复制的CGImage，但是依旧保留了惰性解码的可选能力（<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage/pull/3425">#3425</a>，方案在5.14.0版本上）。顺便提一句，通常动图（GIF/AWebP）都不支持硬件解码且切换帧频率较高，关闭惰性解码依旧是小图的推荐行为。</p>
+<h4 id="Workaround方案"><a href="#Workaround方案" class="headerlink" title="Workaround方案"></a>Workaround方案</h4><p>最终，针对这个问题，SDWebImage提供了两套解决思路，第一个思路是直接通过CGContext提取得到自己的Bitmap Buffer，得到一个新的CGImage，切断整个持有链，最简单粗暴的修复，代价是全量关闭惰性解码无法用户控制，可能带来更高的内存占用（<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage/pull/3387">#3387</a>，修复在5.13.4版本上）</p>
+<p>第二个思路是，通过抹除掉CGImage持有的这些额外信息，采取通过CGImageCreate重新创建一个复制的CGImage，但是依旧保留了惰性解码的可选能力（<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage/pull/3425">#3425</a>，方案在5.14.0版本上）。顺便提一句，通常动图（GIF/AWebP）都不支持硬件解码且切换帧频率较高，关闭惰性解码依旧是小动图的最佳实践。</p>
 <p>PS：对感兴趣的小伙伴详细解释一下，第二个解决思路利用了CGImageProperty（类似于CGImage上存储的一个字典，按Key-Value形式存取）的时机特性，使用<code>CGImageCreate</code>重建CGImage时会完全丢失所有CGImageProperty（只有<code>CGImageCreateCopy</code>能够保留）。</p>
 <p>而上文提到的<code>CGImageGetImageSource/CGImageSetImageSource</code>这些私有接口，本质上是操作这个<code>com.apple.ImageIO.imageSourceReadRef</code>的Key（全局变量<code>kImageIO_imageSourceReadRef</code>），Value存储了ImageIO的C++对象，并可以还原回一个CGImageSourceRef指针。一旦我们把CGImageProperty丢失掉，那么就能打断这个持有链条。</p>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-202706.png" alt="screenshot-20221107-202706"></p>
 <p>总结起来，ImageIO Team做出如此重大的设计模式改变，并没有在任何公开渠道同步过开发者，也没有提供公开接口能够控制这个行为，或者至少，没有暴露对应的<code>CGImageSetImageSource</code>接口，导致第三方开发者不得不采取曲线救国的解决方案去Workaround，这一点很值得让人吐槽。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这篇文章讲了三个话题，其实背后有着相似的背景：</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这篇文章看似讲了三个话题，其实背后有着一贯的缘由背景：</p>
 <p>早期的ImageIO和各种上层框架的设计，是针对iPhone的低内存的机型做了深入优化，希望能尽量利用惰性解码，mmap缓存，换取较低内存开消，并且对各种无硬件解码的开源格式完全不感兴趣。</p>
 <p>而最近几年，随着苹果芯片团队的努力，高内存，M1的统一内存，以及高性能芯片的诞生，苹果已经有充足的能力能够通过软件解码，共享内存，越来越多硬件解码器技术来满足主流的多媒体图像支持，本身这是一件好事。</p>
 <p>不过问题在于历史遗下来的API，依旧保持了之前的设计缺陷，Apple团队却一直在，通过越来越Trick和Hack的方式解决问题，并没有给开发者可感知的新机制和手段来跟进优化（除开这一点吐槽，AppKit上的NSImage的NSImageRep这种代理对象设计，比UIImage的私有类UIImageContent设计要适宜的多，也灵活的多）</p>

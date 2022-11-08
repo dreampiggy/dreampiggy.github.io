@@ -234,10 +234,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-11-07 23:45:00 / 修改时间：15:58:23" itemprop="dateCreated datePublished" datetime="2022-11-07T23:45:00+00:00">2022-11-07</time>
+              <time title="创建时间：2022-11-07 23:45:00" itemprop="dateCreated datePublished" datetime="2022-11-07T23:45:00+00:00">2022-11-07</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-08 03:57:04" itemprop="dateModified" datetime="2022-11-08T03:57:04+00:00">2022-11-08</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -260,9 +266,9 @@
 
       
           <blockquote>
-<p>ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码，以抽象的Source-Destination设计来提供了诸如从图像压缩数据解析得到CGImage，从CGImage编码得到压缩数据，甚至是从一个图像格式（JPEG）转码到另一个图像格式（HEIF）的能力</p>
+<p>ImageIO是Apple提供的上层框架，用于处理常见图像格式的编解码支持。这篇文章主要讲述了三个子话题：WebP/AVIF的支持进展，IOSurafce和硬件解码优化50%内存开销，以及CGImageSource机制变化导致的线程安全问题</p>
 </blockquote>
-<p>ImageIO定位是上层框架，封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC/ProRes加速器等等底层细节，致力于提供和上层UI框架（如UIKit）的可交互性</p>
+<p>ImageIO的定位是上层的支持框架，其封装了诸多的苹果的底层解码器，开源编解码器，硬件HEVC/ProRes加速器等等底层细节，致力于提供和上层UI框架（如UIKit/CoreGraphics）的可交互性。</p>
 <p>在早些年的时候，我写过一系列文章，介绍了其API使用的基本流程（参考：<a href="https://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89">《iOS平台图片编解码入门教程（Image/IO篇）》</a>），以及有关其惰性解码的机制（参考：<a href="https://dreampiggy.com/2019/01/18/%E4%B8%BB%E6%B5%81%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E5%BA%93%E6%89%80%E4%BD%BF%E7%94%A8%E7%9A%84%E9%A2%84%E8%A7%A3%E7%A0%81%E7%A9%B6%E7%AB%9F%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88">《主流图片加载库所使用的预解码究竟干了什么》</a>）。</p>
 <p>实话说，自从重心从iOS开发，转移到做LLVM工具链相关工作之后，我本以为不会再写这些上层iOS框架的文章了，但是<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage">SDWebImage</a>这个开源库依旧没有合我预期的新Maintainer，来作为交接，因此现在还是忍不住先写这一篇吐槽和说明文章。</p>
 <p>这篇文章会介绍，自iOS 13时代之后，苹果在ImageIO上做的一系列优化（“机制变化”），以及对开发者生态带来的影响。</p>
@@ -324,7 +330,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-07 15:58:23" itemprop="dateModified" datetime="2022-11-07T15:58:23+00:00">2022-11-07</time>
+                <time title="修改时间：2022-11-08 03:57:04" itemprop="dateModified" datetime="2022-11-08T03:57:04+00:00">2022-11-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -408,7 +414,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-07 15:58:23" itemprop="dateModified" datetime="2022-11-07T15:58:23+00:00">2022-11-07</time>
+                <time title="修改时间：2022-11-08 03:57:04" itemprop="dateModified" datetime="2022-11-08T03:57:04+00:00">2022-11-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -492,7 +498,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-07 15:58:23" itemprop="dateModified" datetime="2022-11-07T15:58:23+00:00">2022-11-07</time>
+                <time title="修改时间：2022-11-08 03:57:04" itemprop="dateModified" datetime="2022-11-08T03:57:04+00:00">2022-11-08</time>
               </span>
 
           
@@ -574,7 +580,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-07 15:58:23" itemprop="dateModified" datetime="2022-11-07T15:58:23+00:00">2022-11-07</time>
+                <time title="修改时间：2022-11-08 03:57:04" itemprop="dateModified" datetime="2022-11-08T03:57:04+00:00">2022-11-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -659,7 +665,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-07 15:58:23" itemprop="dateModified" datetime="2022-11-07T15:58:23+00:00">2022-11-07</time>
+                <time title="修改时间：2022-11-08 03:57:04" itemprop="dateModified" datetime="2022-11-08T03:57:04+00:00">2022-11-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -743,7 +749,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-07 15:58:23" itemprop="dateModified" datetime="2022-11-07T15:58:23+00:00">2022-11-07</time>
+                <time title="修改时间：2022-11-08 03:57:04" itemprop="dateModified" datetime="2022-11-08T03:57:04+00:00">2022-11-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -827,7 +833,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-07 15:58:23" itemprop="dateModified" datetime="2022-11-07T15:58:23+00:00">2022-11-07</time>
+                <time title="修改时间：2022-11-08 03:57:04" itemprop="dateModified" datetime="2022-11-08T03:57:04+00:00">2022-11-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
