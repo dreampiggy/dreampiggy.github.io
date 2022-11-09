@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-185536.png">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-202706.png">
 <meta property="article:published_time" content="2022-11-07T23:45:00.000Z">
-<meta property="article:modified_time" content="2022-11-08T15:26:46.196Z">
+<meta property="article:modified_time" content="2022-11-09T08:00:38.153Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="Image">
 <meta property="article:tag" content="AVIF">
@@ -256,7 +256,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-08 15:26:46" itemprop="dateModified" datetime="2022-11-08T15:26:46+00:00">2022-11-08</time>
+                <time title="修改时间：2022-11-09 08:00:38" itemprop="dateModified" datetime="2022-11-09T08:00:38+00:00">2022-11-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -308,10 +308,10 @@
 <p>也就是说，《主流图片加载库所使用的预解码究竟干了什么》这篇文章关于ImageIO的部分已经彻底过时了，至少对于JPEG/HEIF而言是这样。</p>
 <p>如何验证这一点呢？可以从一个简单的Demo，我们这里有一个<code>4912*7360</code>分辨率的JPEG和HEIC图（<a target="_blank" rel="noopener" href="https://p11.douyinpic.com/img/douyin-admin-obj/a67f70f5b8c681b25e768cf5ecde0b9b~noop.heic">链接</a>），使用UIImageView渲染上屏，开启Instruments，对比内存占用</p>
 <p>IOSurface：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JPEG/HEIF格式限定，iOS 13，arm64真机限定</span></span><br><span class="line"><span class="keyword">let</span> data <span class="operator">=</span> <span class="keyword">try!</span> <span class="type">Data</span>(contentsOf: largeJpegUrl)</span><br><span class="line"><span class="keyword">let</span> image <span class="operator">=</span> <span class="type">UIImage</span>(data: data)<span class="operator">!</span></span><br><span class="line"><span class="keyword">self</span>.imageView.image <span class="operator">=</span> image</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JPEG/HEIF格式限定，iOS 13，arm64真机限定</span></span><br><span class="line"><span class="keyword">let</span> image <span class="operator">=</span> <span class="type">UIImage</span>(contentsOfFile: largeJpegUrl.path)</span><br><span class="line"><span class="keyword">self</span>.imageView.image <span class="operator">=</span> image</span><br></pre></td></tr></table></figure>
 
 <p>CGImage：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JPEG/HEIF格式限定，iOS 13，arm64真机限定</span></span><br><span class="line"><span class="keyword">let</span> data <span class="operator">=</span> <span class="keyword">try!</span> <span class="type">Data</span>(contentsOf: largeJpegUrl)</span><br><span class="line"><span class="keyword">let</span> source <span class="operator">=</span> <span class="type">CGImageSourceCreateWithData</span>(data <span class="keyword">as</span> <span class="type">CFData</span>, <span class="literal">nil</span>)<span class="operator">!</span></span><br><span class="line"><span class="keyword">let</span> cgImage <span class="operator">=</span> <span class="type">CGImageSourceCreateImageAtIndex</span>(source, <span class="number">0</span>, <span class="literal">nil</span>)<span class="operator">!</span></span><br><span class="line"><span class="keyword">let</span> image <span class="operator">=</span> <span class="type">UIImage</span>(cgImage: cgImage)</span><br><span class="line"><span class="keyword">self</span>.imageView.image <span class="operator">=</span> image</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JPEG/HEIF格式限定，iOS 13，arm64真机限定</span></span><br><span class="line"><span class="keyword">let</span> source <span class="operator">=</span> <span class="type">CGImageSourceCreateWithURL</span>(data <span class="keyword">as</span> <span class="type">CFURL</span>, <span class="literal">nil</span>)<span class="operator">!</span></span><br><span class="line"><span class="keyword">let</span> cgImage <span class="operator">=</span> <span class="type">CGImageSourceCreateImageAtIndex</span>(source, <span class="number">0</span>, <span class="literal">nil</span>)<span class="operator">!</span></span><br><span class="line"><span class="keyword">let</span> image <span class="operator">=</span> <span class="type">UIImage</span>(cgImage: cgImage)</span><br><span class="line"><span class="keyword">self</span>.imageView.image <span class="operator">=</span> image</span><br></pre></td></tr></table></figure>
 
 <p>数据较多，直接看IOSurface的结果，可以发现，除了峰值上HEIC出现了翻倍，最终稳定占用都为<strong>51.72MB</strong></p>
 <p>而直接用CGImage（或者你换用模拟器而不是真机），则结果为<strong>137.9MB</strong>（RGBA8888）</p>
@@ -323,6 +323,11 @@
 <li>HEIC（IOSurface）</li>
 </ul>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-220104.png" alt="screenshot-20221107-220104.png"></p>
+<p>备注：</p>
+<ol>
+<li>在iOS 15+之后，这部分的Responsible Library会变成CMPhoto，iOS 15+新增的<code>UIImage.preparingForDisplay()</code>也利用了它的能力</li>
+<li>使用<code>UIImage(contentsOfFile:)</code>和这里的<code>UIImage(data:)</code>，在iOS 15上并无明显差异，但是在低版本如iOS 13/14上，可能出现<code>UIImage(data:)</code>对于HEIC格式，无法利用IOSurface的Bug，因此更推荐使用文件路径的接口</li>
+</ol>
 <h4 id="50-内存开销的奥秘"><a href="#50-内存开销的奥秘" class="headerlink" title="50%内存开销的奥秘"></a>50%内存开销的奥秘</h4><p>反编译可以发现，苹果系统库的内部流程，已经废弃了CGImage来传递这种硬件解码器的数据Buffer，而直接使用IOSurface，以换取更小的内存开销，达到同分辨率下RGBA8888的内存占用的<strong>37.5%（即3/8）</strong>，同分辨率下RGB888的内存占用的<strong>50%（即1/2）</strong></p>
 <p>你可能会表示很震惊，因为数学公式告诉我们，一个Bitmap Buffer的内存占用为：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Bytes = BytesPerPixel * Width * Height</span><br></pre></td></tr></table></figure>
@@ -349,15 +354,21 @@
 <blockquote>
 <p>作为开发者，我如果加载一个JPEG/HEIF网络图，有办法也利用这个优化吗？</p>
 </blockquote>
-<p>答：可以也不可以。</p>
-<p>可以是由于，如果JPEG/HEIF网络图下载到本地，并通过<code>UIImage imageWithContentsOfFile:</code>加载，那么我们依旧可以利用到这个优化，节省内存占用。</p>
-<p>不可以的原因是，假如像SDWebImage这种图片库，老的接口仅仅把Data存在内存中的话，就会有问题。原因是ImageIO和UIKit并没有提供公开API来加载内存中的Data，只有其内部使用了以下私有接口：</p>
+<p>答：可以，但是使用时需要遵守以下几个原则：</p>
+<ol>
+<li>对JPEG/HEIF网络图，如果仅有内存中的数据，则优先考虑使用<code>-[UIImage initWithData:]</code></li>
+<li>如果能够将数据下载到本地存储产生文件路径，则优先考虑使用<code>-[UIImage imageWithContentsOfFile:]</code>加载</li>
+<li>如果直接使用ImageIO接口，需要注意，调用<code>CGImageSourceCreateImageAtIndex</code>返回的是惰性解码的占位CGImage，而<code>CGImageSourceCreateThumbnailAtIndex</code>返回的是解码后的CGImage（也就根源上无法利用IOSurface优化）</li>
+<li>如果要进行预解码，在iOS 15之后，请不要使用老文章写的，使用CGContext提取Bitmap Buffer的方案，优先调用<code>+[UIImage imageByPreparingForDisplay]</code>，甚至是如果仅有CGImage的情况下，也推荐创建一个临时UIImage再来调用。其原理是，对于上文提到的，惰性解码的占位CGImage，CMPhoto能间接进行IOSurface的创建（利用后文讲到的<code>CGImageGetImageSourcce</code>)，达到偷梁换柱的作用，而手动创建CGContext并没有这样的能力（可以参考<a target="_blank" rel="noopener" href="https://github.com/SDWebImage/SDWebImage/pull/3368">#3368</a>）</li>
+</ol>
+<p>如果遵守以上几点，那么我们依旧可以利用到这个优化，节省内存占用。否则会退化到传统的RGBA8888的内存开销上。尤其是关于第4点，苹果这个设计本想让开发者淡化IOSurface和CGImage的差异，但是我感觉反而增加了理解成本和性能优化成本。</p>
+<p>另外，ImageIO和UIKit并没有提供更详细的IOSurface的公开API，只有其内部流程，本质间接使用了以下私有接口：</p>
 <ul>
 <li><code>-[UIImage initWithIOSurface:]</code></li>
 <li><code>CGImageSourceCreateIOSurfaceAtIndex</code></li>
 </ul>
-<p>诚然，我们都知道能够直接调用任意的Objective-C/C API的姿势，这里也不再展开，只是需要注意，上文提到的这一优化，存在特定iPhone硬件（A12+）和格式（JPEG/HEIF无Alpha通道）的限定，需要注意检查可用性。</p>
-<p>对于SDWebImage来说，如果我还继续维护下去的话，未来也许会提供基于URLSessionDownloadTask以及文件路径模式的解码方案，或许就能直接支持这一点。</p>
+<p>诚然，我们都知道能够直接调用任意的Objective-C/C API的姿势，这里也不再展开，只是需要注意，上文提到的这些优化，都存在特定iPhone硬件（A12+）和格式（JPEG/HEIF）的限定，需要注意检查可用性。</p>
+<p>此外，从实践来看，苹果UIKit和ImageIO的上层接口，都更推荐文件路径的形式（因为可以优化为mmap读取，文件扩展名的Hint等逻辑），如果我还继续维护SDWebImage下去的话，未来也许会提供基于URLSessionDownloadTask以及文件路径模式的解码方案，或许就能更好地支持这一点。</p>
 <h3 id="不再安全的ImageIO"><a href="#不再安全的ImageIO" class="headerlink" title="不再安全的ImageIO"></a>不再安全的ImageIO</h3><blockquote>
 <p>曾经，在我的最佳设计模式观念里，一个Producer，产出的Product，永远不应该反向持有Producer本身。但是这个想法被ImageIO团队打破了</p>
 </blockquote>
