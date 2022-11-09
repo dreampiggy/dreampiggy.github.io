@@ -65,8 +65,7 @@ IOSurface：
 
 ```swift
 // JPEG/HEIF格式限定，iOS 13，arm64真机限定
-let data = try! Data(contentsOf: largeJpegUrl)
-let image = UIImage(data: data)!
+let image = UIImage(contentsOfFile: largeJpegUrl.path)
 self.imageView.image = image
 ```
 
@@ -74,8 +73,7 @@ CGImage：
 
 ```swift
 // JPEG/HEIF格式限定，iOS 13，arm64真机限定
-let data = try! Data(contentsOf: largeJpegUrl)
-let source = CGImageSourceCreateWithData(data as CFData, nil)!
+let source = CGImageSourceCreateWithURL(data as CFURL, nil)!
 let cgImage = CGImageSourceCreateImageAtIndex(source, 0, nil)!
 let image = UIImage(cgImage: cgImage)
 self.imageView.image = image
@@ -94,6 +92,9 @@ self.imageView.image = image
 
 ![screenshot-20221107-220104.png](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-11-07/media/screenshot-20221107-220104.png)
 
+备注：
+1. 在iOS 15+之后，这部分的Responsible Library会变成CMPhoto，iOS 15+新增的`UIImage.preparingForDisplay()`也利用了它的能力
+2. 使用`UIImage(contentsOfFile:)`和这里的`UIImage(data:)`，在iOS 15上并无明显差异，但是在低版本如iOS 13/14上，可能出现`UIImage(data:)`对于HEIC格式，无法利用IOSurface的Bug，因此更推荐使用文件路径的接口
 
 #### 50%内存开销的奥秘
 
@@ -149,18 +150,23 @@ defer { surface.unlock(options: .readOnly, seed: nil) }
 
 > 作为开发者，我如果加载一个JPEG/HEIF网络图，有办法也利用这个优化吗？
 
-答：可以也不可以。
+答：可以，但是使用时需要遵守以下几个原则：
 
-可以是由于，如果JPEG/HEIF网络图下载到本地，并通过`UIImage imageWithContentsOfFile:`加载，那么我们依旧可以利用到这个优化，节省内存占用。
+1. 对JPEG/HEIF网络图，如果仅有内存中的数据，则优先考虑使用`-[UIImage initWithData:]`
+2. 如果能够将数据下载到本地存储产生文件路径，则优先考虑使用`-[UIImage imageWithContentsOfFile:]`加载
+3. 如果直接使用ImageIO接口，需要注意，调用`CGImageSourceCreateImageAtIndex`返回的是惰性解码的占位CGImage，而`CGImageSourceCreateThumbnailAtIndex`返回的是解码后的CGImage（也就根源上无法利用IOSurface优化）
+4. 如果要进行预解码，在iOS 15之后，请不要使用老文章写的，使用CGContext提取Bitmap Buffer的方案，优先调用`+[UIImage imageByPreparingForDisplay]`，甚至是如果仅有CGImage的情况下，也推荐创建一个临时UIImage再来调用。其原理是，对于上文提到的，惰性解码的占位CGImage，CMPhoto能间接进行IOSurface的创建（利用后文讲到的`CGImageGetImageSourcce`)，达到偷梁换柱的作用，而手动创建CGContext并没有这样的能力（可以参考[#3368](https://github.com/SDWebImage/SDWebImage/pull/3368)）
 
-不可以的原因是，假如像SDWebImage这种图片库，老的接口仅仅把Data存在内存中的话，就会有问题。原因是ImageIO和UIKit并没有提供公开API来加载内存中的Data，只有其内部使用了以下私有接口：
+如果遵守以上几点，那么我们依旧可以利用到这个优化，节省内存占用。否则会退化到传统的RGBA8888的内存开销上。尤其是关于第4点，苹果这个设计本想让开发者淡化IOSurface和CGImage的差异，但是我感觉反而增加了理解成本和性能优化成本。
+
+另外，ImageIO和UIKit并没有提供更详细的IOSurface的公开API，只有其内部流程，本质间接使用了以下私有接口：
 
 + `-[UIImage initWithIOSurface:]`
 + `CGImageSourceCreateIOSurfaceAtIndex`
 
-诚然，我们都知道能够直接调用任意的Objective-C/C API的姿势，这里也不再展开，只是需要注意，上文提到的这一优化，存在特定iPhone硬件（A12+）和格式（JPEG/HEIF无Alpha通道）的限定，需要注意检查可用性。
+诚然，我们都知道能够直接调用任意的Objective-C/C API的姿势，这里也不再展开，只是需要注意，上文提到的这些优化，都存在特定iPhone硬件（A12+）和格式（JPEG/HEIF）的限定，需要注意检查可用性。
 
-对于SDWebImage来说，如果我还继续维护下去的话，未来也许会提供基于URLSessionDownloadTask以及文件路径模式的解码方案，或许就能直接支持这一点。
+此外，从实践来看，苹果UIKit和ImageIO的上层接口，都更推荐文件路径的形式（因为可以优化为mmap读取，文件扩展名的Hint等逻辑），如果我还继续维护SDWebImage下去的话，未来也许会提供基于URLSessionDownloadTask以及文件路径模式的解码方案，或许就能更好地支持这一点。
 
 ### 不再安全的ImageIO
 
