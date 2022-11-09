@@ -152,10 +152,10 @@ defer { surface.unlock(options: .readOnly, seed: nil) }
 
 答：可以，但是使用时需要遵守以下几个原则：
 
-1. 对JPEG/HEIF网络图，如果仅有内存中的数据，则优先考虑使用`-[UIImage initWithData:]`
-2. 如果能够将数据下载到本地存储产生文件路径，则优先考虑使用`-[UIImage imageWithContentsOfFile:]`加载
+1. 对JPEG/HEIF网络图，如果仅有内存中的数据，则优先考虑使用`UIImage(data:)`
+2. 如果能够将数据下载到本地存储产生文件路径，则优先考虑使用`UIImage(contentsOfFile:)`加载
 3. 如果直接使用ImageIO接口，需要注意，调用`CGImageSourceCreateImageAtIndex`返回的是惰性解码的占位CGImage，而`CGImageSourceCreateThumbnailAtIndex`返回的是解码后的CGImage（也就根源上无法利用IOSurface优化）
-4. 如果要进行预解码，在iOS 15之后，请不要使用老文章写的，使用CGContext提取Bitmap Buffer的方案，优先调用`+[UIImage imageByPreparingForDisplay]`，甚至是如果仅有CGImage的情况下，也推荐创建一个临时UIImage再来调用。其原理是，对于上文提到的，惰性解码的占位CGImage，CMPhoto能间接进行IOSurface的创建（利用后文讲到的`CGImageGetImageSourcce`)，达到偷梁换柱的作用，而手动创建CGContext并没有这样的能力（可以参考[#3368](https://github.com/SDWebImage/SDWebImage/pull/3368)）
+4. 如果要进行预解码，在iOS 15之后，请不要使用老文章写的，使用CGContext提取Bitmap Buffer的方案，优先调用`UIImage.preparingForDisplay()`，甚至是如果仅有CGImage的情况下，也推荐创建一个临时UIImage再来调用。其原理是，对于上文提到的，惰性解码的占位CGImage，CMPhoto能间接进行IOSurface的创建（利用后文讲到的`CGImageGetImageSourcce`)，达到偷梁换柱的作用，而手动创建CGContext并没有这样的能力（可以参考[#3368](https://github.com/SDWebImage/SDWebImage/pull/3368)）
 
 如果遵守以上几点，那么我们依旧可以利用到这个优化，节省内存占用。否则会退化到传统的RGBA8888的内存开销上。尤其是关于第4点，苹果这个设计本想让开发者淡化IOSurface和CGImage的差异，但是我感觉反而增加了理解成本和性能优化成本。
 
