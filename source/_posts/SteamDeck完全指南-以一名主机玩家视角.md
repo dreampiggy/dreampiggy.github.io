@@ -112,6 +112,8 @@ Steam账号体系和PS的账号体系更类似（对比Switch和Xbox那种随时
 
 # SteamOS使用
 
+![](https://www.techpowerup.com/img/P5W4cR67PU1WTqmp.jpg)
+
 SteamOS的体验，简而言之可以说是把PC上的Steam客户端，做到了操作系统级别的体验，基本交互比PC上的大屏幕模式更舒服，且所有导航设置都适配了手柄（无论是主机手柄还是外接PS/Xbox手柄甚至是Switch手柄）
 
 SteamOS基于[Arch Linux](https://wiki.archlinux.org/title/Steam_Deck)，提供了游戏模式（大部分时间在这里）以及桌面模式。游戏模式自带了一个快捷菜单键，类似PS键，除了可以进行除了WiFi/蓝牙/飞行/亮度等调节，查看通知邀请啥的常见能力，最有意思的是可以进行性能配置，包括限制电量TDP来控制续航（只有40WH的电量，意味着功耗拉满25W，只能支撑1个半小时），锁帧率，以及开启采样技术等，后文提。
