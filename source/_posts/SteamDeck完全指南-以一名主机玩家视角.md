@@ -1,5 +1,5 @@
 ---
-title: SteamDeck完全指南-以一名主机玩家视角.md
+title: SteamDeck完全指南-以一名主机玩家视角
 date: 2022-12-31 10:56:41
 categories: Game
 tags:
