@@ -124,7 +124,7 @@ SteamOS和桌面模式默认情况下连接显示器后，就能以显示器原�
 
 当启动游戏后，Steam默认配置会把游戏锁定在1280x800，很多游戏感到非常的模糊（比Switch接电视还低）。查了一下才发现需要每个游戏进行配置，选中`游戏` -> `属性...` -> `游戏分辨率`，从"Default"改为"Native"（指的是显示器原生分辨率）
 
-这点想吐槽的是竟然没有全局开关，也许是为了适配各种PC游戏配置要求和支持分辨率混乱的现状……不过输出1080P甚至4K之后，明显感觉Steam Deck性能吃紧，大部分近两年的3D游戏都很难45帧以上运行，只有2D游戏可以继续拉满。这里就要提到下面的性能配置，能利用超采样技术以达到分辨率和性能兼得。
+这点想吐槽的是竟然没有全局开关，也许是为了适配各种PC游戏配置要求和支持分辨率混乱的现状……不过输出1080P甚至4K之后，明显感觉Steam Deck性能吃紧，大部分近两年的3D游戏都很难30帧以上运行，只有2D游戏可以继续拉满。这里就要提到下面的性能配置，能利用超采样技术以达到分辨率和性能兼得。
 
 ## 性能配置和全局FSR
 
@@ -171,7 +171,7 @@ PC游戏，众所周知就是优先按照键鼠交互开发的，大部分游戏
 
 按照[官方说明](https://help.steampowered.com/zh-cn/faqs/view/4b8b-9697-2338-40ec)，添加方式需要进入到桌面模式（不理解为啥游戏模式没有入口），右键库选择“添加非Steam游戏到我的库中”，默认会显示桌面模式安装的原生Linux应用列表，我们不管，选择新增路径。
 
-此时弹出的文件管理器中，可以选择不同硬盘的程序，比如机身里的（`/home/deck/`下），TF卡里的（`/run/https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/deck/TF卡序号/`)，无论是EXFAT还是NTFS文件系统的都能添加（用这个可以实现SteamOS和Windows双系统共享一个游戏，进度靠Steam云存档）。注意下方扩展名类型要选为"All"不然无法显示exe可执行程序
+此时弹出的文件管理器中，可以选择不同硬盘的程序，比如机身里的（`/home/deck/`下），TF卡里的（`/run/media/deck/TF卡序号/`)，无论是EXFAT还是NTFS文件系统的都能添加（用这个可以实现SteamOS和Windows双系统共享一个游戏，进度靠Steam云存档）。注意下方扩展名类型要选为"All"不然无法显示exe可执行程序
 
 路径选择完成后再点一次“添加所选程序”就可以在库里看到了，默认游戏名是exe可执行程序文件名，右键`属性`可以改名一下，然后选择兼容层选择最新版本的Proton（还有一个Proton Experimental不过我没用过），双击测试执行效果即可。
 
@@ -194,13 +194,13 @@ Proton兼容层是基于Wine的改进项目，虽然开源且在任意Linux上�
 
 Steam游戏默认配置会开启Shadercache，因为Steam Deck硬件配置的唯一性，基本你安装所有的游戏，都会提前下载好离线编译好的Shader，不再需要运行时编译，大大减少游戏第一次加载和场景卡顿。甚至非Steam游戏也会把转移时编译的Shader缓存起来，这项功能是全局生效的（不同于Windows需要游戏厂商支持）
 
-Shadercache路径在`/home/deck/.local/share/Steam/steamapps/shadercache`下（`/home/deck/.local/share/Steam`是Steam客户端根路径以后就不再提了）
+Shadercache路径在`/home/deck/.local/share/Steam/steamapps/shadercache`下（这是Steam客户端根路径）
 
 而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是，Proton因为是模拟Windows的运行环境，其背后会做一个精简的沙盒（纯净大小约为190MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是黑客破坏（非常Nice）。而我们游玩过一个Windows游戏，而它又被我们从Steam库里删除时候，神奇的是这个Compatdata竟然不会自动删除（Bug？Feature？）
 
 对这两个文件，我找到了一个作者写的好用的工具[Steam Deck: Shader Cache Killer](https://github.com/scawp/Steam-Deck.Shader-Cache-Killer)，使用也很简单，按照说明下载好以后，打开就能看到所有的Shadercache目录和对应游戏的名称，AppID信息，可筛选Non-steam和Uninstalled。
 
-值得注意的是，目前这个工具对非Steam游戏的名称识别并不好，必须你最近启动过这个游戏一次才可以在列表显示（看代码是通过读了`$STEAM/logs/content_log.txt`日志解析的，但是这个日志会定时清理……）。原因是非Steam游戏的AppID是根据“游戏名”+“路径名”的[哈希计算的](https://gaming.stackexchange.com/questions/386882/how-do-i-find-the-appid-for-a-non-steam-game-on-steam)，所以不能反推出原游戏名。
+值得注意的是，目前这个工具对非Steam游戏的名称识别并不好，必须你最近启动过这个游戏一次才可以在列表显示（看代码是通过读了`$STEAM/logs/content_log.txt`日志解析的，但是这个日志会定时清理……）。原因是非Steam游戏的AppID是根据“游戏名”+“路径名”的[哈希得到](https://gaming.stackexchange.com/questions/386882/how-do-i-find-the-appid-for-a-non-steam-game-on-steam)，所以不能反推出原游戏名和路径名。
 
 为了防止错误删除了正在玩的沙盒（包括游戏存档），简单傻瓜做法就是定期清理，记录已安装的这些非Steam游戏的AppID（或者无脑就是每次执行清理前先手动启动一次后再清理），每次只保留已添加的非Steam游戏Shadercache和Compatdata目录，其他的一律删除。
 
