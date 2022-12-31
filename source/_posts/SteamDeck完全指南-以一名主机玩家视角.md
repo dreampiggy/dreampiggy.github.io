@@ -159,7 +159,7 @@ PC游戏，众所周知就是优先按照键鼠交互开发的，大部分游戏
 
 进入游戏后按Steam键就能看到“控制器设置”，里面可以看到每一个控制器（比如我电视玩的时候用PS5手柄，就能看到两排）的布局。这里可以选择基本就是：
 
-1. 键鼠（基本就是右摇杆鼠标，L1左键 R2右键，左摇杆对应WASD，触摸板也是鼠标）
+1. 键鼠（基本就是右摇杆鼠标，L2左键 R2右键，左摇杆对应WASD，触摸板也是鼠标）
 2. 手柄（指的是游戏开发利用了[SteamInput](https://steaminput.wiki/en/intro/steam-input)，XInput，DirectInput等原生控制器支持）
 3. 支持视角控制的手柄（区别是右触摸板可以控制精确视角，FPS游戏多，需要游戏支持）
 
@@ -169,7 +169,7 @@ PC游戏，众所周知就是优先按照键鼠交互开发的，大部分游戏
 
 ## 添加非Steam游戏
 
-我们可以把桌面模式的应用添加到Steam吗？当然可以，比如SteamOS就会引导你添加Chrome到Steam里，这下真成了iPad之外的便携浏览器了。你可以添加各种工具，甚至VSCode，也有专门人分享的布局文件方便手柄操作😂
+我们可以把桌面模式的应用添加到Steam吗？当然可以，比如SteamOS就会引导你添加Chrome到库里，这下真成了iPad之外的便携浏览器了。你可以添加各种工具，甚至VSCode，也有专门人分享的布局文件方便手柄操作这些软件😂
 
 以及，在有时候我们不得已要用非Steam的Windows程序，如游戏启动器、汉化补丁、“学习版游戏”：），这时候我们肯定要Proton转译层，从命令行直接调用非常复杂我也懒得去看，利用把exe可执行程序添加到Steam库中，我们就能直接选择Proton转译并且享受各种便利（包括手柄映射，分辨率输出调整，截图管理，Shadercache等）
 
@@ -200,7 +200,7 @@ Steam游戏默认配置会开启Shadercache，因为Steam Deck硬件配置的唯
 
 Shadercache路径在`/home/deck/.local/share/Steam/steamapps/shadercache`下（这是Steam客户端根路径）
 
-而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是，Proton因为是模拟Windows的运行环境，其背后会做一个精简的沙盒（纯净大小约为190MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是黑客破坏（非常Nice）。而我们游玩过一个Windows游戏，而它又被我们从Steam库里删除时候，神奇的是这个Compatdata竟然不会自动删除（Bug？Feature？）
+而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是一个沙盒文件夹。Proton因为是模拟Windows的运行环境，其背后会做一个精简的Windows目录树（纯净大小约为190MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是黑客破坏（非常Nice），不会影响其他游戏。而我们游玩过一个Windows游戏，而它又被我们从Steam库里删除时候，神奇的是这个Compatdata竟然不会自动删除（Bug？Feature？）
 
 对这两个文件，我找到了一个作者写的好用的工具[Steam Deck: Shader Cache Killer](https://github.com/scawp/Steam-Deck.Shader-Cache-Killer)，使用也很简单，按照说明下载好以后，打开就能看到所有的Shadercache目录和对应游戏的名称，AppID信息，可筛选Non-steam和Uninstalled。
 
