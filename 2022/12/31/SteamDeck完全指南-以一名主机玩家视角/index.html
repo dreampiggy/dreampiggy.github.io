@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/3.jpg">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/4.jpg">
 <meta property="article:published_time" content="2022-12-31T10:56:41.000Z">
-<meta property="article:modified_time" content="2022-12-31T07:19:57.087Z">
+<meta property="article:modified_time" content="2022-12-31T07:25:32.104Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="Steam">
 <meta property="article:tag" content="SteamOS">
@@ -247,7 +247,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-12-31 10:56:41 / 修改时间：07:19:57" itemprop="dateCreated datePublished" datetime="2022-12-31T10:56:41+00:00">2022-12-31</time>
+              <time title="创建时间：2022-12-31 10:56:41 / 修改时间：07:25:32" itemprop="dateCreated datePublished" datetime="2022-12-31T10:56:41+00:00">2022-12-31</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -387,16 +387,16 @@
 <p>此外，它还可以添加多个启动入口，比如有些游戏包括类似游戏本体，启动器，创意工坊Mod编辑器，DLC章节啥的，可以添加不同的入口，方便管理，也不用自己手动对每个exe改成非Steam游戏添加入库。</p>
 <p>注意这个工具建议在桌面模式用，不要在Steam客户端启动时修改保存（提前右键退出），才可以生效。</p>
 <h1 id="安装Windows"><a href="#安装Windows" class="headerlink" title="安装Windows"></a>安装Windows</h1><p>前面说了那么多都是SteamOS的用法，但是毕竟Steam Deck本质是一台Portable PC，那么它当然可以安装Windows（官方声明支持Windows 10/11）</p>
-<p>虽然Windows系统我从大学就没再用过了（差不多是Mac+主机党），但是按照网上的教程摸索差不多实现了从TF卡启动Windows，可以用来逼不得已的情况下跑一些只能在Windows上的软件（Proton兼容失效或者性能有异常的情况）</p>
+<p>虽然Windows系统我从大学就没再用过了（基本只有Mac+主机），但是按照网上的教程摸索差不多实现了从TF卡启动Windows，可以用来逼不得已的情况下跑一些只能在Windows上的软件（Proton兼容失效或者性能有异常的情况）</p>
 <h2 id="Win-To-Go制作"><a href="#Win-To-Go制作" class="headerlink" title="Win To Go制作"></a>Win To Go制作</h2><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/deployment/planning/windows-to-go-overview">Win To Go</a>制作工具，Windows自带的工具限制必须是“硬盘而非可移动存储设备”才行，比较麻烦还得用DiskGenius改分区，我参考教程用了这个<a target="_blank" rel="noopener" href="https://bbs.luobotou.org/thread-761-1-1.html">WTG辅助工具</a>，下载好Windows 11的镜像，一键写入到TF卡中</p>
 <h2 id="从TF卡启动并安装Windows"><a href="#从TF卡启动并安装Windows" class="headerlink" title="从TF卡启动并安装Windows"></a>从TF卡启动并安装Windows</h2><p>在写好Win To Go到TF卡之后，插入TF卡关机，然后同时长按音量减键和电源键，听到响声后放手，就会进入到启动选项页面。</p>
 <p>在Boot Manager中选择”EFI SD/MMD Card”，然后就会进入Windows安装的引导流程了，后面就按照网上常见Windows安装流程走。注意家庭版是需要微软账号和联网的，默认Windows 11有网卡驱动，Windows 10没有，所以建议用专业版😂</p>
-<p>安装完成后，会发现默认不再进入SteamOS了，继续进入启动选项页面，这里会出现一个<code>Windows Boot Manager</code>在首位，实际上我们Win To Go选择TF卡依旧也能启动，和他没啥关系，可以删除（参考后文“如何默认启动SteamOS而非Windows”）。</p>
+<p>安装完成后，会发现默认不再进入SteamOS了，继续进入启动选项页面，这里会出现一个”Windows Boot Manager”在首位，实际上我们Win To Go选择TF卡依旧也能启动，和他没啥关系，可以删除（参考后文“如何默认启动SteamOS而非Windows”）。</p>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/4.jpg" alt="4"></p>
 <h2 id="Windows驱动"><a href="#Windows驱动" class="headerlink" title="Windows驱动"></a>Windows驱动</h2><p>Steam官方提供了Windows的驱动，可以直接下载好并拷贝到Windows中安装，参考：<a target="_blank" rel="noopener" href="https://help.steampowered.com/zh-cn/faqs/view/6121-eccd-d643-baa8">Steam Deck - Windows Resources</a></p>
 <p>Windows 11上，对inf格式驱动，需要右键并选择“显示更多选项”以查看“安装”选项。</p>
-<h2 id="疑难解答-1"><a href="#疑难解答-1" class="headerlink" title="疑难解答"></a>疑难解答</h2><h3 id="如何默认启动SteamOS而非Windows"><a href="#如何默认启动SteamOS而非Windows" class="headerlink" title="如何默认启动SteamOS而非Windows"></a>如何默认启动SteamOS而非Windows</h3><p>安装Windows之后默认不再会进入SteamOS了，而SteamOS也没提供默认启动选项的能力（这个EFI引导做得比较垃圾），并且一个神奇的Bug，导致无论怎么改默认值，只要启动过一次Windows系统，<code>Windows Boot Manager</code>就会默认跑到第一位导致下一次永远默认Windows</p>
-<p>我选择的方式是，直接通过禁用<code>Windows Boot Manager</code>这个EFI启动项，让SteamOS默认启动，如有需要，长按进入并选择”EFI SD/MMD Card”以启动Windows</p>
+<h2 id="疑难解答-1"><a href="#疑难解答-1" class="headerlink" title="疑难解答"></a>疑难解答</h2><h3 id="如何默认启动SteamOS而非Windows"><a href="#如何默认启动SteamOS而非Windows" class="headerlink" title="如何默认启动SteamOS而非Windows"></a>如何默认启动SteamOS而非Windows</h3><p>安装Windows之后默认不再会进入SteamOS了，而SteamOS也没提供默认启动选项的能力（这个EFI引导做得比较垃圾），并且一个神奇的Bug，导致无论怎么改默认值，只要启动过一次Windows系统，”Windows Boot Manager”就会默认跑到第一位导致下一次永远默认Windows</p>
+<p>我选择的方式是，直接通过禁用”Windows Boot Manager”这个EFI启动项，让SteamOS默认启动，如有需要，长按进入并选择”EFI SD/MMD Card”以启动Windows</p>
 <p>具体修改方式可以在SteamOS也可以在Windows下操作，本质都是修改EFI的配置信息，以SteamOS举例子：</p>
 <ol>
 <li>打开Konsole</li>
@@ -406,7 +406,8 @@
 </ol>
 <p>重启可以验证一下，启动列表不再显示这个即可证明成功，默认进SteamOS或者选择<code>EFI SD/MMD Card</code>进入Windows</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实感觉对于主机玩家来说，Steam Deck的一大缺点，同时也是一大优点就是“可折腾”（Hackable），你总有一种方式，能在掌上玩到PC上的游戏。而对于主机本身配置就很少。Steam Deck它在我看来和Switch压根不是一个竞争对手，而更像是互补。</p>
-<p>我能拿着Steam Deck去把打折时买的Rougelike游戏和文字游戏打通，插在电视上跑着40帧AAA大作和创意工坊Mod，但是绝对不会在Switch上高价买这些PC键鼠设计且没有社区和创意工坊的游戏。它更像是一个夹在PS5这种沉浸式沙发体验，和Switch掌机轻度娱乐和聚会游戏之间的设备，并且对纯Mac党（没有任何其他Windows设备）是一个非常好的替代品。</p>
+<p>我能拿着Steam Deck去把打折时买的Roguelike游戏和文字游戏打通，插在电视上跑着40帧带有创意工坊Mod的AAA大作（比如FF7 RE笑），但是绝对不会在Switch上高价买这些PC键鼠设计且没有社区和创意工坊的游戏。</p>
+<p>它更像是一个夹在PS5这种沉浸式沙发体验，和Switch掌机轻度娱乐和聚会游戏之间的设备，并且对纯Mac党（没有任何其他Windows设备）是一个非常好的替代品。</p>
 <p>就这么多吧，这篇文章大部分都是介绍自己实际遇到的一些问题和教程，希望能对有心入Steam Deck或者遇到类似场景的人提供一些帮助吧：）</p>
 
     </div>
