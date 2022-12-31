@@ -225,7 +225,7 @@ Steam商店的游戏都有一个专门的元信息，其可以在[SteamDB](https
 
 前面说了那么多都是SteamOS的用法，但是毕竟Steam Deck本质是一台Portable PC，那么它当然可以安装Windows（官方声明支持Windows 10/11）
 
-虽然Windows系统我从大学就没再用过了（差不多是Mac+主机党），但是按照网上的教程摸索差不多实现了从TF卡启动Windows，可以用来逼不得已的情况下跑一些只能在Windows上的软件（Proton兼容失效或者性能有异常的情况）
+虽然Windows系统我从大学就没再用过了（基本只有Mac+主机），但是按照网上的教程摸索差不多实现了从TF卡启动Windows，可以用来逼不得已的情况下跑一些只能在Windows上的软件（Proton兼容失效或者性能有异常的情况）
 
 ## Win To Go制作
 
@@ -237,7 +237,7 @@ Steam商店的游戏都有一个专门的元信息，其可以在[SteamDB](https
 
 在Boot Manager中选择"EFI SD/MMD Card"，然后就会进入Windows安装的引导流程了，后面就按照网上常见Windows安装流程走。注意家庭版是需要微软账号和联网的，默认Windows 11有网卡驱动，Windows 10没有，所以建议用专业版😂
 
-安装完成后，会发现默认不再进入SteamOS了，继续进入启动选项页面，这里会出现一个`Windows Boot Manager`在首位，实际上我们Win To Go选择TF卡依旧也能启动，和他没啥关系，可以删除（参考后文“如何默认启动SteamOS而非Windows”）。
+安装完成后，会发现默认不再进入SteamOS了，继续进入启动选项页面，这里会出现一个"Windows Boot Manager"在首位，实际上我们Win To Go选择TF卡依旧也能启动，和他没啥关系，可以删除（参考后文“如何默认启动SteamOS而非Windows”）。
 
 ![4](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/4.jpg)
 
@@ -251,9 +251,9 @@ Windows 11上，对inf格式驱动，需要右键并选择“显示更多选项�
 
 ### 如何默认启动SteamOS而非Windows
 
-安装Windows之后默认不再会进入SteamOS了，而SteamOS也没提供默认启动选项的能力（这个EFI引导做得比较垃圾），并且一个神奇的Bug，导致无论怎么改默认值，只要启动过一次Windows系统，`Windows Boot Manager`就会默认跑到第一位导致下一次永远默认Windows
+安装Windows之后默认不再会进入SteamOS了，而SteamOS也没提供默认启动选项的能力（这个EFI引导做得比较垃圾），并且一个神奇的Bug，导致无论怎么改默认值，只要启动过一次Windows系统，"Windows Boot Manager"就会默认跑到第一位导致下一次永远默认Windows
 
-我选择的方式是，直接通过禁用`Windows Boot Manager`这个EFI启动项，让SteamOS默认启动，如有需要，长按进入并选择"EFI SD/MMD Card"以启动Windows
+我选择的方式是，直接通过禁用"Windows Boot Manager"这个EFI启动项，让SteamOS默认启动，如有需要，长按进入并选择"EFI SD/MMD Card"以启动Windows
 
 具体修改方式可以在SteamOS也可以在Windows下操作，本质都是修改EFI的配置信息，以SteamOS举例子：
 
@@ -268,6 +268,8 @@ Windows 11上，对inf格式驱动，需要右键并选择“显示更多选项�
 
 其实感觉对于主机玩家来说，Steam Deck的一大缺点，同时也是一大优点就是“可折腾”（Hackable），你总有一种方式，能在掌上玩到PC上的游戏。而对于主机本身配置就很少。Steam Deck它在我看来和Switch压根不是一个竞争对手，而更像是互补。
 
-我能拿着Steam Deck去把打折时买的Rougelike游戏和文字游戏打通，插在电视上跑着40帧AAA大作和创意工坊Mod，但是绝对不会在Switch上高价买这些PC键鼠设计且没有社区和创意工坊的游戏。它更像是一个夹在PS5这种沉浸式沙发体验，和Switch掌机轻度娱乐和聚会游戏之间的设备，并且对纯Mac党（没有任何其他Windows设备）是一个非常好的替代品。
+我能拿着Steam Deck去把打折时买的Roguelike游戏和文字游戏打通，插在电视上跑着40帧带有创意工坊Mod的AAA大作（比如FF7 RE笑），但是绝对不会在Switch上高价买这些PC键鼠设计且没有社区和创意工坊的游戏。
+
+它更像是一个夹在PS5这种沉浸式沙发体验，和Switch掌机轻度娱乐和聚会游戏之间的设备，并且对纯Mac党（没有任何其他Windows设备）是一个非常好的替代品。
 
 就这么多吧，这篇文章大部分都是介绍自己实际遇到的一些问题和教程，希望能对有心入Steam Deck或者遇到类似场景的人提供一些帮助吧：）
