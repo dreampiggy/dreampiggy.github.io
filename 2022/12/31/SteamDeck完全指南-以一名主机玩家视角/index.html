@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/3.jpg">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/4.jpg">
 <meta property="article:published_time" content="2022-12-31T10:56:41.000Z">
-<meta property="article:modified_time" content="2022-12-31T08:14:58.775Z">
+<meta property="article:modified_time" content="2022-12-31T08:31:04.150Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="Steam">
 <meta property="article:tag" content="SteamOS">
@@ -248,7 +248,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-12-31 10:56:41 / 修改时间：08:14:58" itemprop="dateCreated datePublished" datetime="2022-12-31T10:56:41+00:00">2022-12-31</time>
+              <time title="创建时间：2022-12-31 10:56:41 / 修改时间：08:31:04" itemprop="dateCreated datePublished" datetime="2022-12-31T10:56:41+00:00">2022-12-31</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -334,7 +334,7 @@
 <h1 id="SteamOS使用"><a href="#SteamOS使用" class="headerlink" title="SteamOS使用"></a>SteamOS使用</h1><p><img src="https://www.techpowerup.com/img/P5W4cR67PU1WTqmp.jpg"></p>
 <p>SteamOS的体验，简而言之可以说是把PC上的Steam客户端，做到了操作系统级别的体验，基本交互比PC上的大屏幕模式更舒服，且所有导航设置都适配了手柄（无论是主机手柄还是外接PS/Xbox手柄甚至是Switch手柄）</p>
 <p>SteamOS基于<a target="_blank" rel="noopener" href="https://wiki.archlinux.org/title/Steam_Deck">Arch Linux</a>，提供了游戏模式（大部分时间在这里）以及桌面模式。游戏模式自带了一个快捷菜单键，类似PS键，除了可以进行除了WiFi/蓝牙/飞行/亮度等调节，查看通知邀请啥的常见能力，最有意思的是可以进行性能配置，包括限制电量TDP来控制续航（只有40WH的电量，意味着功耗拉满25W，只能支撑1个半小时），锁帧率，以及开启采样技术等，后文提。</p>
-<p>桌面模式是<a target="_blank" rel="noopener" href="https://wiki.archlinux.org/title/KDE">KDE</a>，我第一次上手感觉和macOS的不太像，更像是Windows桌面的逻辑，不是很舒服，熟悉一段之后还好。文件管理器叫做<a target="_blank" rel="noopener" href="https://userbase.kde.org/Dolphin/File_Management">Dolphin</a>，使用起来反而更像macOS的Finder，标签页，边栏，打开终端啥的。终端模拟器叫做<a target="_blank" rel="noopener" href="https://konsole.kde.org/">Konsole</a>，我说实话比macOS的终端反而还好用……桌面模式的Steam客户端可以进行一些复杂操作（实际上桌面模式上的Steam客户端和PC上操作完全一样），如添加非Steam游戏快捷方式，后文提。</p>
+<p>桌面模式是<a target="_blank" rel="noopener" href="https://kde.org/zh-cn/">KDE</a>，我第一次上手感觉和macOS的不太像，更像是Windows桌面的逻辑，不是很舒服，熟悉一段之后还好。文件管理器叫做<a target="_blank" rel="noopener" href="https://userbase.kde.org/Dolphin/File_Management">Dolphin</a>，使用起来反而更像macOS的Finder，标签页，边栏，打开终端啥的。终端模拟器叫做<a target="_blank" rel="noopener" href="https://konsole.kde.org/">Konsole</a>，我说实话比macOS的终端反而还好用……桌面模式的Steam客户端可以进行一些复杂操作（实际上桌面模式上的Steam客户端和PC上操作完全一样），如添加非Steam游戏快捷方式，后文提。</p>
 <p>对于Windows游戏来说，SteamOS内置的<a target="_blank" rel="noopener" href="https://github.com/ValveSoftware/Proton">Proton兼容层</a>提供了转译。这个转译是API级别的（即实现了一套Win32 API，.NET API，以及DirectX转译Vulkan等），不是类似Apple M1对x86_64的指令集转译，在我测试游戏中表现挺好的，兼容性不错，帧率甚至超越Windows原生执行。</p>
 <h2 id="游戏外接显示器分辨率"><a href="#游戏外接显示器分辨率" class="headerlink" title="游戏外接显示器分辨率"></a>游戏外接显示器分辨率</h2><p>SteamOS和桌面模式默认情况下连接显示器后，就能以显示器原生分辨率（我测试过1080P和4K分辨率）显示UI，但是这和游戏分辨率是两回事。</p>
 <p>当启动游戏后，Steam默认配置会把游戏锁定在1280x800，很多游戏感到非常的模糊（比Switch接电视还低）。查了一下才发现需要每个游戏进行配置，选中<code>游戏</code> -&gt; <code>属性...</code> -&gt; <code>游戏分辨率</code>，从”Default”改为”Native”（指的是显示器原生分辨率）</p>
