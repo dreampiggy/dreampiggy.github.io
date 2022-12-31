@@ -10,7 +10,7 @@ tags:
 
 > 熟悉我的人都知道我其实是一个游戏爱好者，只是很少在博客写非技术文章而已。我在11月左右，因为受不了某日厂的PC独占行为而决定入手Steam Deck，这也是我自从2017年彻底放弃PC阵营之后第一次重回PC游戏领域，因此这里从一个主机玩家的视角整理一下我自己对Steam Deck，SteamOS的一些指南，希望能帮助中文领域的类似玩家快速上手和方便折腾。
 > 
-> 断断续续写了几个小时，后续不断把我遇到的一些折腾指南都在这里更新吧，可以借助目录树来查看感兴趣的内容
+> 断断续续写了几个小时，后续不断把我遇到的一些折腾指南都在这里更新吧，可以借助目录树来查看感兴趣的内容。
 
 # Steam Deck购买
 
@@ -118,7 +118,9 @@ SteamOS的体验，简而言之可以说是把PC上的Steam客户端，做到了
 
 SteamOS基于[Arch Linux](https://wiki.archlinux.org/title/Steam_Deck)，提供了游戏模式（大部分时间在这里）以及桌面模式。游戏模式自带了一个快捷菜单键，类似PS键，除了可以进行除了WiFi/蓝牙/飞行/亮度等调节，查看通知邀请啥的常见能力，最有意思的是可以进行性能配置，包括限制电量TDP来控制续航（只有40WH的电量，意味着功耗拉满25W，只能支撑1个半小时），锁帧率，以及开启采样技术等，后文提。
 
-桌面模式是[KDE](https://kde.org/zh-cn/)，我第一次上手感觉和macOS的不太像，更像是Windows桌面的逻辑，不是很舒服，熟悉一段之后还好。文件管理器叫做[Dolphin](https://userbase.kde.org/Dolphin/File_Management)，使用起来反而更像macOS的Finder，标签页，边栏，打开终端啥的。终端模拟器叫做[Konsole](https://konsole.kde.org/)，我说实话比macOS的终端反而还好用……桌面模式的Steam客户端可以进行一些复杂操作（实际上桌面模式上的Steam客户端和PC上操作完全一样），如添加非Steam游戏快捷方式，后文提。
+桌面模式是[KDE](https://kde.org/zh-cn/)，我第一次上手感觉和macOS的不太像，更像是Windows桌面的逻辑，不是很舒服，熟悉一段之后还好。文件管理器叫做[Dolphin](https://userbase.kde.org/Dolphin/File_Management)，使用起来反而更像macOS的Finder，标签页，边栏，打开终端啥的。终端模拟器叫做[Konsole](https://konsole.kde.org/)，比macOS的终端好用一点点。另外自带的软件商店叫做[Flatpak](https://flatpak.org/)，可以搜索各种应用如模拟器，Epic启动器等等。
+
+桌面模式的Steam客户端可以进行一些复杂操作（实际上桌面模式上的Steam客户端和PC上操作完全一样），如添加非Steam游戏快捷方式，后文专门提及。
 
 对于Windows游戏来说，SteamOS内置的[Proton兼容层](https://github.com/ValveSoftware/Proton)提供了转译。这个转译是API级别的（即实现了一套Win32 API，\.NET API，以及DirectX转译Vulkan等），不是类似Apple M1对x86_64的指令集转译，在我测试游戏中表现挺好的，兼容性不错，帧率甚至超越Windows原生执行。
 
@@ -187,7 +189,7 @@ Proton兼容层是基于Wine的改进项目，虽然开源且在任意Linux上�
 
 另外，Deck Verified是有时效性的，有些游戏可能最新的SteamOS更新后就能正常运行，但是依然显示不支持，这种情况可以借助社区提供的：[ProtonDB](https://www.protondb.com/)网页，查看其他玩家上传的实际体验（不过有些可能不是Steam Deck用户而是Linux PC+开源Proton用户，不可全信）
 
-当然，实际上我买游戏时也不怎么看Deck Verified，实际能不能跑下载下来测一下便知（目前我库里不能跑的是2/80，极少），反正Steam不像主机厂商，[游戏2小时内可以无条件退款](https://store.steampowered.com/steam_refunds/?l=schinese)，因此自己测试自己的库里的游戏时最可靠的。
+当然，实际上我买游戏时也不怎么看Deck Verified，实际能不能跑下载下来测一下便知（目前我库里不能跑的是2/80，极少），反正Steam不像主机厂商，[游戏2小时内可以无条件退款](https://store.steampowered.com/steam_refunds/?l=schinese)，因此自己测试自己的库里的游戏才是最可靠的。
 
 
 ## 疑难解答
@@ -196,13 +198,13 @@ Proton兼容层是基于Wine的改进项目，虽然开源且在任意Linux上�
 
 这两个是SteamOS的存储容量“其他”的罪魁祸首。
 
-Steam游戏默认配置会开启Shadercache，因为Steam Deck硬件配置的唯一性，基本你安装所有的游戏，都会提前下载好离线编译好的Shader，不再需要运行时编译，大大减少游戏第一次加载和场景卡顿。甚至非Steam游戏也会把转移时编译的Shader缓存起来，这项功能是全局生效的（不同于Windows需要游戏厂商支持）
+Steam游戏默认配置会开启Shadercache，因为Steam Deck硬件配置的唯一性，基本你安装所有的游戏，都会提前下载好离线编译好的Shader，不再需要运行时编译，大大减少游戏第一次加载和场景卡顿。甚至非Steam游戏也会把运行时转译编译的Shader缓存起来，这项功能是全局生效的（不同于Windows下，需要游戏厂商支持）
 
 Shadercache路径在`/home/deck/.local/share/Steam/steamapps/shadercache`下（这是Steam客户端根路径）
 
-而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是一个沙盒文件夹。Proton因为是模拟Windows的运行环境，其背后会做一个精简的Windows目录树（纯净大小约为190MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是黑客破坏（非常Nice），不会影响其他游戏。而我们游玩过一个Windows游戏，而它又被我们从Steam库里删除时候，神奇的是这个Compatdata竟然不会自动删除（Bug？Feature？）
+而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是一个沙盒文件夹。Proton因为是模拟Windows的运行环境，其背后会做一个精简的Windows目录树（纯净大小约为190MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是恶意破坏删除文件（非常Nice），也不会影响其他游戏。而我们游玩过一个Windows游戏，而它又被我们从Steam库里删除时候，神奇的是这个Compatdata竟然不会自动删除（Bug？Feature？）
 
-对这两个文件，我找到了一个作者写的好用的工具[Steam Deck: Shader Cache Killer](https://github.com/scawp/Steam-Deck.Shader-Cache-Killer)，使用也很简单，按照说明下载好以后，打开就能看到所有的Shadercache目录和对应游戏的名称，AppID信息，可筛选Non-steam和Uninstalled。
+对这两个文件，我找到了一个作者写的好用的工具[Steam Deck: Shader Cache Killer](https://github.com/scawp/Steam-Deck.Shader-Cache-Killer)，使用也很简单，按照说明下载好以后，打开就能看到所有的Shadercache/compatdata目录和对应游戏的名称，AppID信息，可筛选Non-steam和Uninstalled游戏。
 
 值得注意的是，目前这个工具对非Steam游戏的名称识别并不好，必须你最近启动过这个游戏一次才可以在列表显示（看代码是通过读了`$STEAM/logs/content_log.txt`日志解析的，但是这个日志会定时清理……）。原因是非Steam游戏的AppID是根据“游戏名”+“路径名”的[哈希得到](https://gaming.stackexchange.com/questions/386882/how-do-i-find-the-appid-for-a-non-steam-game-on-steam)，所以不能反推出原游戏名和路径名。
 
