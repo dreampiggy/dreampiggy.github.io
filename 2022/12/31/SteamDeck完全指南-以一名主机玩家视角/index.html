@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="熟悉我的人都知道我其实是一个游戏爱好者，只是很少在博客写非技术文章而已。我在11月左右，因为受不了某日厂的PC独占行为而决定入手Steam Deck，这也是我自从2017年彻底放弃PC阵营之后第一次重回PC游戏领域，因此这里从一个主机玩家的视角整理一下我自己对Steam Deck，SteamOS的一些指南，希望能帮助中文领域的类似玩家快速上手和方便折腾。 断断续续写了几个小时，后续不断把我遇到的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SteamDeck完全指南-以一名主机玩家视角.md">
+<meta property="og:url" content="http://dreampiggy.com/2022/12/31/SteamDeck%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97-%E4%BB%A5%E4%B8%80%E5%90%8D%E4%B8%BB%E6%9C%BA%E7%8E%A9%E5%AE%B6%E8%A7%86%E8%A7%92/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="熟悉我的人都知道我其实是一个游戏爱好者，只是很少在博客写非技术文章而已。我在11月左右，因为受不了某日厂的PC独占行为而决定入手Steam Deck，这也是我自从2017年彻底放弃PC阵营之后第一次重回PC游戏领域，因此这里从一个主机玩家的视角整理一下我自己对Steam Deck，SteamOS的一些指南，希望能帮助中文领域的类似玩家快速上手和方便折腾。 断断续续写了几个小时，后续不断把我遇到的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/1.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/2.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/5.png">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/3.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/4.jpg">
+<meta property="article:published_time" content="2022-12-31T10:56:41.000Z">
+<meta property="article:modified_time" content="2022-12-31T07:13:43.643Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="Steam">
+<meta property="article:tag" content="SteamOS">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/1.jpg">
+
+<link rel="canonical" href="http://dreampiggy.com/2022/12/31/SteamDeck%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97-%E4%BB%A5%E4%B8%80%E5%90%8D%E4%B8%BB%E6%9C%BA%E7%8E%A9%E5%AE%B6%E8%A7%86%E8%A7%92/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SteamDeck完全指南-以一名主机玩家视角.md | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="小猪的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2022/12/31/SteamDeck%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97-%E4%BB%A5%E4%B8%80%E5%90%8D%E4%B8%BB%E6%9C%BA%E7%8E%A9%E5%AE%B6%E8%A7%86%E8%A7%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SteamDeck完全指南-以一名主机玩家视角.md
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-12-31 10:56:41 / 修改时间：07:13:43" itemprop="dateCreated datePublished" datetime="2022-12-31T10:56:41+00:00">2022-12-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Game/" itemprop="url" rel="index"><span itemprop="name">Game</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>熟悉我的人都知道我其实是一个游戏爱好者，只是很少在博客写非技术文章而已。我在11月左右，因为受不了某日厂的PC独占行为而决定入手Steam Deck，这也是我自从2017年彻底放弃PC阵营之后第一次重回PC游戏领域，因此这里从一个主机玩家的视角整理一下我自己对Steam Deck，SteamOS的一些指南，希望能帮助中文领域的类似玩家快速上手和方便折腾。</p>
+<p>断断续续写了几个小时，后续不断把我遇到的一些折腾指南都在这里更新吧，可以借助目录树来查看感兴趣的内容</p>
+</blockquote>
+<h1 id="Steam-Deck购买"><a href="#Steam-Deck购买" class="headerlink" title="Steam Deck购买"></a>Steam Deck购买</h1><h2 id="主机"><a href="#主机" class="headerlink" title="主机"></a>主机</h2><p>Steam Deck官网：<a target="_blank" rel="noopener" href="https://www.steamdeck.com/zh-cn/">https://www.steamdeck.com/zh-cn/</a></p>
+<p>主机的规格主要是：</p>
+<ol>
+<li>CPU：AMD APU，4核心Zen2架构</li>
+<li>GPU：APM APU，Van Gogh</li>
+<li>RAM：16GB LPDDR5，不可选配</li>
+<li>分辨率：1280x800</li>
+<li>电量：40WH</li>
+<li>重量：669克</li>
+</ol>
+<p>主机款式目前分为以下三种：</p>
+<ol>
+<li>64GB eMMC：$399，推荐自购SSD更换</li>
+<li>256GB SSD：$529，不推荐</li>
+<li>512GB SSD：$649，防眩光屏 + 一堆虚拟物品，不差钱用</li>
+</ol>
+<p>大众的选择一般是64GB款 + 自购512G的SSD（M.2 2230)更换，更换教程也<a target="_blank" rel="noopener" href="https://www.ifixit.com/Guide/Steam+Deck+SSD+Replacement/148989">全网都有</a>不麻烦（一把十字螺丝刀可搞定）。</p>
+<p>64GB款国内一般直接TB代购在¥3100，自己直接走美区充值余额 + 海淘关税13% + 国内转运，成本在¥2900左右，就算再加上JD的512GB的SSD ¥500价格，最贵也就¥3600，实际算下来是很香的。</p>
+<p>虽然这样说，实际上我当时为了尽快上手且为了图省事，一步到位购买了现货顶配版（¥5000），防炫光玻璃效果也是有的，肉疼就肉疼吧，当是早买早享受了：）</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/1.jpg" alt="1"></p>
+<p>到手后拿起来比Switch重很多，实际体验下来并不适合长期举着玩，除了放在底座上手柄来玩大作外，推荐的掌机玩法要么架在桌子/腿上玩，要么直接侧躺靠着握把玩（主要是文字类型游戏，注意视力）</p>
+<h2 id="存储卡"><a href="#存储卡" class="headerlink" title="存储卡"></a>存储卡</h2><p>Steam Deck支持TF存储卡扩展，我这里选择512GB以后自然没必要换SSD了，但是为了后续可能用到的空间，以及安装Windows到TF卡上，所以又300¥买了一个UH3的512G 闪迪TF卡，直接在机身下方插入即可。</p>
+<p>默认SteamOS会推荐格式化为EXFAT文件系统，并且可以选择默认安装游戏到TF卡上，和Switch的逻辑有点像。</p>
+<p>但是我为了后续安装Windows，最终又制作成了Win To Go，将TF卡格式化为NTFS文件系统之后，SteamOS下就不再显示改安装路径了……这点暂时还没管，应该后续可以通过插件解决（折腾预定）</p>
+<h2 id="配件"><a href="#配件" class="headerlink" title="配件"></a>配件</h2><p>我作为主机玩家，且主要目的是为了玩日厂的JRPG，因此连接电视+手柄对我来说是必不可少的。</p>
+<p>Steam Deck官方提供了一个基座（扩展坞）：<a target="_blank" rel="noopener" href="https://www.steamdeck.com/zh-cn/dock">https://www.steamdeck.com/zh-cn/dock</a></p>
+<p>接口规格为：</p>
+<ol>
+<li>3个USB-A 3.1接口</li>
+<li>1个HDMI 2.0接口</li>
+<li>1个DP 1.4接口</li>
+<li>1个供电接口</li>
+<li>1个RJ45网口</li>
+</ol>
+<p>值得注意的是，不同于Switch的基座，这个基座只提供USB Type-C的扩展能力和充电能力，完全不能提升游戏性能（实测，对比直接Type-C供电，游戏帧率一致）。</p>
+<p>显示器输出虽然说最高支持4K 120Hz，实际上游戏压根带不动。推荐的游戏输出分辨率是1080P（后文提），另外还有一个注意点，官方基座MST（多显示器输出）需要同时接入HDMI和DP两个端口而不能二次转接，不过实际性能表现带单显示器已经极限，大部分人压根用不到</p>
+<p>官方基座售价$89，国内现货800¥起步，完全不值得购买（不差钱另说），其实如果你不追求长期接电视/显示器，选择一个便宜的100¥以内的Type-C转HDMI头都可以解决</p>
+<p>我最终选择了一个第三方的基座，除了没有DP接口其他规格完全一致，只需要¥250，铝合金质感比官方基座的塑料明显要好（就离谱）</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/2.jpg" alt="2"></p>
+<h1 id="Steam账号和支付"><a href="#Steam账号和支付" class="headerlink" title="Steam账号和支付"></a>Steam账号和支付</h1><p>自从2017年彻底退出PC游戏之后，我的国区Steam账号终于活过来了。</p>
+<p>Steam账号体系和PS的账号体系更类似（对比Switch和Xbox那种随时跨区切换购买游戏而言），一个账号每3个月才能更改一次地区，且余额会按照汇率等价兑换。另外注意转区完成以后还需要进行一次有效购买才可以实际切换</p>
+<p>但是，Steam对转区判定比较严格，需要挂对应地区IP代理，否则经常性转换可能被红信（即Steam的欺诈警告，会锁定账号的游戏购买）</p>
+<p>由于不同区的游戏价格差异很大，可以参考<a target="_blank" rel="noopener" href="https://steamdb.info/">SteamDB</a>这里搜索对比一下，且有些游戏会锁国区（暴力血腥or小黄油），推荐的方式是类PS的账号体系的应对方式，我们注册多个地区的不同账号，通过在一台Steam Deck上登陆多账号，然后切换游玩（还可以利用家庭共享来让账号1游玩账号2的游戏，并成就和存档挂在账号1，老PS玩家很熟悉）</p>
+<h2 id="注册Steam外区账号"><a href="#注册Steam外区账号" class="headerlink" title="注册Steam外区账号"></a>注册Steam外区账号</h2><p>注册Steam外区账号需要使用对应地区的IP代理，这个随便找个比如<a target="_blank" rel="noopener" href="http://free-proxy.cz/">Free Proxy</a>，或者利用一些加速器自带的商店加速能力就可以切。</p>
+<p>推荐注册的外区是阿根廷（大部分游戏的最低价地区，但锁本地信用卡和充值卡，后文讲），或者土耳其（目前截止2021-12月，土耳其支持国内Visa/Mastercard双币卡，非常方便）</p>
+<p>注册完成以后，需要进行一次商店定区，无论是外区货币充值还是使用占位符兑换码兑换一次都可以，保证商店页面显示的货币为外币即可。</p>
+<p>另外，强烈建议注册后立即下载Steam手机版，登陆外区并绑定手机两步认证（不需要外区手机号，国区即可接），为后面的Steam市场开放和余额购买做准备</p>
+<h2 id="支付和余额购买"><a href="#支付和余额购买" class="headerlink" title="支付和余额购买"></a>支付和余额购买</h2><p>土耳其区因为暂时支持国内双币卡，就不多说了，这年头主机玩家没个Visa/Mastercard信用卡不太可能。注意账单地址选择一个真实的土耳其地址即可。当然你也可以选择下面提到的余额购买方式，也可以直接选择电子充值卡兑换码（一般和汇率持平）</p>
+<p>阿根廷区因为最低价被大量玩家滥用，既锁本地信用卡，又在2021年关闭了电子充值卡的购买手段，目前我已知支付手段包括：</p>
+<ol>
+<li>日韩国等地的电话亭余额充值：新号可以充，一般需要联系下当地认识的人，或者TB代充，目前我见到的汇率约为1000比索:48人民币，属于小亏级别，不推荐长期使用</li>
+<li>当地信用卡代充：新号可以充，阿根廷区比较少见，原因是大量多账号用一个信用卡可能被Steam风控</li>
+<li>Steam市场购买余额：需要开通手机两步认证，且购买等价5$游戏不退款满7天后即可开放。利用Steam市场可以卖虚拟物品，自动转换汇率的特点，一般叫做饰品交易，俗称“挂刀”。本质上原因是Steam余额无法直接提现，因此会有人愿意在外部平台，以低价现金卖出虚拟物品，然后你以低价买到，再拿到市场高价卖出得到账户余额（Steam市场还会扣交易税15%）。这个TB也挺多的，目前我见到的汇率约为1000比索:38人民币，属于小赚水平</li>
+</ol>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/5.png" alt="5"></p>
+<h1 id="SteamOS使用"><a href="#SteamOS使用" class="headerlink" title="SteamOS使用"></a>SteamOS使用</h1><p>SteamOS的体验，简而言之可以说是把PC上的Steam客户端，做到了操作系统级别的体验，基本交互比PC上的大屏幕模式更舒服，且所有导航设置都适配了手柄（无论是主机手柄还是外接PS/Xbox手柄甚至是Switch手柄）</p>
+<p>SteamOS基于<a target="_blank" rel="noopener" href="https://wiki.archlinux.org/title/Steam_Deck">Arch Linux</a>，提供了游戏模式（大部分时间在这里）以及桌面模式。游戏模式自带了一个快捷菜单键，类似PS键，除了可以进行除了WiFi/蓝牙/飞行/亮度等调节，查看通知邀请啥的常见能力，最有意思的是可以进行性能配置，包括限制电量TDP来控制续航（只有40WH的电量，意味着功耗拉满25W，只能支撑1个半小时），锁帧率，以及开启采样技术等，后文提。</p>
+<p>桌面模式是<a target="_blank" rel="noopener" href="https://wiki.archlinux.org/title/KDE">KDE</a>，我第一次上手感觉和macOS的不太像，更像是Windows桌面的逻辑，不是很舒服，熟悉一段之后还好。文件管理器叫做<a target="_blank" rel="noopener" href="https://userbase.kde.org/Dolphin/File_Management">Dolphin</a>，使用起来反而更像macOS的Finder，标签页，边栏，打开终端啥的。终端模拟器叫做<a target="_blank" rel="noopener" href="https://konsole.kde.org/">Konsole</a>，我说实话比macOS的终端反而还好用……桌面模式的Steam客户端可以进行一些复杂操作（实际上桌面模式上的Steam客户端和PC上操作完全一样），如添加非Steam游戏快捷方式，后文提。</p>
+<p>对于Windows游戏来说，SteamOS内置的<a target="_blank" rel="noopener" href="https://github.com/ValveSoftware/Proton">Proton兼容层</a>提供了转译。这个转译是API级别的（即实现了一套Win32 API，.NET API，以及DirectX转译Vulkan等），不是类似Apple M1对x86_64的指令集转译，在我测试游戏中表现挺好的，兼容性不错，帧率甚至超越Windows原生执行。</p>
+<h2 id="游戏外接显示器分辨率"><a href="#游戏外接显示器分辨率" class="headerlink" title="游戏外接显示器分辨率"></a>游戏外接显示器分辨率</h2><p>SteamOS和桌面模式默认情况下连接显示器后，就能以显示器原生分辨率（我测试过1080P和4K分辨率）显示UI，但是这和游戏分辨率是两回事。</p>
+<p>当启动游戏后，Steam默认配置会把游戏锁定在1280x800，很多游戏感到非常的模糊（比Switch接电视还低）。查了一下才发现需要每个游戏进行配置，选中<code>游戏</code> -&gt; <code>属性...</code> -&gt; <code>游戏分辨率</code>，从”Default”改为”Native”（指的是显示器原生分辨率）</p>
+<p>这点想吐槽的是竟然没有全局开关，也许是为了适配各种PC游戏配置要求和支持分辨率混乱的现状……不过输出1080P甚至4K之后，明显感觉Steam Deck性能吃紧，大部分近两年的3D游戏都很难45帧以上运行，只有2D游戏可以继续拉满。这里就要提到下面的性能配置，能利用超采样技术以达到分辨率和性能兼得。</p>
+<h2 id="性能配置和全局FSR"><a href="#性能配置和全局FSR" class="headerlink" title="性能配置和全局FSR"></a>性能配置和全局FSR</h2><p>SteamOS的快捷菜单能进行各项性能配置，除了能有一个专门的浮层显示帧数和APU/RAM占用率等指标外，并且还能选择是全局配置还是仅当前游戏配置，非常灵活。看了下包括：</p>
+<ol>
+<li>锁帧（一般默认60即可）</li>
+<li>半速率着色（<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/win32/direct3d12/vrs">VRS</a>）：可以省电，按照其解释会稍微影响输出分辨率，但是我测试几个游戏后没看出明显差异（大作掌机模式必开）</li>
+<li>TDP限制：功耗限制，掌机模式必限制10W否则马上没电</li>
+<li>GPU锁频：可以追求极限帧率，供电模式下拉满，疑似怀疑长期可能会影响GPU寿命</li>
+<li>缩放过滤器：低分辩率超采样到高分辨率，只推荐开<a target="_blank" rel="noopener" href="https://www.amd.com/en/technologies/fidelityfx-super-resolution">FSR</a>，其他采样效果一般</li>
+</ol>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/3.jpg" alt="3"></p>
+<p>其中最有用的是这个全局FSR，Steam Deck的APU本身性能带一些CPU瓶颈的大作（如老头环），模拟器游戏等，明显会感到吃力，供电下只有30帧出头，基本属于不能玩水平（同期Switch/PS4：30帧流畅游玩）</p>
+<p>不同于Windows下这种技术，需要每个游戏厂商自己单独支持，并在游戏内单独开启，这种全局FSR依赖了DirectX到Vulkan转译层直接全局干上，效果非常明显。</p>
+<p>我用电视体验和实践下来，基本养成了习惯，对3D大作，先在Steam属性里改为输出1080P，然后游戏内设置720P的分辨率，最后菜单仅当前游戏配置FSR，这样3D模型会采样到1080P，同时帧率可以到40-60畅玩，只有2D纹理的文字会模糊点，但是体验明显会爽很多。</p>
+<p>有一个注意的点，大部分游戏都需要在游戏内选择窗口模式而不是全屏模式，才能正常FSR生效（打开性能面板查看有一行”FSR：ON”）。虽然实际上游戏模式下，压根没有”窗口模式”全部都给你转译拉成全屏了，只有桌面模式才能窗口，这一点不知道是不是Bug？</p>
+<p>总之基本所有3D游戏进去就找窗口模式+FSR就行，2D游戏发现有时候窗口模式会导致文字变模糊，所以不要动。总之PC游戏就是一个“配置灵活”（折腾）</p>
+<h2 id="Steam控制器映射"><a href="#Steam控制器映射" class="headerlink" title="Steam控制器映射"></a>Steam控制器映射</h2><p>PC游戏，众所周知就是优先按照键鼠交互开发的，大部分游戏都没有一方对手柄进行支持（大作或者主机移植的游戏基本才有）。因此Steam Deck提供了我见到主机最多的手柄按键，以及每个游戏级别的映射布局。</p>
+<p>进入游戏后按Steam键就能看到“控制器设置”，里面可以看到每一个控制器（比如我电视玩的时候用PS5手柄，就能看到两排）的布局。这里可以选择基本就是：</p>
+<ol>
+<li>键鼠（基本就是右摇杆鼠标，L1左键 R2右键，左摇杆对应WASD，触摸板也是鼠标）</li>
+<li>手柄（指的是游戏开发利用了<a target="_blank" rel="noopener" href="https://steaminput.wiki/en/intro/steam-input">SteamInput</a>，XInput，DirectInput等原生控制器支持）</li>
+<li>支持视角控制的手柄（区别是右触摸板可以控制精确视角，FPS游戏多，需要游戏支持）</li>
+</ol>
+<p>当然，这里还可以切换到社区布局，下载其他人的布局映射文件，热门游戏都有很好的布局文件。另外这个配置会和你的Steam账户云保存起来，用PC加的配置也能用跨机器用），挺好的</p>
+<p>另外，非Steam游戏（无论是通过Proton转译层的游戏，还是Chrome和Dolphin这种原生Linux），也可以进行映射，甚至能根据游戏名（可以改，下提）共享社区映射，这也是另一个我认为SteamOS比Windows好用的地方。</p>
+<h2 id="添加非Steam游戏"><a href="#添加非Steam游戏" class="headerlink" title="添加非Steam游戏"></a>添加非Steam游戏</h2><p>我们可以把桌面模式的应用添加到Steam吗？当然可以，比如SteamOS就会引导你添加Chrome到Steam里，这下真成了iPad之外的便携浏览器了。你可以添加各种工具，甚至VSCode，也有专门人分享的布局文件方便手柄操作😂</p>
+<p>以及，在有时候我们不得已要用非Steam的Windows程序，如游戏启动器、汉化补丁、“学习版游戏”：），这时候我们肯定要Proton转译层，从命令行直接调用非常复杂我也懒得去看，利用把exe可执行程序添加到Steam库中，我们就能直接选择Proton转译并且享受各种便利（包括手柄映射，分辨率输出调整，截图管理，Shadercache等）</p>
+<p>按照<a target="_blank" rel="noopener" href="https://help.steampowered.com/zh-cn/faqs/view/4b8b-9697-2338-40ec">官方说明</a>，添加方式需要进入到桌面模式（不理解为啥游戏模式没有入口），右键库选择“添加非Steam游戏到我的库中”，默认会显示桌面模式安装的原生Linux应用列表，我们不管，选择新增路径。</p>
+<p>此时弹出的文件管理器中，可以选择不同硬盘的程序，比如机身里的（<code>/home/deck/</code>下），TF卡里的（<code>/run/https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/deck/TF卡序号/</code>)，无论是EXFAT还是NTFS文件系统的都能添加（用这个可以实现SteamOS和Windows双系统共享一个游戏，进度靠Steam云存档）。注意下方扩展名类型要选为”All”不然无法显示exe可执行程序</p>
+<p>路径选择完成后再点一次“添加所选程序”就可以在库里看到了，默认游戏名是exe可执行程序文件名，右键<code>属性</code>可以改名一下，然后选择兼容层选择最新版本的Proton（还有一个Proton Experimental不过我没用过），双击测试执行效果即可。</p>
+<h2 id="Proton兼容层"><a href="#Proton兼容层" class="headerlink" title="Proton兼容层"></a>Proton兼容层</h2><p>Proton兼容层是基于Wine的改进项目，虽然开源且在任意Linux上可用，但是Steam Deck用的版本有Value内部定制，对游戏的兼容性，以及执行速度有着非常明显的优势（以后就不用Wine了）😂</p>
+<p>其中，Steam Deck有自己的一个<a target="_blank" rel="noopener" href="https://www.steamdeck.com/verified">Deck Verified</a>标签，分为四档，其实一般来说除了不支持的档位以外都可以认为是可玩的。</p>
+<p>另外，Deck Verified是有时效性的，有些游戏可能最新的SteamOS更新后就能正常运行，但是依然显示不支持，这种情况可以借助社区提供的：<a target="_blank" rel="noopener" href="https://www.protondb.com/">ProtonDB</a>网页，查看其他玩家上传的实际体验（不过有些可能不是Steam Deck用户而是Linux PC+开源Proton用户，不可全信）</p>
+<p>当然，实际上我买游戏时也不怎么看Deck Verified，实际能不能跑下载下来测一下便知（目前我库里不能跑的是2/80，极少），反正Steam不像主机厂商，<a target="_blank" rel="noopener" href="https://store.steampowered.com/steam_refunds/?l=schinese">游戏2小时内可以无条件退款</a>，因此自己测试自己的库里的游戏时最可靠的。</p>
+<h2 id="疑难解答"><a href="#疑难解答" class="headerlink" title="疑难解答"></a>疑难解答</h2><h3 id="定期清理Shadercache-Compatdata"><a href="#定期清理Shadercache-Compatdata" class="headerlink" title="定期清理Shadercache/Compatdata"></a>定期清理Shadercache/Compatdata</h3><p>这两个是SteamOS的存储容量“其他”的罪魁祸首。</p>
+<p>Steam游戏默认配置会开启Shadercache，因为Steam Deck硬件配置的唯一性，基本你安装所有的游戏，都会提前下载好离线编译好的Shader，不再需要运行时编译，大大减少游戏第一次加载和场景卡顿。甚至非Steam游戏也会把转移时编译的Shader缓存起来，这项功能是全局生效的（不同于Windows需要游戏厂商支持）</p>
+<p>Shadercache路径在<code>/home/deck/.local/share/Steam/steamapps/shadercache</code>下（<code>/home/deck/.local/share/Steam</code>是Steam客户端根路径以后就不再提了）</p>
+<p>而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是，Proton因为是模拟Windows的运行环境，其背后会做一个精简的沙盒（纯净大小约为190MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是黑客破坏（非常Nice）。而我们游玩过一个Windows游戏，而它又被我们从Steam库里删除时候，神奇的是这个Compatdata竟然不会自动删除（Bug？Feature？）</p>
+<p>对这两个文件，我找到了一个作者写的好用的工具<a target="_blank" rel="noopener" href="https://github.com/scawp/Steam-Deck.Shader-Cache-Killer">Steam Deck: Shader Cache Killer</a>，使用也很简单，按照说明下载好以后，打开就能看到所有的Shadercache目录和对应游戏的名称，AppID信息，可筛选Non-steam和Uninstalled。</p>
+<p>值得注意的是，目前这个工具对非Steam游戏的名称识别并不好，必须你最近启动过这个游戏一次才可以在列表显示（看代码是通过读了<code>$STEAM/logs/content_log.txt</code>日志解析的，但是这个日志会定时清理……）。原因是非Steam游戏的AppID是根据“游戏名”+“路径名”的<a target="_blank" rel="noopener" href="https://gaming.stackexchange.com/questions/386882/how-do-i-find-the-appid-for-a-non-steam-game-on-steam">哈希计算的</a>，所以不能反推出原游戏名。</p>
+<p>为了防止错误删除了正在玩的沙盒（包括游戏存档），简单傻瓜做法就是定期清理，记录已安装的这些非Steam游戏的AppID（或者无脑就是每次执行清理前先手动启动一次后再清理），每次只保留已添加的非Steam游戏Shadercache和Compatdata目录，其他的一律删除。</p>
+<h3 id="修改游戏启动路径以及自定义启动参数"><a href="#修改游戏启动路径以及自定义启动参数" class="headerlink" title="修改游戏启动路径以及自定义启动参数"></a>修改游戏启动路径以及自定义启动参数</h3><p>Steam商店的游戏都有一个专门的元信息，其可以在<a target="_blank" rel="noopener" href="https://steamdb.info/">SteamDB</a>的Information和Configuration下看到，包括</p>
+<ol>
+<li>显示的游戏名</li>
+<li>发行商信息</li>
+<li>发行日期</li>
+<li>启动入口（如启动的exe可执行程序路径，默认参数是什么）</li>
+</ol>
+<p>其中我最近就遇到了一个问题，是这个游戏有一个自己的启动器（可能是C#写的），但是Steam游戏模式下，启动器无法弹出而卡住，只有桌面模式能弹出。我想跳过直接执行另一个实际游戏的exe可执行程序（与启动器搏斗和折腾……）</p>
+<p>找了一圈，改名符号链接在Proton下也有兼容问题，最终还是简单粗暴，利用这个<a target="_blank" rel="noopener" href="https://github.com/tralph3/Steam-Metadata-Editor">Steam Metadata Editor</a>，可以直接修改库里面游戏的启动入口，包括启动的路径，默认参数等。</p>
+<p>此外，它还可以添加多个启动入口，比如有些游戏包括类似游戏本体，启动器，创意工坊Mod编辑器，DLC章节啥的，可以添加不同的入口，方便管理，也不用自己手动对每个exe改成非Steam游戏添加入库。</p>
+<p>注意这个工具建议在桌面模式用，不要在Steam客户端启动时修改保存（提前右键退出），才可以生效。</p>
+<h1 id="安装Windows"><a href="#安装Windows" class="headerlink" title="安装Windows"></a>安装Windows</h1><p>前面说了那么多都是SteamOS的用法，但是毕竟Steam Deck本质是一台Portable PC，那么它当然可以安装Windows（官方声明支持Windows 10/11）</p>
+<p>虽然Windows系统我从大学就没再用过了（差不多是Mac+主机党），但是按照网上的教程摸索差不多实现了从TF卡启动Windows，可以用来逼不得已的情况下跑一些只能在Windows上的软件（Proton兼容失效或者性能有异常的情况）</p>
+<h2 id="Win-To-Go制作"><a href="#Win-To-Go制作" class="headerlink" title="Win To Go制作"></a>Win To Go制作</h2><p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/deployment/planning/windows-to-go-overview">Win To Go</a>制作工具，Windows自带的工具限制必须是“硬盘而非可移动存储设备”才行，比较麻烦还得用DiskGenius改分区，我参考教程用了这个<a target="_blank" rel="noopener" href="https://bbs.luobotou.org/thread-761-1-1.html">WTG辅助工具</a>，下载好Windows 11的镜像，一键写入到TF卡中</p>
+<h2 id="从TF卡启动并安装Windows"><a href="#从TF卡启动并安装Windows" class="headerlink" title="从TF卡启动并安装Windows"></a>从TF卡启动并安装Windows</h2><p>在写好Win To Go到TF卡之后，插入TF卡关机，然后同时长按音量减键和电源键，听到响声后放手，就会进入到启动选项页面。</p>
+<p>在Boot Manager中选择”EFI SD/MMD Card”，然后就会进入Windows安装的引导流程了，后面就按照网上常见Windows安装流程走。注意家庭版是需要微软账号和联网的，默认Windows 11有网卡驱动，Windows 10没有，所以建议用专业版😂</p>
+<p>安装完成后，会发现默认不再进入SteamOS了，继续进入启动选项页面，这里会出现一个<code>Windows Boot Manager</code>在首位，实际上我们Win To Go选择TF卡依旧也能启动，和他没啥关系，可以删除（参考后文“如何默认启动SteamOS而非Windows”）。</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/4.jpg" alt="4"></p>
+<h2 id="Windows驱动"><a href="#Windows驱动" class="headerlink" title="Windows驱动"></a>Windows驱动</h2><p>Steam官方提供了Windows的驱动，可以直接下载好并拷贝到Windows中安装，参考：<a target="_blank" rel="noopener" href="https://help.steampowered.com/zh-cn/faqs/view/6121-eccd-d643-baa8">Steam Deck - Windows Resources</a></p>
+<p>Windows 11上，对inf格式驱动，需要右键并选择“显示更多选项”以查看“安装”选项。</p>
+<h2 id="疑难解答-1"><a href="#疑难解答-1" class="headerlink" title="疑难解答"></a>疑难解答</h2><h3 id="如何默认启动SteamOS而非Windows"><a href="#如何默认启动SteamOS而非Windows" class="headerlink" title="如何默认启动SteamOS而非Windows"></a>如何默认启动SteamOS而非Windows</h3><p>安装Windows之后默认不再会进入SteamOS了，而SteamOS也没提供默认启动选项的能力（这个EFI引导做得比较垃圾），并且一个神奇的Bug，导致无论怎么改默认值，只要启动过一次Windows系统，<code>Windows Boot Manager</code>就会默认跑到第一位导致下一次永远默认Windows</p>
+<p>我选择的方式是，直接通过禁用<code>Windows Boot Manager</code>这个EFI启动项，让SteamOS默认启动，如有需要，长按进入并选择”EFI SD/MMD Card”以启动Windows</p>
+<p>具体修改方式可以在SteamOS也可以在Windows下操作，本质都是修改EFI的配置信息，以SteamOS举例子：</p>
+<ol>
+<li>打开Konsole</li>
+<li>输入<code>efibootmgr</code>，会列举查看到对应每个启动选项的数字编号，如<code>Boot0004 *Windows Boot Manager</code></li>
+<li>输入<code>sudo efibootmgr -b 0004 -A</code>，注意如果没有设置Root密码需要提前用<code>passwd</code>设置一次</li>
+<li>再次输入<code>efibootmgr</code>，此时会不再显示代表激活状态的<code>*</code>，如<code>Boot0004 Windows Boot Manager</code></li>
+</ol>
+<p>重启可以验证一下，启动列表不再显示这个即可证明成功，默认进SteamOS或者选择<code>EFI SD/MMD Card</code>进入Windows</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实感觉对于主机玩家来说，Steam Deck的一大缺点，同时也是一大优点就是“可折腾”（Hackable），你总有一种方式，能在掌上玩到PC上的游戏。而对于主机本身配置就很少。Steam Deck它在我看来和Switch压根不是一个竞争对手，而更像是互补。</p>
+<p>我能拿着Steam Deck去把打折时买的Rougelike游戏和文字游戏打通，插在电视上跑着40帧AAA大作和创意工坊Mod，但是绝对不会在Switch上高价买这些PC键鼠设计且没有社区和创意工坊的游戏。它更像是一个夹在PS5这种沉浸式沙发体验，和Switch掌机轻度娱乐和聚会游戏之间的设备，并且对纯Mac党（没有任何其他Windows设备）是一个非常好的替代品。</p>
+<p>就这么多吧，这篇文章大部分都是介绍自己实际遇到的一些问题和教程，希望能对有心入Steam Deck或者遇到类似场景的人提供一些帮助吧：）</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Steam/" rel="tag"># Steam</a>
+              <a href="/tags/SteamOS/" rel="tag"># SteamOS</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/07/%E6%8E%A2%E7%A7%98%E8%B6%8A%E6%9D%A5%E8%B6%8A%E5%A4%8D%E6%9D%82%E7%9A%84ImageIO%E6%A1%86%E6%9E%B6/" rel="prev" title="探秘越来越复杂的ImageIO框架">
+      <i class="fa fa-chevron-left"></i> 探秘越来越复杂的ImageIO框架
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Steam-Deck%E8%B4%AD%E4%B9%B0"><span class="nav-number">1.</span> <span class="nav-text">Steam Deck购买</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA"><span class="nav-number">1.1.</span> <span class="nav-text">主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8D%A1"><span class="nav-number">1.2.</span> <span class="nav-text">存储卡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">配件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Steam%E8%B4%A6%E5%8F%B7%E5%92%8C%E6%94%AF%E4%BB%98"><span class="nav-number">2.</span> <span class="nav-text">Steam账号和支付</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CSteam%E5%A4%96%E5%8C%BA%E8%B4%A6%E5%8F%B7"><span class="nav-number">2.1.</span> <span class="nav-text">注册Steam外区账号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E4%BB%98%E5%92%8C%E4%BD%99%E9%A2%9D%E8%B4%AD%E4%B9%B0"><span class="nav-number">2.2.</span> <span class="nav-text">支付和余额购买</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SteamOS%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">SteamOS使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B8%E6%88%8F%E5%A4%96%E6%8E%A5%E6%98%BE%E7%A4%BA%E5%99%A8%E5%88%86%E8%BE%A8%E7%8E%87"><span class="nav-number">3.1.</span> <span class="nav-text">游戏外接显示器分辨率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E9%85%8D%E7%BD%AE%E5%92%8C%E5%85%A8%E5%B1%80FSR"><span class="nav-number">3.2.</span> <span class="nav-text">性能配置和全局FSR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Steam%E6%8E%A7%E5%88%B6%E5%99%A8%E6%98%A0%E5%B0%84"><span class="nav-number">3.3.</span> <span class="nav-text">Steam控制器映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E9%9D%9ESteam%E6%B8%B8%E6%88%8F"><span class="nav-number">3.4.</span> <span class="nav-text">添加非Steam游戏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Proton%E5%85%BC%E5%AE%B9%E5%B1%82"><span class="nav-number">3.5.</span> <span class="nav-text">Proton兼容层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%96%91%E9%9A%BE%E8%A7%A3%E7%AD%94"><span class="nav-number">3.6.</span> <span class="nav-text">疑难解答</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%9C%9F%E6%B8%85%E7%90%86Shadercache-Compatdata"><span class="nav-number">3.6.1.</span> <span class="nav-text">定期清理Shadercache&#x2F;Compatdata</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%B8%B8%E6%88%8F%E5%90%AF%E5%8A%A8%E8%B7%AF%E5%BE%84%E4%BB%A5%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0"><span class="nav-number">3.6.2.</span> <span class="nav-text">修改游戏启动路径以及自定义启动参数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Windows"><span class="nav-number">4.</span> <span class="nav-text">安装Windows</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Win-To-Go%E5%88%B6%E4%BD%9C"><span class="nav-number">4.1.</span> <span class="nav-text">Win To Go制作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8ETF%E5%8D%A1%E5%90%AF%E5%8A%A8%E5%B9%B6%E5%AE%89%E8%A3%85Windows"><span class="nav-number">4.2.</span> <span class="nav-text">从TF卡启动并安装Windows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows%E9%A9%B1%E5%8A%A8"><span class="nav-number">4.3.</span> <span class="nav-text">Windows驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%96%91%E9%9A%BE%E8%A7%A3%E7%AD%94-1"><span class="nav-number">4.4.</span> <span class="nav-text">疑难解答</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%BB%98%E8%AE%A4%E5%90%AF%E5%8A%A8SteamOS%E8%80%8C%E9%9D%9EWindows"><span class="nav-number">4.4.1.</span> <span class="nav-text">如何默认启动SteamOS而非Windows</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '783d0f6afbe6385e00fe',
+      clientSecret: '1ce280f20fd69e57611792eb3b660ada8385af2c',
+      repo        : 'dreampiggy.github.io',
+      owner       : 'dreampiggy',
+      admin       : ['dreampiggy'],
+      id          : '433d3a78545084bc310e7c9adf2aec76',
+        language: window.navigator.language || window.navigator.userLanguage,
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
