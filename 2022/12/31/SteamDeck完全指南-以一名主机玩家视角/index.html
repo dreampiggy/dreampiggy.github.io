@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/3.jpg">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2022-12-31/images/4.jpg">
 <meta property="article:published_time" content="2022-12-31T10:56:41.000Z">
-<meta property="article:modified_time" content="2022-12-31T08:07:19.509Z">
+<meta property="article:modified_time" content="2022-12-31T08:14:58.775Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="Steam">
 <meta property="article:tag" content="SteamOS">
@@ -248,7 +248,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-12-31 10:56:41 / 修改时间：08:07:19" itemprop="dateCreated datePublished" datetime="2022-12-31T10:56:41+00:00">2022-12-31</time>
+              <time title="创建时间：2022-12-31 10:56:41 / 修改时间：08:14:58" itemprop="dateCreated datePublished" datetime="2022-12-31T10:56:41+00:00">2022-12-31</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -356,13 +356,13 @@
 <h2 id="Steam控制器映射"><a href="#Steam控制器映射" class="headerlink" title="Steam控制器映射"></a>Steam控制器映射</h2><p>PC游戏，众所周知就是优先按照键鼠交互开发的，大部分游戏都没有一方对手柄进行支持（大作或者主机移植的游戏基本才有）。因此Steam Deck提供了我见到主机最多的手柄按键，以及每个游戏级别的映射布局。</p>
 <p>进入游戏后按Steam键就能看到“控制器设置”，里面可以看到每一个控制器（比如我电视玩的时候用PS5手柄，就能看到两排）的布局。这里可以选择基本就是：</p>
 <ol>
-<li>键鼠（基本就是右摇杆鼠标，L1左键 R2右键，左摇杆对应WASD，触摸板也是鼠标）</li>
+<li>键鼠（基本就是右摇杆鼠标，L2左键 R2右键，左摇杆对应WASD，触摸板也是鼠标）</li>
 <li>手柄（指的是游戏开发利用了<a target="_blank" rel="noopener" href="https://steaminput.wiki/en/intro/steam-input">SteamInput</a>，XInput，DirectInput等原生控制器支持）</li>
 <li>支持视角控制的手柄（区别是右触摸板可以控制精确视角，FPS游戏多，需要游戏支持）</li>
 </ol>
 <p>当然，这里还可以切换到社区布局，下载其他人的布局映射文件，热门游戏都有很好的布局文件。另外这个配置会和你的Steam账户云保存起来，用PC加的配置也能用跨机器用），挺好的</p>
 <p>另外，非Steam游戏（无论是通过Proton转译层的游戏，还是Chrome和Dolphin这种原生Linux），也可以进行映射，甚至能根据游戏名（可以改，下提）共享社区映射，这也是另一个我认为SteamOS比Windows好用的地方。</p>
-<h2 id="添加非Steam游戏"><a href="#添加非Steam游戏" class="headerlink" title="添加非Steam游戏"></a>添加非Steam游戏</h2><p>我们可以把桌面模式的应用添加到Steam吗？当然可以，比如SteamOS就会引导你添加Chrome到Steam里，这下真成了iPad之外的便携浏览器了。你可以添加各种工具，甚至VSCode，也有专门人分享的布局文件方便手柄操作😂</p>
+<h2 id="添加非Steam游戏"><a href="#添加非Steam游戏" class="headerlink" title="添加非Steam游戏"></a>添加非Steam游戏</h2><p>我们可以把桌面模式的应用添加到Steam吗？当然可以，比如SteamOS就会引导你添加Chrome到库里，这下真成了iPad之外的便携浏览器了。你可以添加各种工具，甚至VSCode，也有专门人分享的布局文件方便手柄操作这些软件😂</p>
 <p>以及，在有时候我们不得已要用非Steam的Windows程序，如游戏启动器、汉化补丁、“学习版游戏”：），这时候我们肯定要Proton转译层，从命令行直接调用非常复杂我也懒得去看，利用把exe可执行程序添加到Steam库中，我们就能直接选择Proton转译并且享受各种便利（包括手柄映射，分辨率输出调整，截图管理，Shadercache等）</p>
 <p>按照<a target="_blank" rel="noopener" href="https://help.steampowered.com/zh-cn/faqs/view/4b8b-9697-2338-40ec">官方说明</a>，添加方式需要进入到桌面模式（不理解为啥游戏模式没有入口），右键库选择“添加非Steam游戏到我的库中”，默认会显示桌面模式安装的原生Linux应用列表，我们不管，选择新增路径。</p>
 <p>此时弹出的文件管理器中，可以选择不同硬盘的程序，比如机身里的（<code>/home/deck/</code>下），TF卡里的（<code>/run/media/deck/TF卡序号/</code>)，无论是EXFAT还是NTFS文件系统的都能添加（用这个可以实现SteamOS和Windows双系统共享一个游戏，进度靠Steam云存档）。注意下方扩展名类型要选为”All”不然无法显示exe可执行程序</p>
@@ -374,7 +374,7 @@
 <h2 id="疑难解答"><a href="#疑难解答" class="headerlink" title="疑难解答"></a>疑难解答</h2><h3 id="定期清理Shadercache-Compatdata"><a href="#定期清理Shadercache-Compatdata" class="headerlink" title="定期清理Shadercache/Compatdata"></a>定期清理Shadercache/Compatdata</h3><p>这两个是SteamOS的存储容量“其他”的罪魁祸首。</p>
 <p>Steam游戏默认配置会开启Shadercache，因为Steam Deck硬件配置的唯一性，基本你安装所有的游戏，都会提前下载好离线编译好的Shader，不再需要运行时编译，大大减少游戏第一次加载和场景卡顿。甚至非Steam游戏也会把转移时编译的Shader缓存起来，这项功能是全局生效的（不同于Windows需要游戏厂商支持）</p>
 <p>Shadercache路径在<code>/home/deck/.local/share/Steam/steamapps/shadercache</code>下（这是Steam客户端根路径）</p>
-<p>而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是，Proton因为是模拟Windows的运行环境，其背后会做一个精简的沙盒（纯净大小约为190MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是黑客破坏（非常Nice）。而我们游玩过一个Windows游戏，而它又被我们从Steam库里删除时候，神奇的是这个Compatdata竟然不会自动删除（Bug？Feature？）</p>
+<p>而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是一个沙盒文件夹。Proton因为是模拟Windows的运行环境，其背后会做一个精简的Windows目录树（纯净大小约为190MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是黑客破坏（非常Nice），不会影响其他游戏。而我们游玩过一个Windows游戏，而它又被我们从Steam库里删除时候，神奇的是这个Compatdata竟然不会自动删除（Bug？Feature？）</p>
 <p>对这两个文件，我找到了一个作者写的好用的工具<a target="_blank" rel="noopener" href="https://github.com/scawp/Steam-Deck.Shader-Cache-Killer">Steam Deck: Shader Cache Killer</a>，使用也很简单，按照说明下载好以后，打开就能看到所有的Shadercache目录和对应游戏的名称，AppID信息，可筛选Non-steam和Uninstalled。</p>
 <p>值得注意的是，目前这个工具对非Steam游戏的名称识别并不好，必须你最近启动过这个游戏一次才可以在列表显示（看代码是通过读了<code>$STEAM/logs/content_log.txt</code>日志解析的，但是这个日志会定时清理……）。原因是非Steam游戏的AppID是根据“游戏名”+“路径名”的<a target="_blank" rel="noopener" href="https://gaming.stackexchange.com/questions/386882/how-do-i-find-the-appid-for-a-non-steam-game-on-steam">哈希得到</a>，所以不能反推出原游戏名和路径名。</p>
 <p>为了防止错误删除了正在玩的沙盒（包括游戏存档），简单傻瓜做法就是定期清理，记录已安装的这些非Steam游戏的AppID（或者无脑就是每次执行清理前先手动启动一次后再清理），每次只保留已添加的非Steam游戏Shadercache和Compatdata目录，其他的一律删除。</p>
