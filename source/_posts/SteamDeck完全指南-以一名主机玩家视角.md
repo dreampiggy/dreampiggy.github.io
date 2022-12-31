@@ -118,7 +118,7 @@ SteamOS的体验，简而言之可以说是把PC上的Steam客户端，做到了
 
 SteamOS基于[Arch Linux](https://wiki.archlinux.org/title/Steam_Deck)，提供了游戏模式（大部分时间在这里）以及桌面模式。游戏模式自带了一个快捷菜单键，类似PS键，除了可以进行除了WiFi/蓝牙/飞行/亮度等调节，查看通知邀请啥的常见能力，最有意思的是可以进行性能配置，包括限制电量TDP来控制续航（只有40WH的电量，意味着功耗拉满25W，只能支撑1个半小时），锁帧率，以及开启采样技术等，后文提。
 
-桌面模式是[KDE](https://wiki.archlinux.org/title/KDE)，我第一次上手感觉和macOS的不太像，更像是Windows桌面的逻辑，不是很舒服，熟悉一段之后还好。文件管理器叫做[Dolphin](https://userbase.kde.org/Dolphin/File_Management)，使用起来反而更像macOS的Finder，标签页，边栏，打开终端啥的。终端模拟器叫做[Konsole](https://konsole.kde.org/)，我说实话比macOS的终端反而还好用……桌面模式的Steam客户端可以进行一些复杂操作（实际上桌面模式上的Steam客户端和PC上操作完全一样），如添加非Steam游戏快捷方式，后文提。
+桌面模式是[KDE](https://kde.org/zh-cn/)，我第一次上手感觉和macOS的不太像，更像是Windows桌面的逻辑，不是很舒服，熟悉一段之后还好。文件管理器叫做[Dolphin](https://userbase.kde.org/Dolphin/File_Management)，使用起来反而更像macOS的Finder，标签页，边栏，打开终端啥的。终端模拟器叫做[Konsole](https://konsole.kde.org/)，我说实话比macOS的终端反而还好用……桌面模式的Steam客户端可以进行一些复杂操作（实际上桌面模式上的Steam客户端和PC上操作完全一样），如添加非Steam游戏快捷方式，后文提。
 
 对于Windows游戏来说，SteamOS内置的[Proton兼容层](https://github.com/ValveSoftware/Proton)提供了转译。这个转译是API级别的（即实现了一套Win32 API，\.NET API，以及DirectX转译Vulkan等），不是类似Apple M1对x86_64的指令集转译，在我测试游戏中表现挺好的，兼容性不错，帧率甚至超越Windows原生执行。
 
