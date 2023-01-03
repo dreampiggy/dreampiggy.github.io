@@ -45,11 +45,11 @@ Steam Deck官网：https://www.steamdeck.com/zh-cn/
 
 ## 存储卡
 
-Steam Deck支持TF存储卡扩展，我这里选择512GB以后自然没必要换SSD了，但是为了后续可能用到的空间，以及安装Windows到TF卡上，所以又300¥买了一个UH3的512G 闪迪TF卡，直接在机身下方插入即可。
+Steam Deck支持TF存储卡扩展，我这里选择512GB以后自然没必要换SSD了，但是为了后续可能用到的空间，以及安装Windows到TF卡上，所以又300¥买了一个UH3的512G 闪迪TF卡（注意尽量选读写速度快的），直接在机身下方插入即可。
 
-默认SteamOS会推荐格式化为EXFAT文件系统，并且可以选择默认安装游戏到TF卡上，和Switch的逻辑有点像。
+默认SteamOS会推荐格式化为EX4文件系统，但是你可以选择其他Linux支持的文件系统（甚至包括NTFS）。配置好以后，可以选择默认安装游戏到TF卡上，也可以把已安装的游戏，在两个存储中移动，和Switch的逻辑有点像，也和PC的Steam客户端的内容库管理逻辑一致。
 
-但是我为了后续安装Windows，最终又制作成了Win To Go，将TF卡格式化为NTFS文件系统之后，SteamOS下就不再显示改安装路径了……这点暂时还没管，应该后续可以通过插件解决（折腾预定）
+后文的“游戏转移到存储卡”章节，会详细讲解游戏转移到存储卡的操作和注意事项。
 
 ## 配件
 
@@ -177,7 +177,7 @@ PC游戏，众所周知就是优先按照键鼠交互开发的，大部分游戏
 
 按照[官方说明](https://help.steampowered.com/zh-cn/faqs/view/4b8b-9697-2338-40ec)，添加方式需要进入到桌面模式（不理解为啥游戏模式没有入口），右键库选择“添加非Steam游戏到我的库中”，默认会显示桌面模式安装的原生Linux应用列表，我们不管，选择新增路径。
 
-此时弹出的文件管理器中，可以选择不同硬盘的程序，比如机身里的（`/home/deck/`下），TF卡里的（`/run/media/deck/TF卡序号/`)，无论是EXFAT还是NTFS文件系统的都能添加（用这个可以实现SteamOS和Windows双系统共享一个游戏，进度靠Steam云存档）。注意下方扩展名类型要选为"All"不然无法显示exe可执行程序
+此时弹出的文件管理器中，可以选择不同硬盘的程序，比如机身里的（`/home/deck/`下），TF卡里的（`/run/media/deck/TF卡序号/`)，无论是EXFAT还是ntfs文件系统的都能添加（用这个可以实现SteamOS和Windows双系统共享一个游戏，进度靠Steam云存档）。注意下方扩展名类型要选为"All"不然无法显示exe可执行程序
 
 路径选择完成后再点一次“添加所选程序”就可以在库里看到了，默认游戏名是exe可执行程序文件名，右键`属性`可以改名一下，然后选择兼容层选择最新版本的Proton（还有一个Proton Experimental不过我没用过），双击测试执行效果即可。
 
@@ -191,6 +191,21 @@ Proton兼容层是基于Wine的改进项目，虽然开源且在任意Linux上�
 
 当然，实际上我买游戏时也不怎么看Deck Verified，实际能不能跑下载下来测一下便知（目前我库里不能跑的是2/80，极少），反正Steam不像主机厂商，[游戏2小时内可以无条件退款](https://store.steampowered.com/steam_refunds/?l=schinese)，因此自己测试自己的库里的游戏才是最可靠的。
 
+## 游戏转移到存储卡
+
+SteamOS在游戏模式下的设置-存储，可以看到当前的存储设备（机身存储+存储卡），以及其对应的游戏列表。默认插入存储卡SteamOS会推荐你格式化为ext4文件系统（但并不意味着SteamOS只识别ext4，btrfs，ntfs都支持）。
+
+有一个坑是，在游戏模式下我们不能添加存储卡，我们只能进入桌面模式，右键Steam选择`设置`->`下载`->`内容库`，此时会打开一个和游戏模式页面一模一样的UI，除了多了一个加号（离谱）。
+
+点击加号会让你选择需要的路径来当作新的Steam库路径，一般我们直接选择存储卡的路径（`/run/media/deck/存储卡ID`）就行。之后选择游戏选择移动就行。
+
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-01-03/media/Screenshot_20230103_190602.png)
+
+接下来，为了设置启动时存储卡自动挂载，进入到桌面模式右键右下角状态栏，选择“Configure Removable Devices”，开启“mount at login“和”mount when attached“，就能开机自动挂载存储卡而不需要手动进入桌面模式选择了。
+
+不过还有一个坑（Bug？）：我的TF存储卡在后续制作Win To Go双系统时，格式化了为ntfs文件系统，虽然SteamOS有着Linux Kernel级别的ntfs支持了，但是偶现启动后会不以read-write挂载ntfs分区，而是以read-only挂载，会导致这里存储消失，与此同时你也不能在文件管理器里给TF卡写入任何内容。
+
+出现这种状况后，你需要手动进入到桌面模式，右键状态栏的存储管理，重新Unmount再Mount一次，才可恢复正常，复现概率随机。只能说希望Valve尽快修复这类问题🙏
 
 ## 疑难解答
 
@@ -202,13 +217,21 @@ Steam游戏默认配置会开启Shadercache，因为Steam Deck硬件配置的唯
 
 Shadercache路径在`/home/deck/.local/share/Steam/steamapps/shadercache`下（这是Steam客户端根路径）
 
-而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是一个沙盒文件夹。Proton因为是模拟Windows的运行环境，其背后会做一个精简的Windows目录树（纯净大小约为190MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是恶意破坏删除文件（非常Nice），也不会影响其他游戏。而我们游玩过一个Windows游戏，而它又被我们从Steam库里删除时候，神奇的是这个Compatdata竟然不会自动删除（Bug？Feature？）
+而Compatdata，是Proton游戏兼容层产生的文件夹，又称pfx，其本质是一个沙盒文件夹。Proton因为是模拟Windows的运行环境，其背后会做一个精简的Windows目录树（纯净大小约为180MB），分配给这个游戏，这个游戏对Windows系统的所有修改都只在这个沙盒中生效，包括注册表，存档文件，甚至可能是恶意破坏删除文件（非常Nice），也不会影响其他游戏。
 
-对这两个文件，我找到了一个作者写的好用的工具[Steam Deck: Shader Cache Killer](https://github.com/scawp/Steam-Deck.Shader-Cache-Killer)，使用也很简单，按照说明下载好以后，打开就能看到所有的Shadercache/compatdata目录和对应游戏的名称，AppID信息，可筛选Non-steam和Uninstalled游戏。
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-01-03/media/Screenshot_20230103_190815.png)
 
-值得注意的是，目前这个工具对非Steam游戏的名称识别并不好，必须你最近启动过这个游戏一次才可以在列表显示（看代码是通过读了`$STEAM/logs/content_log.txt`日志解析的，但是这个日志会定时清理……）。原因是非Steam游戏的AppID是根据“游戏名”+“路径名”的[哈希得到](https://gaming.stackexchange.com/questions/386882/how-do-i-find-the-appid-for-a-non-steam-game-on-steam)，所以不能反推出原游戏名和路径名。
+在卸载游戏后，Shardarcache会被自动清理，没什么问题（注意自己添加的非Steam游戏不会清理，需要手动清理！）。但是有一个神奇的Bug是，这个Compatdata在卸载游戏后，竟然不会自动删除（无论是Steam游戏还是非Steam游戏），继续占用磁盘（180MB每个），挺膈应的。
 
-为了防止错误删除了正在玩的沙盒（包括游戏存档），简单傻瓜做法就是定期清理，记录已安装的这些非Steam游戏的AppID（或者无脑就是每次执行清理前先手动启动一次后再清理），每次只保留已添加的非Steam游戏Shadercache和Compatdata目录，其他的一律删除。
+对这两个文件，我找到了一个作者写的好用的工具[Steam Deck: Shader Cache Killer](https://github.com/scawp/Steam-Deck.Shader-Cache-Killer)来解决这个问题
+
+使用也很简单，按照说明下载好以后会自动添加两个快捷方式到库里，打开`zShaderCacheKiller.sh`就能看到所有的Shadercache/compatdata目录和对应游戏的名称，AppID信息，可筛选Non-steam和Uninstalled游戏。然后选择delete就行。
+
+它还有另一个工具`zShaderCacheMover.sh`，能把这两个文件夹移动到存储卡上而不是机身存储，对64GB小机身存储用户很重要（不会真有64G的不换硬盘吧）
+
+值得注意的是，目前这个工具对非Steam游戏的名称识别并不好，必须你最近启动过这个游戏一次，才可以在列表显示（看代码是通过读了`$STEAM/logs/content_log.txt`日志解析的，但是这个日志会定时清理……）。原因是非Steam游戏的AppID是根据“游戏名”+“路径名”的[哈希得到](https://gaming.stackexchange.com/questions/386882/how-do-i-find-the-appid-for-a-non-steam-game-on-steam)，所以不能反推出原游戏名和路径名。
+
+为了防止错误删除了正在玩的沙盒（包括游戏存档），简单傻瓜做法就是定期清理，记录已安装的这些非Steam游戏的AppID（或者无脑就是每次执行清理前先手动启动一次后再清理）；或者你也可以全部运行一次当前库里所有非Steam游戏，不能识别的AppID自然是已经被卸载的。
 
 ### 修改游戏启动路径以及自定义启动参数
 
