@@ -203,7 +203,7 @@ SteamOS在游戏模式下的设置-存储，可以看到当前的存储设备（
 
 接下来，为了设置启动时存储卡自动挂载，进入到桌面模式右键右下角状态栏，选择“Configure Removable Devices”，开启“mount at login“和”mount when attached“，就能开机自动挂载存储卡而不需要手动进入桌面模式选择了。
 
-不过还有一个坑（Bug？）：我的TF存储卡在后续制作Win To Go双系统时，格式化了为ntfs文件系统，虽然SteamOS有着Linux Kernel级别的ntfs支持了，但是偶现启动后会不以read-write挂载ntfs分区，而是以read-only挂载，会导致这里存储消失，与此同时你也不能在文件管理器里给TF卡写入任何内容。
+说明一个坑（Bug？）：我的TF存储卡在后续制作Win To Go双系统时，格式化了为ntfs文件系统，虽然SteamOS有着Linux Kernel级别的ntfs支持了，但是偶现启动后会不以read-write挂载ntfs分区，而是以read-only挂载，会导致这里存储消失，与此同时你也不能在文件管理器里给TF卡写入任何内容。**更新**：经过大佬提示，发现需要在Windows 11中关闭快速启动（参考：[How to Disable Fast Startup on Windows 10?](https://www.passfab.com/windows-10/disable-fast-boot-windows-10.html#way3)），否则会导致无法read-write挂载NTFS存储卡。
 
 出现这种状况后，你需要手动进入到桌面模式，右键状态栏的存储管理，重新Unmount再Mount一次，才可恢复正常，复现概率随机。只能说希望Valve尽快修复这类问题🙏
 
