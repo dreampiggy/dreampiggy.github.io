@@ -211,6 +211,92 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89/" class="post-title-link" itemprop="url">iOS平台图片编解码入门教程（Image/IO篇）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-30 17:32:29" itemprop="dateCreated datePublished" datetime="2017-10-30T17:32:29+00:00">2017-10-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-12-26 10:56:15" itemprop="dateModified" datetime="2023-12-26T10:56:15+00:00">2023-12-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>这篇教程是系列教程的第一篇，主要是面向于没有怎么接触过iOS平台上图像编解码的人的，不会涉及到多媒体处理中的数字信号处理、图像编码的深入知识。这是系列最简单的一篇，之后会有关于第三方编解码，以及vImage的另两篇教程。</p>
+</blockquote>
+<h1 id="Image-IO"><a href="#Image-IO" class="headerlink" title="Image/IO"></a>Image/IO</h1><p>Image/IO是Apple提供的一套用于图片编码解码的系统库，对外是一层非常直观易用的C的接口。上层的UIKit，Core Image，还有Core Graphics中的CGImage处理，都是依赖Image/IO库的。因此，掌握Image/IO的基本编解码操作，对一些图像相关的数据处理是非常必要的。这篇教程就主要从简单的用法，说明Image/IO的用法，完整的文档，可以参考<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/imageio">Apple Image/IO</a></p>
+<h1 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h1><p>解码，指的是讲已经编码过的图像封装格式的数据，转换为可以进行渲染的图像数据。具体来说，iOS平台上就指的是将一个输入的二进制Data，转换为上层UI组件渲染所用的UIImage对象。</p>
+<p>Image/IO的解码，支持了常见的图像格式，包括PNG（包括APNG）、JPEG、GIF、BMP、TIFF（具体的，可以通过<code>CGImageSourceCopyTypeIdentifiers</code>来打印出来，不同平台不完全一致）。在iOS 11之后另外支持了HEIC（即使用了HEVC编码的HEIF格式）。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88Image:IO%E7%AF%87%EF%BC%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/07/25/%E8%BF%91%E6%9C%9F%E5%8F%82%E4%B8%8E%E7%9A%84APNG%E5%92%8CWebP%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%BB%8F%E5%8E%86%E5%8F%8A%E6%84%9F%E5%8F%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -242,7 +328,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-26 10:52:41" itemprop="dateModified" datetime="2023-12-26T10:52:41+00:00">2023-12-26</time>
+                <time title="修改时间：2023-12-26 10:56:15" itemprop="dateModified" datetime="2023-12-26T10:56:15+00:00">2023-12-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -334,7 +420,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-26 10:52:41" itemprop="dateModified" datetime="2023-12-26T10:52:41+00:00">2023-12-26</time>
+                <time title="修改时间：2023-12-26 10:56:15" itemprop="dateModified" datetime="2023-12-26T10:56:15+00:00">2023-12-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -421,7 +507,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-26 10:52:41" itemprop="dateModified" datetime="2023-12-26T10:52:41+00:00">2023-12-26</time>
+                <time title="修改时间：2023-12-26 10:56:15" itemprop="dateModified" datetime="2023-12-26T10:56:15+00:00">2023-12-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -508,7 +594,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-26 10:52:41" itemprop="dateModified" datetime="2023-12-26T10:52:41+00:00">2023-12-26</time>
+                <time title="修改时间：2023-12-26 10:56:15" itemprop="dateModified" datetime="2023-12-26T10:56:15+00:00">2023-12-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -595,7 +681,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-26 10:52:41" itemprop="dateModified" datetime="2023-12-26T10:52:41+00:00">2023-12-26</time>
+                <time title="修改时间：2023-12-26 10:56:15" itemprop="dateModified" datetime="2023-12-26T10:56:15+00:00">2023-12-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -681,7 +767,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-26 10:52:41" itemprop="dateModified" datetime="2023-12-26T10:52:41+00:00">2023-12-26</time>
+                <time title="修改时间：2023-12-26 10:56:15" itemprop="dateModified" datetime="2023-12-26T10:56:15+00:00">2023-12-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -819,92 +905,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/10/26/React-Native%E4%B9%8BRedux%E6%9E%B6%E6%9E%84%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/10/26/React-Native%E4%B9%8BRedux%E6%9E%B6%E6%9E%84%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">React Native之Redux架构入门</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2016-10-26 17:23:28 / 修改时间：17:39:01" itemprop="dateCreated datePublished" datetime="2016-10-26T17:23:28+00:00">2016-10-26</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>如今也是入了移动iOS开发的坑，最近不仅学习了Core Animation的部分知识，还接触到React Native，这一Facebook出品的React for Native Platform框架，其中React本身入门是相对简单的，而Redux入门就相对困难了，因此在这里总结一下，最后有自己写的Slides可以参考</p>
-</blockquote>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><blockquote>
-<p>为什么需要Redux</p>
-</blockquote>
-<ol>
-<li>RN的state（可变，子组件不可见）和props（不可变，子组件可见）的设计，在面对大型项目时候，容易因为不经意修改state造成状态混乱，组件渲染错误</li>
-<li>RN使用了Virtual DOM，不需要Target绑定-&gt;Action修改UI属性，只要当状态变化，render新状态下的组件，数据单向传递，而MVC的设计模式存在双向数据流</li>
-<li>RN不易进行测试，Redux提供了非常方便的mock测试方式</li>
-</ol>
-<h1 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">安装Redux：</span><br><span class="line">	npm install --save redux</span><br><span class="line">安装React Native和Redux绑定库：</span><br><span class="line">	npm install --save react-redux</span><br><span class="line">安装Redux Thunk异步Action中间件：</span><br><span class="line">	npm install --save redux-thunk</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/10/26/React-Native%E4%B9%8BRedux%E6%9E%B6%E6%9E%84%E5%85%A5%E9%97%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -976,7 +976,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-count">60</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -211,6 +211,92 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/10/26/React-Native%E4%B9%8BRedux%E6%9E%B6%E6%9E%84%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/10/26/React-Native%E4%B9%8BRedux%E6%9E%B6%E6%9E%84%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">React Native之Redux架构入门</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2016-10-26 17:23:28 / 修改时间：17:39:01" itemprop="dateCreated datePublished" datetime="2016-10-26T17:23:28+00:00">2016-10-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>如今也是入了移动iOS开发的坑，最近不仅学习了Core Animation的部分知识，还接触到React Native，这一Facebook出品的React for Native Platform框架，其中React本身入门是相对简单的，而Redux入门就相对困难了，因此在这里总结一下，最后有自己写的Slides可以参考</p>
+</blockquote>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><blockquote>
+<p>为什么需要Redux</p>
+</blockquote>
+<ol>
+<li>RN的state（可变，子组件不可见）和props（不可变，子组件可见）的设计，在面对大型项目时候，容易因为不经意修改state造成状态混乱，组件渲染错误</li>
+<li>RN使用了Virtual DOM，不需要Target绑定-&gt;Action修改UI属性，只要当状态变化，render新状态下的组件，数据单向传递，而MVC的设计模式存在双向数据流</li>
+<li>RN不易进行测试，Redux提供了非常方便的mock测试方式</li>
+</ol>
+<h1 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">安装Redux：</span><br><span class="line">	npm install --save redux</span><br><span class="line">安装React Native和Redux绑定库：</span><br><span class="line">	npm install --save react-redux</span><br><span class="line">安装Redux Thunk异步Action中间件：</span><br><span class="line">	npm install --save redux-thunk</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/10/26/React-Native%E4%B9%8BRedux%E6%9E%B6%E6%9E%84%E5%85%A5%E9%97%A8/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/09/27/Core-Graphics%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%9F%A5%E8%AF%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -802,97 +888,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2016/03/30/Swift%E4%B9%8BAnyClass%E4%B8%8E%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/03/30/Swift%E4%B9%8BAnyClass%E4%B8%8E%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B/" class="post-title-link" itemprop="url">Swift之AnyClass与动态类型</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2016-03-30 02:38:56" itemprop="dateCreated datePublished" datetime="2016-03-30T02:38:56+00:00">2016-03-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2016-03-31 14:14:53" itemprop="dateModified" datetime="2016-03-31T14:14:53+00:00">2016-03-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>这次写一下关于Swift中AnyClass的使用以及动态类型的实例化和使用场景</p>
-</blockquote>
-<h1 id="AnyClass与AnyObject"><a href="#AnyClass与AnyObject" class="headerlink" title="AnyClass与AnyObject"></a>AnyClass与AnyObject</h1><p>Swift中，任何自定义的对象都是AnyClass的子类，类似于Java的Object类（但注意，这和Objective-C的NSObject不同，后者在Swift中是专门的UIKit或者AppKit框架里面定义的类型，而非语言所规定的类型）</p>
-<blockquote>
-<p>AnyClass<br>The protocol to which all class types implicitly conform.</p>
-</blockquote>
-<p>Declaration<br><code>typealias AnyClass = AnyObject.Type</code></p>
-<blockquote>
-<p>AnyObject</p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/03/30/Swift%E4%B9%8BAnyClass%E4%B8%8E%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -964,7 +959,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-count">60</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
