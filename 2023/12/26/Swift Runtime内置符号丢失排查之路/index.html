@@ -42,7 +42,7 @@
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836412505.jpg">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/whiteboard_exported_image.png">
 <meta property="article:published_time" content="2023-12-26T17:49:49.000Z">
-<meta property="article:modified_time" content="2023-12-26T10:02:33.311Z">
+<meta property="article:modified_time" content="2023-12-26T10:32:11.732Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="swift">
 <meta property="article:tag" content="toolchain">
@@ -253,7 +253,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-12-26 17:49:49 / 修改时间：10:02:33" itemprop="dateCreated datePublished" datetime="2023-12-26T17:49:49+00:00">2023-12-26</time>
+              <time title="创建时间：2023-12-26 17:49:49 / 修改时间：10:32:11" itemprop="dateCreated datePublished" datetime="2023-12-26T17:49:49+00:00">2023-12-26</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -359,17 +359,19 @@
 <p>结果如图：<br><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035833399009.jpg"></p>
 <p>可见，发生问题的地方不在于linker，不在于clang，而在于工具链内置的libswiftCompatibility50.a，其visibility有问题！</p>
 <h2 id="对比libswiftCompatibility50-a差异"><a href="#对比libswiftCompatibility50-a差异" class="headerlink" title="对比libswiftCompatibility50.a差异"></a>对比libswiftCompatibility50.a差异</h2><p>我们将Apple Xcode 15.0内置的产物和DanceCC进行对比</p>
-<p>首先一眼从二进制大小来看，DanceCC的产物未免有些太小，很反常。进一步反汇编查看，发现Apple的.a包含了-embed-bitcode的LLVM Bitcode内容。我们需要strip后再次进行对比</p>
+<p>首先一眼从二进制大小来看，DanceCC的产物未免有些太小，很反常。进一步反汇编查看，发现Apple的.a包含了<code>-embed-bitcode</code>的LLVM Bitcode内容。我们需要strip后再次进行对比</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Section</span><br><span class="line">  sectname __bitcode</span><br><span class="line">   segname __LLVM</span><br><span class="line">      addr 0x0000000000000160</span><br><span class="line">      size 0x000000000007da30</span><br><span class="line">    offset 1288</span><br><span class="line">     align 2^0 (1)</span><br><span class="line">    reloff 0</span><br><span class="line">    nreloc 0</span><br><span class="line">     flags 0x00000000</span><br><span class="line"> reserved1 0</span><br><span class="line"> reserved2 0</span><br></pre></td></tr></table></figure>
 
 <p>我们关注丢失的符号的visibility，查看（参考：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/60481295/how-to-know-the-visibility-of-a-symbol-in-an-object-file%EF%BC%89%EF%BC%9A">https://stackoverflow.com/questions/60481295/how-to-know-the-visibility-of-a-symbol-in-an-object-file）：</a></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -Ct libswiftCompatibility50.a</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><p>Apple：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 g     F __TEXT,__text swift::swift50override_conformsToProtocol(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*, swift::TargetWitnessTable&lt;swift::InProcess&gt; const* (*)(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*))</span><br></pre></td></tr></table></figure></li>
-<li><p>DanceCC：</p>
-</li>
+<li>Apple：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 g     F __TEXT,__text swift::swift50override_conformsToProtocol(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*, swift::TargetWitnessTable&lt;swift::InProcess&gt; const* (*)(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>DanceCC：</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 g     F __TEXT,__text .hidden swift::swift50override_conformsToProtocol(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*, swift::TargetWitnessTable&lt;swift::InProcess&gt; const* (*)(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*))</span><br></pre></td></tr></table></figure>
 
@@ -391,9 +393,9 @@
 <p>这两种集成仅有小量二进制差异，业务业务8个dylibs，影响较小（一个force_load的libswiftCompatibility50.a占据10KB）</p>
 <h2 id="修正方式"><a href="#修正方式" class="headerlink" title="修正方式"></a>修正方式</h2><p>根据目前Apple内置二进制的解析结果，我们一期考虑直接无脑对齐，通过源码手动标记visibility(“default”)，不影响其他编译单元的构建逻辑：</p>
 <ul>
-<li>libswiftCompatibility50.a：源码标记错误需要更改<br>0000000000000088 g     O __DATA,__swift_hooks _Swift50Overrides</li>
-<li>libswiftCompatibility51.a：源码标记错误需要更改<br>0000000000000000 g     O __DATA,__swift51_hooks _Swift51Overrides</li>
-<li>libswiftCompatibility56.a：不需要改，源码标记是正确的<br>0000000000000000 g     O __DATA,__s_async_hook .hidden _Swift56ConcurrencyOverrides</li>
+<li>libswiftCompatibility50.a：源码标记错误需要更改<br><code>0000000000000088 g     O __DATA,__swift_hooks _Swift50Overrides</code></li>
+<li>libswiftCompatibility51.a：源码标记错误需要更改<br><code>0000000000000000 g     O __DATA,__swift51_hooks _Swift51Overrides</code></li>
+<li>libswiftCompatibility56.a：不需要改，源码标记是正确的<br><code>0000000000000000 g     O __DATA,__s_async_hook .hidden _Swift56ConcurrencyOverrides</code></li>
 </ul>
 <p>而目前对应修正，已经贡献上游：<a target="_blank" rel="noopener" href="https://github.com/apple/swift/pull/70627">https://github.com/apple/swift/pull/70627</a></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这一篇文章不仅仅介绍了具体的一个开源Swift.org工具链，和Apple闭源工具链的差异，更为重要的是介绍了关于Swift Runtime Backport的一些机制流程，并且介绍了一些相关的排查经验，方便工具链开发者用于追查更多类似的行为不一致问题😂。</p>
