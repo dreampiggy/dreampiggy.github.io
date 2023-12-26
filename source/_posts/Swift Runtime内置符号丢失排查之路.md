@@ -204,7 +204,7 @@ Load command 49
 
 我们将Apple Xcode 15.0内置的产物和DanceCC进行对比
 
-首先一眼从二进制大小来看，DanceCC的产物未免有些太小，很反常。进一步反汇编查看，发现Apple的.a包含了-embed-bitcode的LLVM Bitcode内容。我们需要strip后再次进行对比
+首先一眼从二进制大小来看，DanceCC的产物未免有些太小，很反常。进一步反汇编查看，发现Apple的.a包含了`-embed-bitcode`的LLVM Bitcode内容。我们需要strip后再次进行对比
 
 ```
 Section
@@ -228,6 +228,7 @@ objdump -Ct libswiftCompatibility50.a
 ```
 
 - Apple：
+
 ```
 0000000000000000 g     F __TEXT,__text swift::swift50override_conformsToProtocol(swift::TargetMetadata<swift::InProcess> const*, swift::TargetProtocolDescriptor<swift::InProcess> const*, swift::TargetWitnessTable<swift::InProcess> const* (*)(swift::TargetMetadata<swift::InProcess> const*, swift::TargetProtocolDescriptor<swift::InProcess> const*))
 ```
@@ -295,11 +296,11 @@ PS：对该符号的引用出现在其插桩的Hook实现里（`./stdlib/toolcha
 
 根据目前Apple内置二进制的解析结果，我们一期考虑直接无脑对齐，通过源码手动标记visibility("default")，不影响其他编译单元的构建逻辑：
 - libswiftCompatibility50.a：源码标记错误需要更改
-0000000000000088 g     O __DATA,__swift_hooks _Swift50Overrides
+`0000000000000088 g     O __DATA,__swift_hooks _Swift50Overrides`
 - libswiftCompatibility51.a：源码标记错误需要更改
-0000000000000000 g     O __DATA,__swift51_hooks _Swift51Overrides
+`0000000000000000 g     O __DATA,__swift51_hooks _Swift51Overrides`
 - libswiftCompatibility56.a：不需要改，源码标记是正确的
-0000000000000000 g     O __DATA,__s_async_hook .hidden _Swift56ConcurrencyOverrides
+`0000000000000000 g     O __DATA,__s_async_hook .hidden _Swift56ConcurrencyOverrides`
 
 而目前对应修正，已经贡献上游：https://github.com/apple/swift/pull/70627
 
