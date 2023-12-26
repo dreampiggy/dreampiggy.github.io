@@ -287,8 +287,7 @@ PS：对该符号的引用出现在其插桩的Hook实现里（`./stdlib/toolcha
 
 虽然观察到Apple工具链利用了Auto-linking算法，会只对dylib被依赖方拷贝该符号，设置为global symbol（上述问题就是LKCommonsLogging，nm显示为T），dylib依赖方不拷贝该符号，设置为undefined symbol（上文就是AppStorageCore，nm显示为U），有点反常（像是一个依赖树，只在树的根节点真正链接了libswiftCompatibility50.a，兄弟节点不重复静态链接），可以参考下图（Apple总二进制只force_load了2份，DanceCC总二进制force_load了4份）
 
-![whiteboard_exported_image](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/whiteboard_exported_image.png)
-
+![screenshot-20231226-184955](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/media/screenshot-20231226-184955.png)
 
 这两种集成仅有小量二进制差异，业务业务8个dylibs，影响较小（一个force_load的libswiftCompatibility50.a占据10KB）
 
