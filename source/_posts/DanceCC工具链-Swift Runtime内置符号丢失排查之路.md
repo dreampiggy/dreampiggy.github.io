@@ -125,13 +125,13 @@ Swift编译器通过自己在二进制中定义了一个专属的Section，用�
 其中，对于Swift Runtime的Hook存在于`__DATA,__swift51_hooks`
 而Swift Concurrency Backport的Hook存在于`__DATA,__s51async_hook`
 
-![](assets/17035830645273.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035830645273.jpg)
 
 跳板会检查是否当前运行的host环境需要打补丁：
-![](assets/17035830912122.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035830912122.jpg)
 
 跳板通过dyld API去读取Section拿到函数指针，随后进行调用：
-![](assets/17035831033078.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035831033078.jpg)
 
 从而实现了上述提到的“补丁机制”。这个宏辉标记在所有Swift的Runtime API上，因此在编译时刻都确保支持了后续版本的补丁替换，达成了“向后兼容”
 
@@ -196,7 +196,7 @@ Load command 49
   1. 产生符号为T（local）
 
 结果如图：
-![](assets/17035833399009.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035833399009.jpg)
 
 可见，发生问题的地方不在于linker，不在于clang，而在于工具链内置的libswiftCompatibility50.a，其visibility有问题！
 
@@ -239,7 +239,7 @@ objdump -Ct libswiftCompatibility50.a
 ```
 
 对比直观图：
-![](assets/17035834806354.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035834806354.jpg)
 
 
 ## 初步结论
@@ -251,14 +251,14 @@ DanceCC在生成该符号时，设置了`visibility=hidden`；而苹果的该符
 通过直接在源码仓库搜索该符号，定位到来自这里的C++代码：
 `./stdlib/toolchain/Compatibility51/Overrides.h`
 
-![](assets/17035835068513.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835068513.jpg)
 
 
 可见，这里没有显式的标记visibility，由编译器生成。那么编译器为什么“不生成default的visibility呢？”
 
 PS：对该符号的引用出现在其插桩的Hook实现里（`./stdlib/toolchain/Compatibility50/Overrides.cpp`）
 
-![](assets/17035835165993.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835165993.jpg)
 
 
 ### 调查工具链自身的构建参数
@@ -266,7 +266,7 @@ PS：对该符号的引用出现在其插桩的Hook实现里（`./stdlib/toolcha
 注意一个小坑点：Xcode 14（LLVM 14）的objdump并不会显示hidden，只有Xcode 15（LLVM 15）的objdump会显示，会干扰排查，需要使用同一份进行排查。
 
 定位到原始编译单元产物（Overrides.cpp.o）的visibility就是hidden，和后续流程无关
-![](assets/17035836121117.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836121117.jpg)
 
 
 初步怀疑是以下语法存在问题，编译器识别visibility错误设置为hidden：
@@ -276,7 +276,7 @@ PS：对该符号的引用出现在其插桩的Hook实现里（`./stdlib/toolcha
 ### 确认是CI编译插入了-fvisibility=hidden
 
 在CI加入verbose编译后，证明和猜想一致
-![](assets/17035836412505.jpg)
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836412505.jpg)
 
 从上述分析可知，当前编译单元（即，swiftCompatibility Target）不应该开启修改默认的visibility进行编译，否则就需要源码手动声明visibility(default)
 
@@ -286,7 +286,7 @@ PS：对该符号的引用出现在其插桩的Hook实现里（`./stdlib/toolcha
 
 虽然观察到Apple工具链利用了Auto-linking算法，会只对dylib被依赖方拷贝该符号，设置为global symbol（上述问题就是LKCommonsLogging，nm显示为T），dylib依赖方不拷贝该符号，设置为undefined symbol（上文就是AppStorageCore，nm显示为U），有点反常（像是一个依赖树，只在树的根节点真正链接了libswiftCompatibility50.a，兄弟节点不重复静态链接），可以参考下图（Apple总二进制只force_load了2份，DanceCC总二进制force_load了4份）
 
-![whiteboard_exported_image](assets/whiteboard_exported_image.png)
+![whiteboard_exported_image](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/whiteboard_exported_image.png)
 
 
 这两种集成仅有小量二进制差异，业务业务8个dylibs，影响较小（一个force_load的libswiftCompatibility50.a占据10KB）
