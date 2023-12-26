@@ -175,11 +175,14 @@ Load command 49
   string #1 -lswiftCompatibilityPacks
 ```
 
-是没有正确链接补丁吗？
+### 是没有正确链接补丁吗？
 
 在DanceCC的编译器编译下，产出的产物就是上述的LC_LINKER_OPTION，按理说链接器会正常进行链接，发生了什么？
 
-通过检查链接参数，看起来似乎没什么问题，这里存在Library Search Path：`-L/path/to/dancecc.xctoolchain/usr/lib/swift/iphoneos`，即指向了工具链内置的libswiftCompatibility50.a所在目录，那究竟是什么原因导致符号丢失？
+链接参数对比如图：
+![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/media/17035951935256.jpg)
+
+通过检查链接参数，看起来似乎没什么问题，这里存在Library Search Path：`-L/path/to/swift-5.9-dancecc.xctoolchain/usr/lib/swift/iphoneos`，即指向了工具链内置的libswiftCompatibility50.a所在目录，那究竟是什么原因导致符号丢失？
 
 ## 怀疑libswiftCompatibility50.a差异
 ### 首先进行黑盒对比，观察行为差异
