@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/favicon-96x96.png" color="#222">
+  <link rel="manifest" href="/favicon/manifest.json">
+  <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+  <meta name="google-site-verification" content="FxluveaUq3p4_U7oafDkQ66kfrF7UzlQBqz76MqdZ20">
+  <meta name="baidu-site-verification" content="YrIvWUx4XP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"dreampiggy.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="声明此篇文章原作者就是我，版权所有。预计未来会刊登在《字节跳动终端技术》 公众号链接：  DanceCC是字节Mobile Infra的一套编译工具链的品牌名，基于Swift.org的工具链进行了相关定制，包括调试优化，定制Clang插件特性，自研Pass做包大小和性能优化等等。在先前的文章中均有介绍。  背景近期，有人发来反馈，他们在接入DanceCC的新版本工具链时，在调整了一些库的工具链选择">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DanceCC工具链 Swift Runtime符号在动态链接库丢失的排查之路">
+<meta property="og:url" content="http://dreampiggy.com/2023/12/26/DanceCC%E5%B7%A5%E5%85%B7%E9%93%BE-Swift%20Runtime%E5%86%85%E7%BD%AE%E7%AC%A6%E5%8F%B7%E4%B8%A2%E5%A4%B1%E6%8E%92%E6%9F%A5%E4%B9%8B%E8%B7%AF/index.html">
+<meta property="og:site_name" content="小猪的博客">
+<meta property="og:description" content="声明此篇文章原作者就是我，版权所有。预计未来会刊登在《字节跳动终端技术》 公众号链接：  DanceCC是字节Mobile Infra的一套编译工具链的品牌名，基于Swift.org的工具链进行了相关定制，包括调试优化，定制Clang插件特性，自研Pass做包大小和性能优化等等。在先前的文章中均有介绍。  背景近期，有人发来反馈，他们在接入DanceCC的新版本工具链时，在调整了一些库的工具链选择">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mp.weixin.qq.com/mp/qrcode?scene=10000005&size=102&__biz=Mzg2NTYyMjYxNg==&mid=2247486840&idx=1&sn=43b8a41875f86f7b62356ff2a3c064ab&send_time=">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035830645273.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035830912122.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035831033078.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035833399009.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035834806354.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835068513.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835165993.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836121117.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836412505.jpg">
+<meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/whiteboard_exported_image.png">
+<meta property="article:published_time" content="2023-12-26T17:49:49.000Z">
+<meta property="article:modified_time" content="2023-12-26T09:59:55.463Z">
+<meta property="article:author" content="DreamPiggy">
+<meta property="article:tag" content="swift">
+<meta property="article:tag" content="toolchain">
+<meta property="article:tag" content="llvm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mp.weixin.qq.com/mp/qrcode?scene=10000005&size=102&__biz=Mzg2NTYyMjYxNg==&mid=2247486840&idx=1&sn=43b8a41875f86f7b62356ff2a3c064ab&send_time=">
+
+<link rel="canonical" href="http://dreampiggy.com/2023/12/26/DanceCC%E5%B7%A5%E5%85%B7%E9%93%BE-Swift%20Runtime%E5%86%85%E7%BD%AE%E7%AC%A6%E5%8F%B7%E4%B8%A2%E5%A4%B1%E6%8E%92%E6%9F%A5%E4%B9%8B%E8%B7%AF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DanceCC工具链 Swift Runtime符号在动态链接库丢失的排查之路 | 小猪的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87402232-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-87402232-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="小猪的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小猪的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS开发 Web开发 Geek</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-develop">
+
+    <a href="/develop/" rel="section"><i class="fa fa-code fa-fw"></i>开发</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/dreampiggy" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2023/12/26/DanceCC%E5%B7%A5%E5%85%B7%E9%93%BE-Swift%20Runtime%E5%86%85%E7%BD%AE%E7%AC%A6%E5%8F%B7%E4%B8%A2%E5%A4%B1%E6%8E%92%E6%9F%A5%E4%B9%8B%E8%B7%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DanceCC工具链 Swift Runtime符号在动态链接库丢失的排查之路
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-12-26 17:49:49 / 修改时间：09:59:55" itemprop="dateCreated datePublished" datetime="2023-12-26T17:49:49+00:00">2023-12-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h1><p>此篇文章原作者就是我，版权所有。预计未来会刊登在《字节跳动终端技术》</p>
+<p>公众号链接：<br><img src="https://mp.weixin.qq.com/mp/qrcode?scene=10000005&size=102&__biz=Mzg2NTYyMjYxNg==&mid=2247486840&idx=1&sn=43b8a41875f86f7b62356ff2a3c064ab&send_time="></p>
+<blockquote>
+<p>DanceCC是字节Mobile Infra的一套编译工具链的品牌名，基于Swift.org的工具链进行了相关定制，包括调试优化，定制Clang插件特性，自研Pass做包大小和性能优化等等。在先前的文章中均有介绍。</p>
+</blockquote>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>近期，有人发来反馈，他们在接入DanceCC的新版本工具链时，在调整了一些库的工具链选择后（即使用Apple工具链还是DanceCC工具链），重新编译出包，发生启动Crash，堆栈如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;Symbol not found: __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E&quot;,</span><br><span class="line">&quot;Referenced from: &lt;42049861-CE9C-3353-ADD2-76C05302E30B&gt; /Volumes/VOLUME/*/App.app/Frameworks/AppStorageCore.framework/AppStorageCore&quot;,</span><br><span class="line">&quot;Expected in:     &lt;4A119B38-492C-3E7C-B249-E8F49F9D5B99&gt; /Volumes/VOLUME/*/App.app/Frameworks/EEAtomic.framework/EEAtomic&quot;</span><br></pre></td></tr></table></figure>
+
+<p>崩溃的核心原因在于：<br><code>__ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</code>这个符号找不到，引用发生在AppStorageCore 动态链接库中，加载发生在EEAtomic动态链接库中</p>
+<h2 id="符号丢失排查"><a href="#符号丢失排查" class="headerlink" title="符号丢失排查"></a>符号丢失排查</h2><p>首先查看AppStorageCore的Load Command，判断其递归加载的动态库（LC_LOAD_DYLIB）包含EEAtomic和LKCommonsLogging，只考虑非系统库（因为该符号必定不在系统库内）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Load command 11</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name @rpath/EEAtomic.framework/EEAtomic (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 1.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">// ... </span><br><span class="line">Load command 13</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 80</span><br><span class="line">         name @rpath/LKCommonsLogging.framework/LKCommonsLogging (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 1.0.0</span><br><span class="line">compatibility version 1.0.0</span><br></pre></td></tr></table></figure>
+
+<p>通过nm来查看符号分析：</p>
+<ul>
+<li>EEAtomic：在dSYM中存在符号，为local symbol。在二进制中符号消失（被strip）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nm EEAtomic.framework.dSYM/Contents/Resources/DWARF/EEAtomic | grep __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</span><br><span class="line">000000000000c384 t __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>LKCommonsLogging：在dSYM中存在符号，为local symbol。在二进制中符号消失（被strip）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nm LKCommonsLogging.framework.dSYM/Contents/Resources/DWARF/LKCommonsLogging | grep</span><br><span class="line">__ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</span><br><span class="line">000000000000cab4 t __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>AppStorageCore：存在Undeinfed Symbol，需要运行时可见</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nm AppStorageCore.framework/AppStorageCore | grep __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</span><br><span class="line">                U __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</span><br></pre></td></tr></table></figure>
+
+<p>可以分析出大概的问题，发生在，该符号要么应该直接以t或者T（即Global或者Local）符号存在于AppStorageCore；要么应该其递归加载的EEAtomic/LKCommonsLogging以T（即Global）符号暴露出来</p>
+<p>现在两者都不是，导致运行时找不到该符号dyld报错。我们需要进一步探究源头问题</p>
+<h2 id="Swift编译器符号哪里来？"><a href="#Swift编译器符号哪里来？" class="headerlink" title="Swift编译器符号哪里来？"></a>Swift编译器符号哪里来？</h2><p>通过Demangle可知，这个符号是<code>swift::swift50override_conformsToProtocol(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*, swift::TargetWitnessTable&lt;swift::InProcess&gt; const* (*)(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*))</code></p>
+<p>其存在于编译器的内置静态库<code>libswiftCompatibility50.a</code>中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nm /Applications/Xcode-15.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/libswiftCompatibility50.a | grep __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</span><br><span class="line"></span><br><span class="line">                 T __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</span><br><span class="line">                 U __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</span><br></pre></td></tr></table></figure>
+
+<h3 id="什么是swiftCompatibility50"><a href="#什么是swiftCompatibility50" class="headerlink" title="什么是swiftCompatibility50"></a>什么是swiftCompatibility50</h3><p>在iOS平台上，Swift Runtime被内置于操作系统一份（在<code>/usr/lib/swift/libswiftCore.dylib</code>，以及对应的dyld shared cache中），内置的版本取决于操作系统发行时刻。</p>
+<p>如，在iOS 12.4版本上，内置的Swift 5.0的Runtime，而现在的编译器是Swift 5.9</p>
+<p>由于Swift 5确认了“ABI Stable”的承诺，因此，Swift编译器需要实现更新语法的Backport能力（比如Concurrency，Opaque Result Type等语言能力），有些语法会涉及到Runtime的更新，必然，需要对“已有的老版本Swift Runtime”打上补丁，提供这些老版本Runtime中缺少的符号和功能。</p>
+<p>具体补丁根据复杂程度，会拆分多个编译器工具链提供的静态库，最终整体链接到App中。</p>
+<p>补丁列表<br>举个例子，如果当前编译单元，用到需要Swift 5.6+的运行时语法，那么编译器就需要打上这些补丁：</p>
+<ul>
+<li>libswiftCompatibility50.a：包含了Swift 5.0-5.1的补丁</li>
+<li>libswiftCompatibility51.a：包含了Swift 5.1-5.6的补丁</li>
+<li>libswiftCompatibility56.a：包含了Swift 5.6到当前版本（写稿时即为5.9）的补丁</li>
+</ul>
+<p>如果接入了Concurrency，也需要额外的运行时补丁，即：</p>
+<ul>
+<li>libswiftCompatibilityConcurrency.a：Concurrency Backport</li>
+</ul>
+<p>如果接入了SwiftUI等依赖@dynamicReplacement的语法的代码，也需要额外的补丁，即：</p>
+<ul>
+<li>libswiftCompatibilityDynamicReplacements.a：Dynamic replacement Backport</li>
+</ul>
+<p>如果接入了Swift的Paramters Pack语法 each T，也需要额外的补丁，即：</p>
+<ul>
+<li>libswiftCompatibilityPacks.a：Paramters Pack Backport<br>备注：傻瓜省流，当你App用到了SwiftUI框架，那么你会全部用到上述所有6个补丁，因为SwiftUI都涉及到这些😮‍💨</li>
+</ul>
+<h3 id="补丁机制怎么替换实现"><a href="#补丁机制怎么替换实现" class="headerlink" title="补丁机制怎么替换实现"></a>补丁机制怎么替换实现</h3><p>Swift编译器通过自己在二进制中定义了一个专属的Section，用动态调用的形式来访问所有Swift Runtime API，从而达成类似热修机制的跳板。<br>其中，对于Swift Runtime的Hook存在于<code>__DATA,__swift51_hooks</code><br>而Swift Concurrency Backport的Hook存在于<code>__DATA,__s51async_hook</code></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035830645273.jpg"></p>
+<p>跳板会检查是否当前运行的host环境需要打补丁：<br><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035830912122.jpg"></p>
+<p>跳板通过dyld API去读取Section拿到函数指针，随后进行调用：<br><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035831033078.jpg"></p>
+<p>从而实现了上述提到的“补丁机制”。这个宏辉标记在所有Swift的Runtime API上，因此在编译时刻都确保支持了后续版本的补丁替换，达成了“向后兼容”</p>
+<h3 id="编译器的魔法"><a href="#编译器的魔法" class="headerlink" title="编译器的魔法"></a>编译器的魔法</h3><p>那么问题来了，在工具链角度看，编译器，和链接器，是两个不同的独立工作流，在不侵入宿主业务的构建系统的前提下，“Swift编译器怎么样告知链接器，需要这些额外的补丁库链接到二进制中呢？”</p>
+<p>答案是通过<code>LC_LINKER_OPTION</code>，即MachO的一个Load Command，允许每个MachO提供自己的“额外链接参数”。这个参数原本用于Clang社区提倡的Auto-linking能力，现在被Swift编译器也借过去。参考：<a target="_blank" rel="noopener" href="https://juejin.cn/post/7011106668109004830">深入 iOS 静态链接器（一）— ld64</a></p>
+<p>举个例子，以SwiftUI的代码为例子，当你以最低部署版本 -target arm64-apple-ios12.0进行编译时，编译器会注入这些链接参数告知链接器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Load command 44</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 40</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibility50</span><br><span class="line">Load command 45</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 40</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibility51</span><br><span class="line">Load command 46</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 56</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibilityDynamicReplacements</span><br><span class="line">Load command 47</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 48</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibilityConcurrency</span><br><span class="line">Load command 48</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 40</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibility56</span><br><span class="line">Load command 49</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 40</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibilityPacks</span><br></pre></td></tr></table></figure>
+
+<p>是没有正确链接补丁吗？</p>
+<p>在DanceCC的编译器编译下，产出的产物就是上述的LC_LINKER_OPTION，按理说链接器会正常进行链接，发生了什么？</p>
+<p>通过检查链接参数，看起来似乎没什么问题，这里存在Library Search Path：<code>-L/path/to/dancecc.xctoolchain/usr/lib/swift/iphoneos</code>，即指向了工具链内置的libswiftCompatibility50.a所在目录，那究竟是什么原因导致符号丢失？</p>
+<h2 id="怀疑libswiftCompatibility50-a差异"><a href="#怀疑libswiftCompatibility50-a差异" class="headerlink" title="怀疑libswiftCompatibility50.a差异"></a>怀疑libswiftCompatibility50.a差异</h2><h3 id="首先进行黑盒对比，观察行为差异"><a href="#首先进行黑盒对比，观察行为差异" class="headerlink" title="首先进行黑盒对比，观察行为差异"></a>首先进行黑盒对比，观察行为差异</h3><p>在实际编译机器上进行了如下4项测试：</p>
+<ol>
+<li>使用Apple Clang + Apple libswiftCompatibility50</li>
+<li>产生符号为T（global）</li>
+<li>使用DanceCC Clang + DanceCC libswiftCompatibility50</li>
+<li>产生符号为t（local）</li>
+<li>使用Apple Clang + DanceCC libswiftCompatibility50</li>
+<li>产生的符号为t（global）</li>
+<li>使用DanceCC Clang + Apple libswiftCompatibility50</li>
+<li>产生符号为T（local）</li>
+</ol>
+<p>结果如图：<br><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035833399009.jpg"></p>
+<p>可见，发生问题的地方不在于linker，不在于clang，而在于工具链内置的libswiftCompatibility50.a，其visibility有问题！</p>
+<h2 id="对比libswiftCompatibility50-a差异"><a href="#对比libswiftCompatibility50-a差异" class="headerlink" title="对比libswiftCompatibility50.a差异"></a>对比libswiftCompatibility50.a差异</h2><p>我们将Apple Xcode 15.0内置的产物和DanceCC进行对比</p>
+<p>首先一眼从二进制大小来看，DanceCC的产物未免有些太小，很反常。进一步反汇编查看，发现Apple的.a包含了-embed-bitcode的LLVM Bitcode内容。我们需要strip后再次进行对比</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Section</span><br><span class="line">  sectname __bitcode</span><br><span class="line">   segname __LLVM</span><br><span class="line">      addr 0x0000000000000160</span><br><span class="line">      size 0x000000000007da30</span><br><span class="line">    offset 1288</span><br><span class="line">     align 2^0 (1)</span><br><span class="line">    reloff 0</span><br><span class="line">    nreloc 0</span><br><span class="line">     flags 0x00000000</span><br><span class="line"> reserved1 0</span><br><span class="line"> reserved2 0</span><br></pre></td></tr></table></figure>
+
+<p>我们关注丢失的符号的visibility，查看（参考：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/60481295/how-to-know-the-visibility-of-a-symbol-in-an-object-file%EF%BC%89%EF%BC%9A">https://stackoverflow.com/questions/60481295/how-to-know-the-visibility-of-a-symbol-in-an-object-file）：</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -Ct libswiftCompatibility50.a</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Apple：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 g     F __TEXT,__text swift::swift50override_conformsToProtocol(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*, swift::TargetWitnessTable&lt;swift::InProcess&gt; const* (*)(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*))</span><br></pre></td></tr></table></figure></li>
+<li><p>DanceCC：</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 g     F __TEXT,__text .hidden swift::swift50override_conformsToProtocol(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*, swift::TargetWitnessTable&lt;swift::InProcess&gt; const* (*)(swift::TargetMetadata&lt;swift::InProcess&gt; const*, swift::TargetProtocolDescriptor&lt;swift::InProcess&gt; const*))</span><br></pre></td></tr></table></figure>
+
+<p>对比直观图：<br><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035834806354.jpg"></p>
+<h2 id="初步结论"><a href="#初步结论" class="headerlink" title="初步结论"></a>初步结论</h2><p>DanceCC在生成该符号时，设置了<code>visibility=hidden</code>；而苹果的该符号设置为<code>visibility=default</code></p>
+<h3 id="定位对应的源码"><a href="#定位对应的源码" class="headerlink" title="定位对应的源码"></a>定位对应的源码</h3><p>通过直接在源码仓库搜索该符号，定位到来自这里的C++代码：<br><code>./stdlib/toolchain/Compatibility51/Overrides.h</code></p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835068513.jpg"></p>
+<p>可见，这里没有显式的标记visibility，由编译器生成。那么编译器为什么“不生成default的visibility呢？”</p>
+<p>PS：对该符号的引用出现在其插桩的Hook实现里（<code>./stdlib/toolchain/Compatibility50/Overrides.cpp</code>）</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835165993.jpg"></p>
+<h3 id="调查工具链自身的构建参数"><a href="#调查工具链自身的构建参数" class="headerlink" title="调查工具链自身的构建参数"></a>调查工具链自身的构建参数</h3><p>注意一个小坑点：Xcode 14（LLVM 14）的objdump并不会显示hidden，只有Xcode 15（LLVM 15）的objdump会显示，会干扰排查，需要使用同一份进行排查。</p>
+<p>定位到原始编译单元产物（Overrides.cpp.o）的visibility就是hidden，和后续流程无关<br><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836121117.jpg"></p>
+<p>初步怀疑是以下语法存在问题，编译器识别visibility错误设置为hidden：<br><code>__attribute__((used, section(&quot;__DATA,__swift_hooks&quot;)))</code><br>也有可能是编译器clang传入了全局的-fvisibility=hidden覆盖了默认值？需要进一步排查</p>
+<h3 id="确认是CI编译插入了-fvisibility-hidden"><a href="#确认是CI编译插入了-fvisibility-hidden" class="headerlink" title="确认是CI编译插入了-fvisibility=hidden"></a>确认是CI编译插入了-fvisibility=hidden</h3><p>在CI加入verbose编译后，证明和猜想一致<br><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836412505.jpg"></p>
+<p>从上述分析可知，当前编译单元（即，swiftCompatibility Target）不应该开启修改默认的visibility进行编译，否则就需要源码手动声明visibility(default)</p>
+<h2 id="临时Workaround"><a href="#临时Workaround" class="headerlink" title="临时Workaround"></a>临时Workaround</h2><p>快速绕过改问题，可以对相关库依旧保持DanceCC工具链，让链接器以local symbol的形式对每个Swift库链接了一份libswiftCompatibility50.a，即force_load了一份，使用链接器已有参数<code>-Wl,-force_load_swift_libs</code>，参考<a target="_blank" rel="noopener" href="https://reviews.llvm.org/D103709">https://reviews.llvm.org/D103709</a></p>
+<p>虽然观察到Apple工具链利用了Auto-linking算法，会只对dylib被依赖方拷贝该符号，设置为global symbol（上述问题就是LKCommonsLogging，nm显示为T），dylib依赖方不拷贝该符号，设置为undefined symbol（上文就是AppStorageCore，nm显示为U），有点反常（像是一个依赖树，只在树的根节点真正链接了libswiftCompatibility50.a，兄弟节点不重复静态链接），可以参考下图（Apple总二进制只force_load了2份，DanceCC总二进制force_load了4份）</p>
+<p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/whiteboard_exported_image.png" alt="whiteboard_exported_image"></p>
+<p>这两种集成仅有小量二进制差异，业务业务8个dylibs，影响较小（一个force_load的libswiftCompatibility50.a占据10KB）</p>
+<h2 id="修正方式"><a href="#修正方式" class="headerlink" title="修正方式"></a>修正方式</h2><p>根据目前Apple内置二进制的解析结果，我们一期考虑直接无脑对齐，通过源码手动标记visibility(“default”)，不影响其他编译单元的构建逻辑：</p>
+<ul>
+<li>libswiftCompatibility50.a：源码标记错误需要更改<br>0000000000000088 g     O __DATA,__swift_hooks _Swift50Overrides</li>
+<li>libswiftCompatibility51.a：源码标记错误需要更改<br>0000000000000000 g     O __DATA,__swift51_hooks _Swift51Overrides</li>
+<li>libswiftCompatibility56.a：不需要改，源码标记是正确的<br>0000000000000000 g     O __DATA,__s_async_hook .hidden _Swift56ConcurrencyOverrides</li>
+</ul>
+<p>而目前对应修正，已经贡献上游：<a target="_blank" rel="noopener" href="https://github.com/apple/swift/pull/70627">https://github.com/apple/swift/pull/70627</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这一篇文章不仅仅介绍了具体的一个开源Swift.org工具链，和Apple闭源工具链的差异，更为重要的是介绍了关于Swift Runtime Backport的一些机制流程，并且介绍了一些相关的排查经验，方便工具链开发者用于追查更多类似的行为不一致问题😂。</p>
+<p>说起来短短一年期间，DanceCC工具链已经大大小小修复了数十例子这种行为不对齐的问题，保障了内部业务的可用性。也因此可见Apple在其内网维护者庞大的一套自动化验证以及私有分支。如果对这套机制有兴趣的人，可以私聊我，来让这个Swift.org工具链能够真正的开源出来有价值，能够在更多的场景产生贡献。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/swift/" rel="tag"># swift</a>
+              <a href="/tags/toolchain/" rel="tag"># toolchain</a>
+              <a href="/tags/llvm/" rel="tag"># llvm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/12/31/SteamDeck%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97-%E4%BB%A5%E4%B8%80%E5%90%8D%E4%B8%BB%E6%9C%BA%E7%8E%A9%E5%AE%B6%E8%A7%86%E8%A7%92/" rel="prev" title="SteamDeck完全指南-以一名主机玩家视角">
+      <i class="fa fa-chevron-left"></i> SteamDeck完全指南-以一名主机玩家视角
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">声明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E4%B8%A2%E5%A4%B1%E6%8E%92%E6%9F%A5"><span class="nav-number">1.2.</span> <span class="nav-text">符号丢失排查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Swift%E7%BC%96%E8%AF%91%E5%99%A8%E7%AC%A6%E5%8F%B7%E5%93%AA%E9%87%8C%E6%9D%A5%EF%BC%9F"><span class="nav-number">1.3.</span> <span class="nav-text">Swift编译器符号哪里来？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFswiftCompatibility50"><span class="nav-number">1.3.1.</span> <span class="nav-text">什么是swiftCompatibility50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E4%B8%81%E6%9C%BA%E5%88%B6%E6%80%8E%E4%B9%88%E6%9B%BF%E6%8D%A2%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.3.2.</span> <span class="nav-text">补丁机制怎么替换实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E9%AD%94%E6%B3%95"><span class="nav-number">1.3.3.</span> <span class="nav-text">编译器的魔法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%80%E7%96%91libswiftCompatibility50-a%E5%B7%AE%E5%BC%82"><span class="nav-number">1.4.</span> <span class="nav-text">怀疑libswiftCompatibility50.a差异</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A6%96%E5%85%88%E8%BF%9B%E8%A1%8C%E9%BB%91%E7%9B%92%E5%AF%B9%E6%AF%94%EF%BC%8C%E8%A7%82%E5%AF%9F%E8%A1%8C%E4%B8%BA%E5%B7%AE%E5%BC%82"><span class="nav-number">1.4.1.</span> <span class="nav-text">首先进行黑盒对比，观察行为差异</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94libswiftCompatibility50-a%E5%B7%AE%E5%BC%82"><span class="nav-number">1.5.</span> <span class="nav-text">对比libswiftCompatibility50.a差异</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E6%AD%A5%E7%BB%93%E8%AE%BA"><span class="nav-number">1.6.</span> <span class="nav-text">初步结论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E5%AF%B9%E5%BA%94%E7%9A%84%E6%BA%90%E7%A0%81"><span class="nav-number">1.6.1.</span> <span class="nav-text">定位对应的源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E6%9F%A5%E5%B7%A5%E5%85%B7%E9%93%BE%E8%87%AA%E8%BA%AB%E7%9A%84%E6%9E%84%E5%BB%BA%E5%8F%82%E6%95%B0"><span class="nav-number">1.6.2.</span> <span class="nav-text">调查工具链自身的构建参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AE%E8%AE%A4%E6%98%AFCI%E7%BC%96%E8%AF%91%E6%8F%92%E5%85%A5%E4%BA%86-fvisibility-hidden"><span class="nav-number">1.6.3.</span> <span class="nav-text">确认是CI编译插入了-fvisibility&#x3D;hidden</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6Workaround"><span class="nav-number">1.7.</span> <span class="nav-text">临时Workaround</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%AD%A3%E6%96%B9%E5%BC%8F"><span class="nav-number">1.8.</span> <span class="nav-text">修正方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.9.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DreamPiggy"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">DreamPiggy</p>
+  <div class="site-description" itemprop="description">DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dreampiggy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/DreamingPiggy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;DreamingPiggy" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/dreampiggy" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/dreampiggy" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;dreampiggy" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://neverchanje.github.io/" title="https:&#x2F;&#x2F;neverchanje.github.io&#x2F;" rel="noopener" target="_blank">neverchanje</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://zltunes.com/" title="http:&#x2F;&#x2F;zltunes.com&#x2F;" rel="noopener" target="_blank">zltunes</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://huozhi.github.io/" title="http:&#x2F;&#x2F;huozhi.github.io&#x2F;" rel="noopener" target="_blank">huozhi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DreamPiggy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '783d0f6afbe6385e00fe',
+      clientSecret: '1ce280f20fd69e57611792eb3b660ada8385af2c',
+      repo        : 'dreampiggy.github.io',
+      owner       : 'dreampiggy',
+      admin       : ['dreampiggy'],
+      id          : 'b4239d0b958858670b259f1ea086f3d0',
+        language: window.navigator.language || window.navigator.userLanguage,
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
