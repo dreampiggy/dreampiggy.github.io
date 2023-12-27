@@ -43,7 +43,7 @@
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836412505.jpg">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/media/screenshot-20231226-184955.png">
 <meta property="article:published_time" content="2023-12-26T17:49:49.000Z">
-<meta property="article:modified_time" content="2023-12-27T06:53:39.016Z">
+<meta property="article:modified_time" content="2023-12-27T06:54:20.737Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="swift">
 <meta property="article:tag" content="llvm">
@@ -260,7 +260,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-27 06:53:39" itemprop="dateModified" datetime="2023-12-27T06:53:39+00:00">2023-12-27</time>
+                <time title="修改时间：2023-12-27 06:54:20" itemprop="dateModified" datetime="2023-12-27T06:54:20+00:00">2023-12-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -348,7 +348,7 @@
 <p>从而实现了上述提到的“补丁机制”。这个宏辉标记在所有Swift的Runtime API上，因此在编译时刻都确保支持了后续版本的补丁替换，达成了“向后兼容”</p>
 <h3 id="编译器的魔法"><a href="#编译器的魔法" class="headerlink" title="编译器的魔法"></a>编译器的魔法</h3><p>那么问题来了，在工具链角度看，编译器，和链接器，是两个不同的独立工作流，在不侵入宿主业务的构建系统的前提下，“Swift编译器怎么样告知链接器，需要这些额外的补丁库链接到二进制中呢？”</p>
 <p>答案是通过<code>LC_LINKER_OPTION</code>，即MachO的一个Load Command，允许每个MachO提供自己的“额外链接参数”。这个参数原本用于Clang社区提倡的Auto-linking能力，现在被Swift编译器也借过去。参考：<a target="_blank" rel="noopener" href="https://juejin.cn/post/7011106668109004830">深入 iOS 静态链接器（一）— ld64</a></p>
-<p>举个例子，以SwiftUI的代码为例子，当你以最低部署版本 -target arm64-apple-ios12.0进行编译时，编译器会注入这些链接参数告知链接器：</p>
+<p>举个例子，以SwiftUI的代码为例子，当你以最低部署版本<code>-target arm64-apple-ios12.0</code>进行编译时，编译器给MachO写入这些链接参数，告知给链接器：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Load command 44</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 40</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibility50</span><br><span class="line">Load command 45</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 40</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibility51</span><br><span class="line">Load command 46</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 56</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibilityDynamicReplacements</span><br><span class="line">Load command 47</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 48</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibilityConcurrency</span><br><span class="line">Load command 48</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 40</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibility56</span><br><span class="line">Load command 49</span><br><span class="line">     cmd LC_LINKER_OPTION</span><br><span class="line"> cmdsize 40</span><br><span class="line">   count 1</span><br><span class="line">  string #1 -lswiftCompatibilityPacks</span><br></pre></td></tr></table></figure>
 
 <h3 id="是没有正确链接补丁吗？"><a href="#是没有正确链接补丁吗？" class="headerlink" title="是没有正确链接补丁吗？"></a>是没有正确链接补丁吗？</h3><p>在DanceCC的编译器编译下，产出的产物就是上述的LC_LINKER_OPTION，按理说链接器会正常进行链接，发生了什么？</p>
