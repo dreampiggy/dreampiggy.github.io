@@ -143,7 +143,7 @@ Swift编译器通过自己在二进制中定义了一个专属的Section，用�
 
 答案是通过`LC_LINKER_OPTION`，即MachO的一个Load Command，允许每个MachO提供自己的“额外链接参数”。这个参数原本用于Clang社区提倡的Auto-linking能力，现在被Swift编译器也借过去。参考：[深入 iOS 静态链接器（一）— ld64](https://juejin.cn/post/7011106668109004830)
 
-举个例子，以SwiftUI的代码为例子，当你以最低部署版本 -target arm64-apple-ios12.0进行编译时，编译器会注入这些链接参数告知链接器：
+举个例子，以SwiftUI的代码为例子，当你以最低部署版本`-target arm64-apple-ios12.0`进行编译时，编译器给MachO写入这些链接参数，告知给链接器：
 
 ```
 Load command 44
