@@ -82,7 +82,10 @@ __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProce
 
 ## Swift编译器符号哪里来？
 
-通过Demangle可知，这个符号是`swift::swift50override_conformsToProtocol(swift::TargetMetadata<swift::InProcess> const*, swift::TargetProtocolDescriptor<swift::InProcess> const*, swift::TargetWitnessTable<swift::InProcess> const* (*)(swift::TargetMetadata<swift::InProcess> const*, swift::TargetProtocolDescriptor<swift::InProcess> const*))`
+通过Demangle可知，这个符号是
+```
+swift::swift50override_conformsToProtocol(swift::TargetMetadata<swift::InProcess> const*, swift::TargetProtocolDescriptor<swift::InProcess> const*, swift::TargetWitnessTable<swift::InProcess> const* (*)(swift::TargetMetadata<swift::InProcess> const*, swift::TargetProtocolDescriptor<swift::InProcess> const*))
+```
 
 其存在于编译器的内置静态库`libswiftCompatibility50.a`中
 
@@ -190,18 +193,18 @@ Load command 49
 在实际编译机器上进行了如下4项测试：
 
 1. 使用Apple Clang + Apple libswiftCompatibility50
-  1. 产生符号为T（global）
+    1. 产生符号为T（global）
 2. 使用DanceCC Clang + DanceCC libswiftCompatibility50
-  1. 产生符号为t（local）
+    1. 产生符号为t（local）
 3. 使用Apple Clang + DanceCC libswiftCompatibility50
-  1. 产生的符号为t（global）
+    1. 产生的符号为t（local）
 4. 使用DanceCC Clang + Apple libswiftCompatibility50
-  1. 产生符号为T（local）
+    1. 产生符号为T（global）
 
 结果如图：
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035833399009.jpg)
 
-可见，发生问题的地方不在于linker，不在于clang，而在于工具链内置的libswiftCompatibility50.a，其visibility有问题！
+可见，发生问题的地方不在于linker，不在于clang本身，而在于工具链内置的libswiftCompatibility50.a，其visibility有问题！
 
 ## 对比libswiftCompatibility50.a差异
 
