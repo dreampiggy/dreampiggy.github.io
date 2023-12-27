@@ -121,7 +121,7 @@ nm /Applications/Xcode-15.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xct
 
 ### 补丁机制怎么替换实现
 
-Swift编译器通过自己在二进制中定义了一个专属的Section，用动态调用的形式来访问所有Swift Runtime API，从而达成类似热修机制的跳板。
+Swift编译器通过自己在二进制中定义了一个专属的Section，用动态调用的形式来访问所有Swift Runtime API
 其中，对于Swift Runtime的Hook存在于`__DATA,__swift51_hooks`
 而Swift Concurrency Backport的Hook存在于`__DATA,__s51async_hook`
 
