@@ -206,7 +206,7 @@ Load command 49
 
 可见，发生问题的地方不在于linker，不在于clang本身，而在于工具链内置的libswiftCompatibility50.a，其visibility有问题！
 
-## 对比libswiftCompatibility50.a差异
+### 对比libswiftCompatibility50.a差异
 
 我们将Apple Xcode 15.0内置的产物和DanceCC进行对比
 
@@ -249,11 +249,11 @@ objdump -Ct libswiftCompatibility50.a
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035834806354.jpg)
 
 
-## 初步结论
+### 初步结论
 
 DanceCC在生成该符号时，设置了`visibility=hidden`；而苹果的该符号设置为`visibility=default`
 
-### 定位对应的源码
+## 定位对应的源码
 
 通过直接在源码仓库搜索该符号，定位到来自这里的C++代码：
 `./stdlib/toolchain/Compatibility51/Overrides.h`
