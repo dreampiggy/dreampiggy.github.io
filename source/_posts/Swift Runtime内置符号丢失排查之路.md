@@ -121,8 +121,9 @@ nm /Applications/Xcode-15.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xct
 ### 补丁机制怎么替换实现
 
 Swift编译器通过自己在二进制中定义了一个专属的Section，用动态调用的形式来访问所有Swift Runtime API
-其中，对于Swift Runtime的Hook存在于`__DATA,__swift51_hooks`
-而Swift Concurrency Backport的Hook存在于`__DATA,__s51async_hook`
+
+其中，对于Swift Runtime的Hook存在于`__DATA,__swift51_hooks`（假设操作系统内置那份Swift Runtime版本是5.1）
+而Swift Concurrency Backport的Hook存在于`__DATA,__s55async_hook`（Concurrency自身是从5.5引入的，也支持补丁）
 
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035830645273.jpg)
 
