@@ -115,7 +115,8 @@ nm /Applications/Xcode-15.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xct
 
 如果接入了Swift的Paramters Pack语法 each T，也需要额外的补丁，即：
 - libswiftCompatibilityPacks.a：Paramters Pack Backport
-备注：傻瓜省流，当你App用到了SwiftUI框架，那么你会全部用到上述所有6个补丁，因为SwiftUI都涉及到这些😮‍💨
+
+> 备注：傻瓜省流，当你App用到了SwiftUI框架，那么你会全部用到上述所有6个补丁，因为SwiftUI都涉及到这些😮‍💨
 
 ### 补丁机制怎么替换实现
 
