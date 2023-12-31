@@ -102,7 +102,10 @@ nm /Applications/Xcode-15.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xct
 - libswiftCompatibility51.a：包含了Swift 5.1-5.6的新增Swfit Runtime API
 - libswiftCompatibility56.a：包含了Swift 5.6到当前版本（写稿时即为5.9）的新增Swfit Runtime API
 
-注意，`libswiftCompatibility50`和`libswiftCompatibility51`一定不会出现同名符号，每个.a提供的一堆API的完整实现，对齐到当前Swift版本（即5.9）的行为。
+注意，`libswiftCompatibility50`和`libswiftCompatibility51`一定不会出现同名符号，每个.a提供的一堆API的完整实现，对齐到当前Swift版本（即5.9）的行为，即：
+
+- `swift::swift_getTypeName`：假设是Swift 5.0的新增API，跳板会访问`__DATA,__swift50_hooks`，那么它必须通过libswiftCompatibility50.a提供
+- `swift::swift_getMangledTypeName`：假设是Swift 5.1的新增API，跳板会访问`__DATA,__swift51_hooks`，那么它必须通过libswiftCompatibility51.a提供
 
 如果接入了Concurrency，也需要额外的运行时补丁，即：
 - libswiftCompatibilityConcurrency.a：Concurrency Backport
