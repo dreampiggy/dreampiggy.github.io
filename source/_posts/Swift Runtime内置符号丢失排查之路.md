@@ -8,13 +8,6 @@ tags:
 - llvm
 ---
 
-## 声明
-
-此篇文章原作者就是我，版权所有。预计未来会刊登在《字节跳动终端技术》
-
-公众号链接：
-![](https://mp.weixin.qq.com/mp/qrcode?scene=10000005&size=102&__biz=Mzg2NTYyMjYxNg==&mid=2247486840&idx=1&sn=43b8a41875f86f7b62356ff2a3c064ab&send_time=)
-
 > DanceCC是字节Mobile Infra的一套编译工具链的品牌名，基于Swift.org的工具链进行了相关定制，包括调试优化，定制Clang插件特性，自研Pass做包大小和性能优化等等。在先前的文章中均有介绍。
 
 ## 背景
@@ -69,16 +62,14 @@ __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProce
 000000000000cab4 t __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E
 ```
 
-- AppStorageCore：存在Undeinfed Symbol，需要运行时可见
+- AppStorageCore：存在undefined symbol，需要运行时可见
 
 ```
  nm AppStorageCore.framework/AppStorageCore | grep __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E
                  U __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E
 ```
 
-可以分析出大概的问题，发生在，该符号要么应该直接以t或者T（即Global或者Local）符号存在于AppStorageCore；要么应该其递归加载的EEAtomic/LKCommonsLogging以T（即Global）符号暴露出来
-
-现在两者都不是，导致运行时找不到该符号dyld报错。我们需要进一步探究源头问题
+即然符号在`AppStorageCore`中未定义，那么应该在其递归加载的EEAtomic/LKCommonsLogging中，以T（即global）符号暴露出来，而现在不是。导致运行时找不到该符号dyld报错。我们需要进一步探究源头问题。
 
 ## Swift编译器符号哪里来？
 
@@ -136,7 +127,14 @@ Swift编译器通过自己在二进制中定义了一个专属的Section，用�
 跳板通过dyld API去读取Section拿到函数指针，随后进行调用：
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035831033078.jpg)
 
-从而实现了上述提到的“补丁机制”。这个宏辉标记在所有Swift的Runtime API上，因此在编译时刻都确保支持了后续版本的补丁替换，达成了“向后兼容”
+> 一句话总结，假设调用`swift::swift_task_cancel`这个Runtime API，会进行以下逻辑：
+
+1. 检查`swift::getOverride_swift_task_cancel`返回的函数指针
+    1. `swift:getOverride_swift_task_cancel`会从`__DATA,__swift51_hooks` MachO Section，找到被链接进去的libswiftCompatibility50的符号
+2. 如果返回非空，直接调用`swift::getOverride_swift_task_cancel`
+3. 如果返回空，调用`swift::swift_task_cancelImpl`
+
+从而实现了上述提到的“补丁机制”。因为通过宏，标记在所有Swift的Runtime API上，因此在编译时刻都确保支持了运行时支持补丁替换，达成了“向后兼容”。技术上实现其实很原始很简单。
 
 ### 编译器的魔法
 那么问题来了，在工具链角度看，编译器，和链接器，是两个不同的独立工作流，在不侵入宿主业务的构建系统的前提下，“Swift编译器怎么样告知链接器，需要这些额外的补丁库链接到二进制中呢？”
