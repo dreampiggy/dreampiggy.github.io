@@ -132,12 +132,12 @@ Swift编译器通过自己在二进制中定义了一个专属的Section，用�
 跳板通过dyld API去读取Section拿到函数指针，随后进行调用：
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035831033078.jpg)
 
-> 一句话总结，假设调用`swift::swift_task_cancel`这个Runtime API，会进行以下逻辑：
+> 一句话总结，假设调用`swift::swift_getTypeName`这个Swift 5.0的Runtime API，会进行以下逻辑（其他情形无非就是MachO Section和对应静态库不同罢了）：
 
-1. 检查`swift::getOverride_swift_task_cancel`返回的函数指针
-    1. `swift:getOverride_swift_task_cancel`会从`__DATA,__swift51_hooks` MachO Section，找到被链接进去的libswiftCompatibility50的符号
-2. 如果返回非空，直接调用`swift::getOverride_swift_task_cancel`
-3. 如果返回空，调用`swift::swift_task_cancelImpl`
+1. 检查`swift::getOverride_swift_getTypeName`返回的函数指针
+    1. `swift:getOverride_swift_getTypeName`会从`__DATA,__swift50_hooks` MachO Section，找到被链接进去的libswiftCompatibility50的符号
+2. 如果返回非空，直接调用`swift::getOverride_swift_getTypeName`
+3. 如果返回空，调用`swift::swift_getTypeName`
 
 从而实现了上述提到的“补丁机制”。因为通过宏，标记在所有Swift的Runtime API上，因此在编译时刻都确保支持了运行时支持补丁替换，达成了“向后兼容”。技术上实现其实很原始很简单。
 
