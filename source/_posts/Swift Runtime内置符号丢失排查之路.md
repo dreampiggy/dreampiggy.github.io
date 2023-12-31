@@ -136,8 +136,8 @@ Swift编译器通过自己在二进制中定义了一个专属的Section，用�
 
 1. 检查`swift::getOverride_swift_getTypeName`返回的函数指针
     1. `swift:getOverride_swift_getTypeName`会从`__DATA,__swift50_hooks` MachO Section，找到被链接进去的libswiftCompatibility50的符号
-2. 如果返回非空，直接调用`swift::getOverride_swift_getTypeName`
-3. 如果返回空，调用`swift::swift_getTypeName`
+2. 如果返回非空，直接调用`swift::getOverride_swift_getTypeName`（App链接的补丁实现）
+3. 如果返回空，调用`swift::swift_getTypeNameImpl`（操作系统的内置实现）
 
 从而实现了上述提到的“补丁机制”。因为通过宏，标记在所有Swift的Runtime API上，因此在编译时刻都确保支持了运行时支持补丁替换，达成了“向后兼容”。技术上实现其实很原始很简单。
 
