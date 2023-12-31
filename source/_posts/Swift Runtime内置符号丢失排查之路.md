@@ -97,11 +97,12 @@ nm /Applications/Xcode-15.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xct
 
 具体补丁根据复杂程度，会拆分多个编译器工具链提供的静态库，最终整体链接到App中。
 
-补丁列表
-举个例子，如果当前编译单元，用到需要Swift 5.6+的运行时语法，那么编译器就需要打上这些补丁：
-- libswiftCompatibility50.a：包含了Swift 5.0-5.1的补丁
-- libswiftCompatibility51.a：包含了Swift 5.1-5.6的补丁
-- libswiftCompatibility56.a：包含了Swift 5.6到当前版本（写稿时即为5.9）的补丁
+举个例子，如果当前编译单元，用到需要Swift 5.9+的运行时语法，那么编译器就需要打上这些补丁：
+- libswiftCompatibility50.a：包含了Swift 5.0-5.1的新增Swfit Runtime API
+- libswiftCompatibility51.a：包含了Swift 5.1-5.6的新增Swfit Runtime API
+- libswiftCompatibility56.a：包含了Swift 5.6到当前版本（写稿时即为5.9）的新增Swfit Runtime API
+
+注意，`libswiftCompatibility50`和`libswiftCompatibility51`一定不会出现同名符号，每个.a提供的一堆API的完整实现，对齐到当前Swift版本（即5.9）的行为。
 
 如果接入了Concurrency，也需要额外的运行时补丁，即：
 - libswiftCompatibilityConcurrency.a：Concurrency Backport
