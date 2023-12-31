@@ -225,7 +225,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/12/26/Swift%20Runtime%E5%86%85%E7%BD%AE%E7%AC%A6%E5%8F%B7%E4%B8%A2%E5%A4%B1%E6%8E%92%E6%9F%A5%E4%B9%8B%E8%B7%AF/" class="post-title-link" itemprop="url">Swift Runtime符号在动态链接库丢失的排查之路</a>
+            <a href="/2023/12/26/Swift%20Runtime%E5%86%85%E7%BD%AE%E7%AC%A6%E5%8F%B7%E4%B8%A2%E5%A4%B1%E6%8E%92%E6%9F%A5%E4%B9%8B%E8%B7%AF/" class="post-title-link" itemprop="url">Swift Runtime 符号在动态链接库丢失的排查之路</a>
         </h2>
 
         <div class="post-meta">
@@ -242,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-31 06:26:28" itemprop="dateModified" datetime="2023-12-31T06:26:28+00:00">2023-12-31</time>
+                <time title="修改时间：2023-12-31 07:54:50" itemprop="dateModified" datetime="2023-12-31T07:54:50+00:00">2023-12-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,12 +266,12 @@
 
       
           <blockquote>
-<p>DanceCC是字节Mobile Infra的一套编译工具链的品牌名，基于Swift.org的工具链进行了相关定制，包括调试优化，定制Clang插件特性，自研Pass做包大小和性能优化等等。在先前的文章中均有介绍。</p>
+<p>DanceCC 是字节 Mobile Infra 的一套编译工具链的品牌名，基于 Swift.org 的工具链进行了相关定制，包括调试优化，定制 Clang 插件特性，自研 Pass 做包大小和性能优化等等。在先前的文章中均有介绍。</p>
 </blockquote>
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>近期，有人发来反馈，他们在接入DanceCC的新版本工具链时，在调整了一些库的工具链选择后（即使用Apple工具链还是DanceCC工具链），重新编译出包，发生启动Crash，堆栈如下：</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>近期，有人发来反馈，他们在接入 DanceCC 的新版本工具链时，在调整了一些库的工具链选择后（即使用 Apple 工具链还是 DanceCC 工具链），重新编译出包，发生启动 Crash，堆栈如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;Symbol not found: __ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E&quot;,</span><br><span class="line">&quot;Referenced from: &lt;42049861-CE9C-3353-ADD2-76C05302E30B&gt; /Volumes/VOLUME/*/App.app/Frameworks/AppStorageCore.framework/AppStorageCore&quot;,</span><br><span class="line">&quot;Expected in:     &lt;4A119B38-492C-3E7C-B249-E8F49F9D5B99&gt; /Volumes/VOLUME/*/App.app/Frameworks/EEAtomic.framework/EEAtomic&quot;</span><br></pre></td></tr></table></figure>
 
-<p>崩溃的核心原因在于：<br><code>__ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</code>这个符号找不到，引用发生在AppStorageCore 动态链接库中，加载发生在EEAtomic动态链接库中</p>
+<p>崩溃的核心原因在于：<br><code>__ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E</code> 这个符号找不到，引用发生在 AppStorageCore 动态链接库中，加载发生在 EEAtomic 动态链接库中</p>
 <h2 id="符号丢失排查"><a href="#符号丢失排查" class="headerlink" title="符号丢失排查"></a>符号丢失排查</h2>
           <!--noindex-->
             <div class="post-button">
@@ -330,7 +330,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-31 06:26:28" itemprop="dateModified" datetime="2023-12-31T06:26:28+00:00">2023-12-31</time>
+                <time title="修改时间：2023-12-31 07:54:50" itemprop="dateModified" datetime="2023-12-31T07:54:50+00:00">2023-12-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -414,7 +414,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-31 06:26:28" itemprop="dateModified" datetime="2023-12-31T06:26:28+00:00">2023-12-31</time>
+                <time title="修改时间：2023-12-31 07:54:50" itemprop="dateModified" datetime="2023-12-31T07:54:50+00:00">2023-12-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -508,7 +508,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-31 06:26:28" itemprop="dateModified" datetime="2023-12-31T06:26:28+00:00">2023-12-31</time>
+                <time title="修改时间：2023-12-31 07:54:50" itemprop="dateModified" datetime="2023-12-31T07:54:50+00:00">2023-12-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -596,7 +596,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-31 06:26:28" itemprop="dateModified" datetime="2023-12-31T06:26:28+00:00">2023-12-31</time>
+                <time title="修改时间：2023-12-31 07:54:50" itemprop="dateModified" datetime="2023-12-31T07:54:50+00:00">2023-12-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -680,7 +680,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-31 06:26:28" itemprop="dateModified" datetime="2023-12-31T06:26:28+00:00">2023-12-31</time>
+                <time title="修改时间：2023-12-31 07:54:50" itemprop="dateModified" datetime="2023-12-31T07:54:50+00:00">2023-12-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -764,7 +764,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-31 06:26:28" itemprop="dateModified" datetime="2023-12-31T06:26:28+00:00">2023-12-31</time>
+                <time title="修改时间：2023-12-31 07:54:50" itemprop="dateModified" datetime="2023-12-31T07:54:50+00:00">2023-12-31</time>
               </span>
 
           
@@ -846,7 +846,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-31 06:26:28" itemprop="dateModified" datetime="2023-12-31T06:26:28+00:00">2023-12-31</time>
+                <time title="修改时间：2023-12-31 07:54:50" itemprop="dateModified" datetime="2023-12-31T07:54:50+00:00">2023-12-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
