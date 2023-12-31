@@ -231,7 +231,7 @@ Section
  reserved2 0
 ```
 
-我们关注丢失的符号的visibility，查看（参考：https://stackoverflow.com/questions/60481295/how-to-know-the-visibility-of-a-symbol-in-an-object-file）：
+我们关注丢失的符号的visibility，查看（参考：[How to know the visibility of a symbol in an object file](https://stackoverflow.com/questions/60481295/how-to-know-the-visibility-of-a-symbol-in-an-object-file)）：
 
 ```
 objdump -Ct libswiftCompatibility50.a
@@ -260,14 +260,14 @@ DanceCC在生成该符号时，设置了`visibility=hidden`；而苹果的该符
 ## 定位对应的源码
 
 通过直接在源码仓库搜索该符号，定位到来自这里的C++代码：
-`./stdlib/toolchain/Compatibility51/Overrides.h`
+[`./stdlib/toolchain/Compatibility51/Overrides.h`](https://github.com/apple/swift/blob/f08f86c71617bacbc61f69ce842e284b27036598/stdlib/toolchain/Compatibility51/Overrides.h#L4)
 
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835068513.jpg)
 
 
 可见，这里没有显式的标记visibility，由编译器生成。那么编译器为什么“不生成default的visibility呢？”
 
-PS：对该符号的引用出现在其插桩的Hook实现里（`./stdlib/toolchain/Compatibility50/Overrides.cpp`）
+PS：对该符号的引用出现在其插桩的Hook实现里（[`./stdlib/toolchain/Compatibility50/Overrides.cpp`](https://github.com/apple/swift/blob/f08f86c71617bacbc61f69ce842e284b27036598/stdlib/toolchain/Compatibility50/Overrides.cpp#L34)）
 
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835165993.jpg)
 
@@ -282,20 +282,21 @@ PS：对该符号的引用出现在其插桩的Hook实现里（`./stdlib/toolcha
 
 初步怀疑是以下语法存在问题，编译器识别visibility错误设置为hidden：
 `__attribute__((used, section("__DATA,__swift_hooks")))`
-也有可能是编译器clang传入了全局的-fvisibility=hidden覆盖了默认值？需要进一步排查
+也有可能是编译器clang传入了全局的`-fvisibility=hidden`覆盖了默认值？需要进一步排查
 
 ### 确认是CI编译插入了-fvisibility=hidden
 
 在CI加入verbose编译后，证明和猜想一致
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836412505.jpg)
 
-从上述分析可知，当前编译单元（即，swiftCompatibility Target）不应该开启修改默认的visibility进行编译，否则就需要源码手动声明visibility(default)
+从上述分析可知，当前编译单元（即 swiftCompatibility Target）不应该开启修改默认的visibility进行编译，否则就需要源码手动声明visibility(default)
 
 ## 临时Workaround
 
-快速绕过改问题，可以对相关库依旧保持DanceCC工具链，让链接器以local symbol的形式对每个Swift库链接了一份libswiftCompatibility50.a，即force_load了一份，使用链接器已有参数`-Wl,-force_load_swift_libs`，参考https://reviews.llvm.org/D103709
+快速绕过改问题，可以对相关库依旧保持DanceCC工具链，让链接器以local symbol的形式对每个Swift库链接了一份libswiftCompatibility50.a，即force_load了一份，使用链接器已有参数`-Wl,-force_load_swift_libs`，参考：[[lld-macho] Implement -force_load_swift_libs
+](https://reviews.llvm.org/D103709)
 
-虽然观察到Apple工具链利用了Auto-linking算法，会只对dylib被依赖方拷贝该符号，设置为global symbol（上述问题就是LKCommonsLogging，nm显示为T），dylib依赖方不拷贝该符号，设置为undefined symbol（上文就是AppStorageCore，nm显示为U），有点反常（像是一个依赖树，只在树的根节点真正链接了libswiftCompatibility50.a，兄弟节点不重复静态链接），可以参考下图（Apple总二进制只force_load了2份，DanceCC总二进制force_load了4份）
+虽然观察到Apple工具链利用了[Auto-linking](https://milen.me/writings/auto-linking-on-ios-and-macos/)算法，会只对dylib被依赖方拷贝该符号，设置为global symbol（上述问题就是LKCommonsLogging，nm显示为T），dylib依赖方不拷贝该符号，设置为undefined symbol（上文就是AppStorageCore，nm显示为U），有点反常（像是一个依赖树，只在树的根节点真正链接了libswiftCompatibility50.a，兄弟节点不重复静态链接），可以参考下图（Apple总二进制只force_load了2份，DanceCC总二进制force_load了4份）
 
 ![screenshot-20231226-184955](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/media/screenshot-20231226-184955.png)
 
@@ -311,7 +312,7 @@ PS：对该符号的引用出现在其插桩的Hook实现里（`./stdlib/toolcha
 - libswiftCompatibility56.a：不需要改，源码标记是正确的
 `0000000000000000 g     O __DATA,__s_async_hook .hidden _Swift56ConcurrencyOverrides`
 
-而目前对应修正，已经贡献上游：https://github.com/apple/swift/pull/70627
+而目前对应修正，已经贡献上游：[Fix the symbol visibility in Swift compatibility lib into default instead of hidden, solve auto-linking issue and match Apple's behavior #70627](https://github.com/apple/swift/pull/70627)
 
 ## 总结
 
