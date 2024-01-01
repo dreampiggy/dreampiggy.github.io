@@ -102,7 +102,9 @@ nm /Applications/Xcode-15.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xct
 - libswiftCompatibility51.a：包含了 Swift 5.1-5.6 的新增 Swfit Runtime API
 - libswiftCompatibility56.a：包含了 Swift 5.6 到当前版本（写稿时即为 5.9）的新增 Swfit Runtime API
 
-注意，`libswiftCompatibility50` 和 `libswiftCompatibility51` 一定不会出现同名符号，每个.a 提供的一堆 API 的完整实现，对齐到当前 Swift 版本（即 5.9）的行为，即：
+注意几个细节：
+1. 如果链接了低版本的.a（如50），那么一定会链接高版本的.a（51和56），低版本的.a中可能会直接依赖高版本.a的符号
+2. 不同版本的.a，如50/51/56，不会重复实现同名符号导致覆盖，每个.a提供的一堆 API 的完整实现，对齐到当前 Swift 版本（即5.9）的行为，即：
 
 - `swift::swift_getTypeName`：假设是 Swift 5.0 的新增 API，跳板会访问 `__DATA,__swift50_hooks`，那么它必须通过 libswiftCompatibility50.a 提供
 - `swift::swift_getMangledTypeName`：假设是 Swift 5.1 的新增 API，跳板会访问 `__DATA,__swift51_hooks`，那么它必须通过 libswiftCompatibility51.a 提供
@@ -122,7 +124,7 @@ nm /Applications/Xcode-15.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xct
 
 Swift 编译器通过自己在二进制中定义了一个专属的 Section，用动态调用的形式来访问所有 Swift Runtime API
 
-其中，对于 Swift Runtime 的 Hook 存在于 `__DATA,__swift51_hooks`（假设操作系统内置那份 Swift Runtime 版本是 5.1）
+其中，对于 Swift Runtime 的 Hook 存在于 `__DATA,__swift50_hooks`（假设操作系统内置那份 Swift Runtime 版本是 5.0）
 而 Swift Concurrency Backport 的 Hook 存在于 `__DATA,__s55async_hook`（Concurrency 自身是从 5.5 引入的，也支持补丁）
 
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035830645273.jpg)
@@ -259,8 +261,10 @@ DanceCC 在生成该符号时，设置了 `visibility=hidden`；而苹果的该�
 
 ## 定位对应的源码
 
-通过直接在源码仓库搜索该符号，定位到来自这里的 C++ 代码：
-[`./stdlib/toolchain/Compatibility51/Overrides.h`](https://github.com/apple/swift/blob/f08f86c71617bacbc61f69ce842e284b27036598/stdlib/toolchain/Compatibility51/Overrides.h#L4)
+通过直接在源码仓库搜索该符号，定位到来自这里的C++代码：
+
++ 声明：[`./stdlib/toolchain/Compatibility51/Overrides.h`](https://github.com/apple/swift/blob/ea95594ae137f288bf29a0b489b8689680a0086a/stdlib/toolchain/Compatibility50/Overrides.h)
++ 实现：[`./stdlib/toolchain/Compatibility50/ProtocolConformance.cpp`](https://github.com/apple/swift/blob/ea95594ae137f288bf29a0b489b8689680a0086a/stdlib/toolchain/Compatibility50/ProtocolConformance.cpp)
 
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835068513.jpg)
 
@@ -274,15 +278,15 @@ PS：对该符号的引用出现在其插桩的 Hook 实现里（[`./stdlib/tool
 
 ### 调查工具链自身的构建参数
 
-注意一个小坑点：Xcode 14（LLVM 14）的 objdump 并不会显示 hidden，只有 Xcode 15（LLVM 15）的 objdump 会显示，会干扰排查，需要使用同一份进行排查。
+注意一个小坑点：Xcode 14（LLVM 14）的 objdump 并不会显示 external hidden symbol，只有 Xcode 15（LLVM 15）的 objdump 会显示，会干扰排查，需要使用同一份二进制进行排查。
 
 定位到原始编译单元产物（Overrides.cpp.o）的 visibility 就是 hidden，和后续流程无关
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836121117.jpg)
 
-
-初步怀疑是以下语法存在问题，编译器识别 visibility 错误设置为 hidden：
+初步怀疑是以下语法存在问题，编译器识别 visibility 时错误设置为 hidden：
 `__attribute__((used, section("__DATA,__swift_hooks")))`
-也有可能是编译器 clang 传入了全局的 `-fvisibility=hidden` 覆盖了默认值？需要进一步排查
+
+当然，更有可能是编译器 clang 传入了全局的 `-fvisibility=hidden` 覆盖了默认值？需要进一步排查
 
 ### 确认是 CI 编译插入了-fvisibility=hidden
 
