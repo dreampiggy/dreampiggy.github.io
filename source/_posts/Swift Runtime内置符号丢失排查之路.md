@@ -304,7 +304,7 @@ PS：对该符号的引用出现在其插桩的 Hook 实现里（[`./stdlib/tool
 
 ![screenshot-20231226-184955](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/media/screenshot-20231226-184955.png)
 
-这两种集成仅有小量二进制差异，业务业务 8 个 dylibs，影响较小（一个 force_load 的 libswiftCompatibility50.a 占据 10KB）
+这两种集成仅有小量二进制差异，业务 8 个 dylibs，影响较小（一个 force_load 的 libswiftCompatibility50.a 占据 10KB）
 
 ## 修正方式
 
