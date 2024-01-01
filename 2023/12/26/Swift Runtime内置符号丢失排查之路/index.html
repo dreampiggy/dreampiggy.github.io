@@ -42,7 +42,7 @@
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035836412505.jpg">
 <meta property="og:image" content="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/media/screenshot-20231226-184955.png">
 <meta property="article:published_time" content="2023-12-26T17:49:49.000Z">
-<meta property="article:modified_time" content="2024-01-01T05:23:49.241Z">
+<meta property="article:modified_time" content="2024-01-01T05:25:13.933Z">
 <meta property="article:author" content="DreamPiggy">
 <meta property="article:tag" content="swift">
 <meta property="article:tag" content="llvm">
@@ -259,7 +259,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 05:23:49" itemprop="dateModified" datetime="2024-01-01T05:23:49+00:00">2024-01-01</time>
+                <time title="修改时间：2024-01-01 05:25:13" itemprop="dateModified" datetime="2024-01-01T05:25:13+00:00">2024-01-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -433,7 +433,7 @@
 </a></p>
 <p>虽然观察到 Apple 工具链利用了<a target="_blank" rel="noopener" href="https://milen.me/writings/auto-linking-on-ios-and-macos/">Auto-linking</a>算法，会只对 dylib 被依赖方拷贝该符号，设置为 global symbol（上述问题就是 LKCommonsLogging，nm 显示为 T），dylib 依赖方不拷贝该符号，设置为 undefined symbol（上文就是 AppStorageCore，nm 显示为 U），有点反常（像是一个依赖树，只在树的根节点真正链接了 libswiftCompatibility50.a，兄弟节点不重复静态链接），可以参考下图（Apple 总二进制只 force_load 了 2 份，DanceCC 总二进制 force_load 了 4 份）</p>
 <p><img src="https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/media/screenshot-20231226-184955.png" alt="screenshot-20231226-184955"></p>
-<p>这两种集成仅有小量二进制差异，业务业务 8 个 dylibs，影响较小（一个 force_load 的 libswiftCompatibility50.a 占据 10KB）</p>
+<p>这两种集成仅有小量二进制差异，业务 8 个 dylibs，影响较小（一个 force_load 的 libswiftCompatibility50.a 占据 10KB）</p>
 <h2 id="修正方式"><a href="#修正方式" class="headerlink" title="修正方式"></a>修正方式</h2><p>根据目前 Apple 内置二进制的解析结果，我们一期考虑直接无脑对齐，通过源码手动标记 visibility(“default”)，不影响其他编译单元的构建逻辑：</p>
 <ul>
 <li>libswiftCompatibility50.a：源码标记错误需要更改<br><code>0000000000000088 g     O __DATA,__swift_hooks _Swift50Overrides</code></li>
