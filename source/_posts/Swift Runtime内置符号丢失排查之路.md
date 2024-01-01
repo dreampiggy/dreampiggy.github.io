@@ -263,7 +263,7 @@ DanceCC 在生成该符号时，设置了 `visibility=hidden`；而苹果的该�
 
 通过直接在源码仓库搜索该符号，定位到来自这里的C++代码：
 
-+ 声明：[`./stdlib/toolchain/Compatibility51/Overrides.h`](https://github.com/apple/swift/blob/ea95594ae137f288bf29a0b489b8689680a0086a/stdlib/toolchain/Compatibility50/Overrides.h)
++ 声明：[`./stdlib/toolchain/Compatibility50/Overrides.h`](https://github.com/apple/swift/blob/ea95594ae137f288bf29a0b489b8689680a0086a/stdlib/toolchain/Compatibility50/Overrides.h)
 + 实现：[`./stdlib/toolchain/Compatibility50/ProtocolConformance.cpp`](https://github.com/apple/swift/blob/ea95594ae137f288bf29a0b489b8689680a0086a/stdlib/toolchain/Compatibility50/ProtocolConformance.cpp)
 
 ![](https://lf3-client-infra.bytetos.com/obj/client-infra-images/lizhuoli/f7dac35688c54f2e9ac1a605b4295a39/2023-12-26/assets/17035835068513.jpg)
