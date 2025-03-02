@@ -211,6 +211,91 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="DreamPiggy">
+      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小猪的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/" class="post-title-link" itemprop="url">CocoaPods资源管理—Data Asset最低部署版本的坑</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-16 16:16:18" itemprop="dateCreated datePublished" datetime="2021-07-16T16:16:18+00:00">2021-07-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-02 15:11:22" itemprop="dateModified" datetime="2025-03-02T15:11:22+00:00">2025-03-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>自己很早之前曾经写过一些CocoaPods管理Resource资源的文章：<a target="_blank" rel="noopener" href="https://bytedance.feishu.cn/wiki/wikcnJUiDWMmCbkSnfFvYpcMT0f">CocoaPods的资源管理和Asset Catalog优化</a> ，当时列举了对普通图片类型的管理方式和一些用法，也普及了一下UIImage获取Bundle去加载不在mainBundle图像的方式。</p>
+<p>但是苹果早在iOS 9，Xcode 7时代，苹果就已经推出了Data Asset的概念，并在随后的Xcode，尤其是Xcode 10中，为Data Asset提供了App Slicing的能力（即App Store提审包会根据选择的不同设备/内存/分辨率/GPU/CPU，最终下载到唯一匹配的一份文件），这个功能渐渐地开始被一些国内开发者使用。</p>
+<p>在NSHipster这里，有一篇专门的文章介绍：《<a target="_blank" rel="noopener" href="https://nshipster.cn/nsdataasset/">NSDataAsset</a>》</p>
+<p>不过，这篇文章主要的内容是，最近有同事踩到一个关于Data Asset和最低部署版本的坑，这里单独列举一下以防后人重复踩坑。</p>
+<h1 id="Data-Asset初见"><a href="#Data-Asset初见" class="headerlink" title="Data Asset初见"></a>Data Asset初见</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/07/16/CocoaPods%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E2%80%94Data-Asset%E6%9C%80%E4%BD%8E%E9%83%A8%E7%BD%B2%E7%89%88%E6%9C%AC%E7%9A%84%E5%9D%91/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2020/03/30/iOS%E7%AB%AF%E7%9F%A2%E9%87%8F%E5%9B%BE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%B1%87%E6%80%BB%EF%BC%88SVG%E7%AF%87%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -242,7 +327,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 05:26:27" itemprop="dateModified" datetime="2024-01-01T05:26:27+00:00">2024-01-01</time>
+                <time title="修改时间：2025-03-02 15:11:22" itemprop="dateModified" datetime="2025-03-02T15:11:22+00:00">2025-03-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -326,7 +411,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 05:26:27" itemprop="dateModified" datetime="2024-01-01T05:26:27+00:00">2024-01-01</time>
+                <time title="修改时间：2025-03-02 15:11:22" itemprop="dateModified" datetime="2025-03-02T15:11:22+00:00">2025-03-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -410,7 +495,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 05:26:27" itemprop="dateModified" datetime="2024-01-01T05:26:27+00:00">2024-01-01</time>
+                <time title="修改时间：2025-03-02 15:11:22" itemprop="dateModified" datetime="2025-03-02T15:11:22+00:00">2025-03-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -494,7 +579,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 05:26:27" itemprop="dateModified" datetime="2024-01-01T05:26:27+00:00">2024-01-01</time>
+                <time title="修改时间：2025-03-02 15:11:22" itemprop="dateModified" datetime="2025-03-02T15:11:22+00:00">2025-03-02</time>
               </span>
 
           
@@ -570,7 +655,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 05:26:27" itemprop="dateModified" datetime="2024-01-01T05:26:27+00:00">2024-01-01</time>
+                <time title="修改时间：2025-03-02 15:11:22" itemprop="dateModified" datetime="2025-03-02T15:11:22+00:00">2025-03-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -660,7 +745,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 05:26:27" itemprop="dateModified" datetime="2024-01-01T05:26:27+00:00">2024-01-01</time>
+                <time title="修改时间：2025-03-02 15:11:22" itemprop="dateModified" datetime="2025-03-02T15:11:22+00:00">2025-03-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -747,7 +832,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 05:26:27" itemprop="dateModified" datetime="2024-01-01T05:26:27+00:00">2024-01-01</time>
+                <time title="修改时间：2025-03-02 15:11:22" itemprop="dateModified" datetime="2025-03-02T15:11:22+00:00">2025-03-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -785,92 +870,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/11/12/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88vImage%E7%AF%87%EF%BC%89/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreampiggy.com/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="DreamPiggy">
-      <meta itemprop="description" content="DreamPiggy的个人博客，分享一些关于iOS开发，Web开发以及其它好玩东西的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小猪的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/" class="post-title-link" itemprop="url">iOS平台图片编解码入门教程（第三方编解码篇）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-30 18:05:14" itemprop="dateCreated datePublished" datetime="2017-10-30T18:05:14+00:00">2017-10-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 05:26:27" itemprop="dateModified" datetime="2024-01-01T05:26:27+00:00">2024-01-01</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>这篇教程，是系列教程的第二篇，前篇名为《iOS平台图片编解码入门教程（Image/IO篇）》。这篇主要讲第三方解码器如何在iOS平台上处理（和Image/IO的几大要点一一对应），更会介绍一些基本的Bitmap概念，总结通用的处理方法，毕竟授人以鱼不如授人以渔</p>
-</blockquote>
-<h1 id="第三方编解码"><a href="#第三方编解码" class="headerlink" title="第三方编解码"></a>第三方编解码</h1><p>对于图片编解码来说，Apple自带的Image/IO确实非常的易用，但是对于Image/IO不支持的图像格式就能无能为力了。截止到iOS 11，Image/IO不支持WebP，BPG，对于一些需要依赖WebP的业务就比较麻烦了（WebP的优点就不再介绍了）。不过我们可以自己集成第三方的图片解码器，去支持这些需要的的格式。</p>
-<p>一般来说，我们需要根据自己想要支持的图像格式，选择相对应的编解码器，进行编解码。这里我们以WebP的解码库<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/docs/api">libwebp</a>为例子，其他解码器需要根据对应解码器的API处理，基本概念类似。</p>
-<h1 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h1><p>不像Image/IO那样封装了整套流程，第三方解码的关键之处，就是在于获取到图像的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Raster_graphics">Bitmap</a>数据，通常情况就是<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/RGBA_color_space">RGBA</a>的矢量表示。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/30/iOS%E5%B9%B3%E5%8F%B0%E5%9B%BE%E7%89%87%E7%BC%96%E8%A7%A3%E7%A0%81%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BC%96%E8%A7%A3%E7%A0%81%E7%AF%87%EF%BC%89/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -961,7 +960,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1034,7 +1033,7 @@
 <div class="copyright">
   
   &copy; 2015 – 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
